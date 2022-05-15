@@ -3,6 +3,7 @@
 #pragma once
 
 #include <d_types.h>
+#include <d_error.h>
 
 /*
 ** Legacy prefixes masks
@@ -14,16 +15,8 @@
 #define LP_REPNX_MASK (udword)(LP_LOCK_MASK << 1)
 /// Repeat string handling instructions
 #define LP_REPX_MASK (udword)(LP_REPNX_MASK << 1)
-/// Use references within CS segment instead of the stack (ignored on x64)
-#define LP_CS_MASK (udword)(LP_REPX_MASK << 1)
-/// Use references within SS segment instead of the stack (ignored on x64)
-#define LP_SS_MASK (udword)(LP_CS_MASK << 1)
-/// Use references within DS segment instead of the stack (ignored on x64)
-#define LP_DS_MASK (udword)(LP_SS_MASK << 1)
-/// Use references within ES segment instead of the stack (ignored on x64)
-#define LP_ES_MASK (udword)(LP_DS_MASK << 1)
 /// Use references within FS segment instead of the stack
-#define LP_FS_MASK (udword)(LP_ES_MASK << 1)
+#define LP_FS_MASK (udword)(LP_REPX_MASK << 1)
 /// Use references within GS segment instead of the stack
 #define LP_GS_MASK (udword)(LP_FS_MASK << 1)
 /// Used to lessen the impact of branch misprediction somewhat, 
@@ -38,32 +31,23 @@
 #define LP_ADDRSZ_MASK (udword)(LP_OPSZ_MASK << 1)
 
 /*
-** Mandatory prefixes masks
-*/
-
-#define MP_0x66_MASK (udword)(LP_ADDRSZ_MASK << 1)
-#define MP_0xF2_MASK (udword)(MP_0x66_MASK << 1)
-#define MP_0xF3_MASK (udword)(MP_0xF2_MASK << 1)
-
-/*
 ** REX prefixes masks
 */
 
 /// When 1, a 64-bit operand size is used. Otherwise, when 0, the default operand size is used
-#define RP_REXW_MASK (udword)(MP_0xF3_MASK << 1)
+#define RP_REXB_MASK (udword)(LP_ADDRSZ_MASK << 1)
 /// This 1-bit value is an extension to the MODRM.reg field
-#define RP_REXR_MASK (udword)(RP_REXW_MASK << 1)
+#define RP_REXX_MASK (udword)(RP_REXB_MASK << 1)
 /// This 1-bit value is an extension to the SIB.index field
-#define RP_REXE_MASK (udword)(RP_REXR_MASK << 1)
+#define RP_REXR_MASK (udword)(RP_REXX_MASK << 1)
 /// This 1-bit value is an extension to the MODRM.rm field or the SIB.base field
-#define RP_REXB_MASK (udword)(RP_REXE_MASK << 1)
+#define RP_REXW_MASK (udword)(RP_REXR_MASK << 1)
 
-///TODO: Maybe not need it for operand_r
+///TODO: Now i have more space, select a new index for these 2 bit-flags
 /* Operand kind get */
-#define GET_OP1_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x4) & 0b00000011)
-#define GET_OP1_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x6) & 0b00000011)
+#define GET_OPL_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x4) & 0b00000011)
+#define GET_OPR_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x6) & 0b00000011)
 
-///TODO: Maybe not need it for operand_r
 /* Operands kinds */
 #define FL_OP1_IMM 0x0
 #define FL_OP1_MEM 0x1
@@ -106,18 +90,16 @@ typedef enum
 
 typedef struct
 {
-	ubyte prefix[4];
-	ubyte opcode[3];
-	mnemonic_t mnemonic;
-	ubyte vexxop[3];
-	ubyte mod_rm;
-	ubyte sib;
-	uqword displacement;
+	ubyte		prefix[4];
+	mnemonic_t	mnemonic;
+	ubyte		opcode[3];
+	ubyte		vexxop[3];
+	ubyte		mod_rm;
+	ubyte		sib;
+	ubyte		displacement;
+	ubyte		operand_r;
+	uqword		operand_l;
+	ubyte		size;
+} instruction_t;
 
-	///TODO: register doesn't need 8 bytes to be stored
-	/// operand_r does not need to be a 8 bytes
-	/// MAX_OPCODE_LEN == 15bytes
-	/// And all addresses (rvalue) are register relative ?
-	uqword operand_r;
-	uqword operand_l;
-} instuction_t;
+err_t			get_instruction_prefixes(udword* const dest, const ubyte** instruction_raw);
