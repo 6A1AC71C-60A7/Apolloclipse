@@ -1,0 +1,16 @@
+
+#Executable files
+disassembler
+test
+a.out
+
+#Relocatable objects files
+relocs
+relocs/*
+
+#Local scripts
+gensrcs.sh
+
+#Local vscode config
+.vscode
+.vscode/*
