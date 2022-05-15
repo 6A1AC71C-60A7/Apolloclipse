@@ -8,6 +8,6 @@
 typedef enum
 {
 	SUCCESS,
-	SYSCALL,
-	INVOPCODE,
+	ESYSCALL,
+	EINVOPCODE,
 } err_t;
