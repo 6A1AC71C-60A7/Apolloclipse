@@ -4,6 +4,7 @@
 
 #include <d_types.h>
 #include <d_error.h>
+#include <d_mnemonic.h>
 
 /*
 ** Legacy prefixes masks
@@ -77,16 +78,38 @@
 #define VEXXOP_WE_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) * 2) & 0b00000001)
 /// An additional operand for the instruction, the value of the XMM or YMM register is 'inverted'
 #define VEXXOP_VVVV_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2) >> 0x1) & 0b00001111)
+#define VEXXOP2_VVVV_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte)) >> 0x1) & 0b00001111)
+
 /// When 0, a 128-bit vector lengh is used. Otherwise, when 1, a 256-bit vector length is used
 #define VEXXOP_L_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x5) & 0b00100000)
+#define VEXXOP2_L_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) + 0x5) & 0b00100000)
 /// Specifies an implied mandatory prefix for the opcode:
 /// 00 (none) | 01 (0x66) | 10 (0xF3) | 11 (0xF2)
-#define VEXXOP_PP_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2) >> 0x7) & 0b00000011)
+#define VEXXOP_PP_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2) >> 0x6) & 0b00000011)
+#define VEXXOP2_PP_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte)) >> 0x6) & 0b00000011)
 
-typedef enum
-{
-    NOP // We could sort the mnemonics in a specific order in a way to make ranges (groups)
-} mnemonic_t;
+/*
+** ModR/M member values
+*/
+
+/// Specify (in)direct operand, optionally with displacement. Can be extented by 1 bit. 
+#define MODRM_RM_GET(x) (ubyte)(*(ubyte*)&(x) & 0b00000111)
+/// Opcode extension or register reference
+#define MODRM_REG_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
+/// In general, when this field is 0b11, then register-direct addressing mode is used;
+///		otherwise register-indirect addressing mode is used. 
+#define MODRM_MOD_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
+
+/*
+** SIB member values
+*/
+
+/// The scaling factor of SIB.index
+# define SIB_BASE_GET(x) (ubyte)(*(ubyte*)(&(x)) & 0b00000111)
+/// The index register to use. Can be extented by 1 bit.
+# define SIB_INDEX_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
+/// The base register to use. Can be extented by 1 bit.
+# define SIB_SCALE_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
 typedef struct
 {
@@ -96,10 +119,14 @@ typedef struct
 	ubyte		vexxop[3];
 	ubyte		mod_rm;
 	ubyte		sib;
-	ubyte		displacement;
+	udword		displacement;
+	///TODO: Maybe can store the size of the operand in the 4 last bits [7-4: size ; 3-0: reg]
+	/// BUT: REX DO THIS DIDN'T IT ?
 	ubyte		operand_r;
 	uqword		operand_l;
 	ubyte		size;
 } instruction_t;
 
-err_t			get_instruction_prefixes(udword* const dest, const ubyte** instruction_raw);
+err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instruction_raw);
+void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
+err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
