@@ -1,7 +1,8 @@
 
 #include <tests.h>
+#include <d_opcode.h>
 
-#include <d_error.h>
+///TODO: Opcodes maps (opcode, mnemonic, ismodrm, isimmediate, ...)
 
 int main(int ac, const char* av[])
 {
@@ -13,4 +14,5 @@ int main(int ac, const char* av[])
     test_instruction(t_isnt,  0);
 
     return st;
+
 }

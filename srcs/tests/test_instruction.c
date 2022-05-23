@@ -3,16 +3,17 @@
 #include <d_error.h>
 
 __always_inline
-static void test_instruction_prefixes(const ubyte *instruction_raw, udword* data)
+static void test_instruction_prefixes(const ubyte *instruction_raw, instruction_t* const data)
 {
     DEBUG(" *** START: TEST PREFIX ***\n");
 
     if (get_instruction_prefixes(data, &instruction_raw) != SUCCESS)
         DEBUG("WARNING: bad format legacy prefixes\n");
     
+    udword* p = (udword*)data->prefix;
     udword y = 0;
     for (udword i = 1 ; i <= RP_REXW_MASK ; i <<= 1)
-        DEBUG("[%u] -> [%x]\n", y++, *data & i);
+        DEBUG("[%u] -> [%x]\n", y++, *p & i);
     DEBUG(" *** END:  TEST PREFIX ***\n");
 }
 
@@ -35,7 +36,7 @@ uqword d_memcmp(void* restrict p1, void* restrict p2, uqword size)
 void test_instruction(const ubyte *instruction_raw, instruction_t* answer)
 {
     instruction_t inst = {0};
-    test_instruction_prefixes(instruction_raw, (udword*)&inst.prefix);
+    test_instruction_prefixes(instruction_raw, &inst);
 
     if (answer)
         DEBUG("CONCLUSION: %s\n", d_memcmp(&inst, answer, sizeof(instruction_t)) == 0 ? "PASS" : "FAIL");
