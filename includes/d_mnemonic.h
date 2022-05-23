@@ -9,7 +9,7 @@ typedef enum
 
 	/* 1) Data transfer */
 
-	MOV,			// Move data between general-purpose registers; move data between memory and general-purpose or segment registers; move immediates to general-purpose registers.
+	MOV = 0x1,			// Move data between general-purpose registers; move data between memory and general-purpose or segment registers; move immediates to general-purpose registers.
 	CMOVE,			// Conditional move if equal.
 	CMOVZ,			// Conditional move if zero.
 	CMOVNE,			// Conditional move if not equal.

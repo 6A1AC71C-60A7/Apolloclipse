@@ -130,3 +130,4 @@ typedef struct
 err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instruction_raw);
 void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
+
