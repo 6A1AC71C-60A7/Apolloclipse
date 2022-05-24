@@ -1,4 +1,5 @@
 
+#include <d_portability.h>
 #include <d_instruction.h>
 #include <d_lookup_tables.h>
 #include <d_utils.h>
@@ -132,7 +133,7 @@ static void		get_immediate(instruction_t* const inst, const ubyte** instruction_
 __always_inline
 static err_t	get_instruction_opcode(instruction_t* const inst, const ubyte** instruction_raw)
 {
-	err_t st;
+	err_t st = SUCCESS;
 
 	if (get_3dnow_prefixes(inst, instruction_raw) == SUCCESS)
 	{

@@ -1,4 +1,5 @@
 
+#include <d_portability.h>
 #include <d_instruction.h>
 #include <d_error.h>
 
@@ -35,7 +36,7 @@ uqword d_memcmp(void* restrict p1, void* restrict p2, uqword size)
 
 void test_instruction(const ubyte *instruction_raw, instruction_t* answer)
 {
-    instruction_t inst = {0};
+    instruction_t inst = {};
     test_instruction_prefixes(instruction_raw, &inst);
 
     if (answer)

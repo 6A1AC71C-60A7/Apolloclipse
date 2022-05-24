@@ -1,4 +1,5 @@
 
+#include <d_portability.h>
 #include <d_instruction.h>
 #include <d_lookup_tables.h>
 #include <d_utils.h>
@@ -124,10 +125,10 @@ static void		fill_inst_with_vexxop_3bytes(instruction_t* const inst, const ubyte
 	const byte opp = VEXXOP_PP_GET(vexxop);
 
 	inst->opcode[0] = VEXXOP_PREFIX_GET(vexxop);
-	*prefix |= (VEXXOP_R_GET(vexxop) == ~0x1) ? RP_REXR_MASK : 0x0;
-	*prefix |= (VEXXOP_X_GET(vexxop) == ~0x1) ? RP_REXX_MASK : 0x0;
-	*prefix |= (VEXXOP_B_GET(vexxop) == ~0x1) ? RP_REXB_MASK : 0x0;
-	*prefix |= (VEXXOP_WE_GET(vexxop) == ~0x1) ? RP_REXW_MASK : 0x0;
+	*prefix |= (VEXXOP_R_GET(vexxop) == (ubyte)~0x1) ? RP_REXR_MASK : 0x0;
+	*prefix |= (VEXXOP_X_GET(vexxop) == (ubyte)~0x1) ? RP_REXX_MASK : 0x0;
+	*prefix |= (VEXXOP_B_GET(vexxop) == (ubyte)~0x1) ? RP_REXB_MASK : 0x0;
+	*prefix |= (VEXXOP_WE_GET(vexxop) == (ubyte)~0x1) ? RP_REXW_MASK : 0x0;
 	///NOTE: The only one not stored is 'l' which is the operand size
 	inst->operand_r = VEXXOP_VVVV_GET(vexxop);
 	
@@ -154,7 +155,7 @@ static void		fill_inst_with_vexxop_2bytes(instruction_t* const inst, const ubyte
 	const byte opp = VEXXOP2_PP_GET(vexxop);
 
 	inst->opcode[0] = VEXXOP_PREFIX_GET(vexxop);
-	*prefix |= (VEXXOP_R_GET(vexxop) == ~0x1) ? RP_REXR_MASK : 0x0;
+	*prefix |= (VEXXOP_R_GET(vexxop) == (ubyte)~0x1) ? RP_REXR_MASK : 0x0;
 
 	///NOTE: The only one not stored is 'l' which is the operand size
 	/// USE: VEXXOP2_L_GET(vexxop)
@@ -178,8 +179,9 @@ static void		fill_inst_with_vexxop_2bytes(instruction_t* const inst, const ubyte
 
 #define IS_VEXXOP(x) (*(x) == 0xC4 || *(x) == 0xC5 || *(x) == 0x8F)
 
-__always_inline
-static err_t	get_vexxop_prefixes(instruction_t* const inst, const ubyte** instruction_raw)
+// unused 
+__always_inline 
+/*static*/ err_t	get_vexxop_prefixes(instruction_t* const inst, const ubyte** instruction_raw)
 {
 	err_t st = EINVOPCODE;
 
@@ -206,8 +208,9 @@ static err_t	get_vexxop_prefixes(instruction_t* const inst, const ubyte** instru
 
 # define IS_3DNOW(x) (*(uword*)(x) == 0x0F0F)
 
+// unused
 __always_inline
-static err_t	get_3dnow_prefixes(instruction_t* const inst, const ubyte** instruction_raw)
+/*static*/ err_t	get_3dnow_prefixes(instruction_t* const inst, const ubyte** instruction_raw)
 {
 	err_t st = EINVOPCODE;
 
