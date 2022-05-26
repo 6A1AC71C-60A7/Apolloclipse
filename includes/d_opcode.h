@@ -41,6 +41,8 @@ typedef enum
 				//			register, a scaling factor, and a displacement.
 	AM_X,		// Memory addressed by the DS:rSI register pair (for example, MOVS, CMPS, OUTS, or LODS).
 	AM_Y,		// Memory addressed by the ES:rDI register pair (for example, MOVS, CMPS, INS, STOS, or SCAS).
+	AMB			// The opcode held by this field is prefix-dependent. The mnemonic field holds the index to another
+				// 			look up table in which the prefix resolution should be performed.
 	
 } op_addressing_method_t;
 
