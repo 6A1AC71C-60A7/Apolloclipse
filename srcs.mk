@@ -8,6 +8,7 @@ $(addprefix includes/,\
 	d_lookup_tables.h\
 	d_mnemonic.h\
 	d_opcode.h\
+	d_portability.h\
 	d_register.h\
 	d_types.h\
 	d_utils.h\
@@ -15,6 +16,7 @@ $(addprefix includes/,\
 )
 SRCS	=\
 $(addprefix srcs/,\
+	get_instruction_by_extension.c\
 	get_instruction.c\
 	get_instruction_prefixes.c\
 	handle_modrm.c\
