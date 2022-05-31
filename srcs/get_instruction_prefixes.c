@@ -181,7 +181,10 @@ static void		fill_inst_with_vexxop_2bytes(instruction_t* const inst, const ubyte
 
 // unused 
 __always_inline 
-/*static*/ err_t	get_vexxop_prefixes(instruction_t* const inst, const ubyte** instruction_raw)
+#ifdef __linux__
+static
+#endif
+err_t	get_vexxop_prefixes(instruction_t* const inst, const ubyte** instruction_raw)
 {
 	err_t st = EINVOPCODE;
 
