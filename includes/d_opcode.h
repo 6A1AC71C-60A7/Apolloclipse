@@ -102,7 +102,7 @@ typedef enum
 
 /* Some Alias of op_default_reg_t members */
 
-#define DR_STO DR_RAX
+#define DR_ST0 DR_RAX
 #define DR_ST1 DR_RCX
 #define DR_ST2 DR_RDX
 #define DR_ST3 DR_RBX
@@ -220,6 +220,7 @@ typedef enum
 	OR_256,		// Optional 8-bits register next option register is on next amX field.
 	OR_512,		// Optional 8-bits register next option register is on next amX field.
 	DRS_SEC,	// A section register.
+	DRS_87		// A floating point register.
 
 } op_default_regsz_t;
 

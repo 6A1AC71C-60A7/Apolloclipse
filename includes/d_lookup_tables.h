@@ -2765,3 +2765,750 @@ static const opfield_t lt_tree_byte_0x3A__opmap[] = {
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },	
 };
+
+///TODO: LAST TABLES HAS DIFERENT ATTRIBUTES ....
+
+static const opfield_t lt_escape_0xD8_within_modrm_opmap[] = {
+
+	///TODO: ATTR: SINGLE-REAL
+	{ .mnemonic = FADD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xD8_outside_modrm_opmap[] = {
+
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xD8_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xD9_within_modrm_opmap[] = {
+
+	///TODO: ATTR: SINGLE-REAL
+	{ .mnemonic = FLD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: SINGLE-REAL 
+	{ .mnemonic = 0 /* FST */,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: SINGLE-REAL
+	{ .mnemonic = FSTP,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: 14/28 bytes
+	{ .mnemonic = FLDENV,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: 2 bytes
+	{ .mnemonic = FLDCW,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: 14/28 bytes
+	{ .mnemonic = FSTENV,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: 2 bytes
+	{ .mnemonic = FSTCW,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xD9_outside_modrm_opmap[] = {
+
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FNOP,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCHS,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FABS,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FTST,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXAM,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = F2XM1,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FYL2X,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FPTAN,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FPATAN,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXTRACT,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FPREM1,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDECSTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FINCSTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xD9_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FLD1,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLDL2T,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLDL2E,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLDPI,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLDLG2,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLDLN2,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLDZ,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FPREM,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FYL2XP1,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSQRT,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSINCOS,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FRDINT,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSCALE,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSIN,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOS,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDA_within_modrm_opmap[] = {
+
+	///TODO: ATTR: DWORD-INTEGER
+	{ .mnemonic = FIADD,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIMUL,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FICOM,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FICOMP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISUB,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISUBR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIDIV,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIDIVR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDA_outside_modrm_opmap[] = {
+
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDA_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMPP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDB_within_modrm_opmap[] = {
+
+	///TODO: ATTR: DWORD-INTEGER NEXT 4
+	{ .mnemonic = FILD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISTTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIST,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: EXTENDTED-REAL
+	{ .mnemonic = FLD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: EXTENTED-REAL
+	{ .mnemonic = FSTP,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDB_outside_modrm_opmap[] = {
+
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNB,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCLEX,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FINIT,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDB_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCMOVNU,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDC_within_modrm_opmap[] = {
+	///TODO: ATTR: DOUBLE-REAL
+	{ .mnemonic = FADD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDC_outside_modrm_opmap[] = {
+
+	{ .mnemonic = FADD,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADD,		.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FSUBR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FDIVR,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDC_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FSUB,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDD_within_modrm_opmap[] = {
+	///TODO: ATTR: DOUBLE-REAL
+	{ .mnemonic = FLD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: INTEGER 64
+	{ .mnemonic = FISTTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: DOUBLE-REAL (NEXT 2)
+	{ .mnemonic = 0 /* FST */,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: 98/108 BYTES
+	{ .mnemonic = FRSTOR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: 98/108 BYTES
+	{ .mnemonic = FSAVE,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	///TODO: ATTR: 2 BYTES
+	{ .mnemonic = FSTSW,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDD_outside_modrm_opmap[] = {
+
+	{ .mnemonic = FFREE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FFREE,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FFREE,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FFREE,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FFREE,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FFREE,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FFREE,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FFREE,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0 /* FST */,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FUCOM,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOM,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOM,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOM,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOM,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOM,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOM,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOM,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDD_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FSTP,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSTP,		.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDE_within_modrm_opmap[] = {
+
+	///TODO: ATTR: WORD-INTEGER
+	{ .mnemonic = FIADD,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIMUL,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FICOM,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FICOMP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISUB,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISUBR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIDIV,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIDIVR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDE_outside_modrm_opmap[] = {
+
+	{ .mnemonic = FADDP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADDP,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADDP,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADDP,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADDP,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADDP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADDP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FADDP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBRP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+//// TODO: CHECK ALL PREVIOUS !!!!!!! MAY HAVE BAD ATTRIBUTES
+
+static const opfield_t lt_escape_0xDE_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = FMULP,	.am1 = DR_ST0,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMULP,	.am1 = DR_ST1,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMULP,	.am1 = DR_ST2,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMULP,	.am1 = DR_ST3,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMULP,	.am1 = DR_ST4,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMULP,	.am1 = DR_ST5,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMULP,	.am1 = DR_ST6,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMULP,	.am1 = DR_ST7,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMPP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FSUBP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBP,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBP,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBP,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBP,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FDIVP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVP,	.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVP,	.am1 = DR_ST2,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVP,	.am1 = DR_ST3,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVP,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDF_within_modrm_opmap[] = {
+	///TODO: ATTR: WORD-INTEGER (NEXT 4)
+	{ .mnemonic = FILD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISTTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FIST,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FISTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	/// TODO: ATTR: PACKED-BCD
+	{ .mnemonic = FBLD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	/// TODO: ATTR: QWORD-INTEGER
+	{ .mnemonic = FILD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	/// TODO: ATTR: PACKED-BCD
+	{ .mnemonic = FBSTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	/// TODO: ARRT: QWORD-INTEGER
+	{ .mnemonic = FISTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDF_outside_modrm_opmap[] = {
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	///TODO: NOT 100% SURE ABOUT THIS ONE
+	{ .mnemonic = FSTSW,	.am1 = DR_RAX,	.ot1 = DRS_16,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+static const opfield_t lt_escape_0xDF_outside_modrm_opmap2[] = {
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST3,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FUCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
