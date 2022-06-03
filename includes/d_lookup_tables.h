@@ -7,6 +7,7 @@ static const ubyte lt_legacy_prefixes[] = {
     0xF0, 0xF2, 0xF3, 0x64, 0x65, 0x2E, 0x3E, 0x66, 0x67
 };
 
+///TODO: Redefined in instruction.c : HAS_ATTR_MODRM, ...
 #define DREF_RM (0x1)
 #define DREF_SIB (DREF_RM << 1)
 #define DISP_8 (DREF_SIB << 1)
@@ -20,9 +21,10 @@ static const ubyte lt_modrm_encoded[] = {
 	VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM, VAL_RM // mod == 0b11
 };
 
+///TODO: Redefined in instruction.c : HAS_ATTR_SIBDISP_8, ...
 #define SBASE (0x1)
 #define SINDEX (SBASE << 1)
-#define SDISP_8 (SINDEX << 1)
+#define SDISP_8 (DISP_32 << 1)
 #define SDISP_32 (SDISP_8 << 1)
 #define SSCALE (SDISP_32 << 1)
 
@@ -383,11 +385,11 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = JLE,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
 	{ .mnemonic = JNLE,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
 
-	///TODO: WTF are the following 4 ?
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	///TODO: INDEX GROUP
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_I,	.ot2 = OT_Z,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = TEST,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_G,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = TEST,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_G,	.ot2 = OT_V,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = XCHG,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_G,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -401,7 +403,7 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = LEA,		.am1 = AM_G,	.ot1 = OT_V,	.am2 = AM_M,	.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = MOV,		.am1 = AM_S,	.ot1 = OT_W,	.am2 = AM_E,	.ot2 = OT_W,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	///TODO: HAS GROUP
-	{ .mnemonic = POP,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_D64 },
+	{ .mnemonic = POP,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 
 	///TODO: NEXT ONE HAS MULTIPLE MNEMONICS
 	/// BYTE LELT IN OPFIELD_T COUND BE 'ISAMBIGIOUS'
@@ -459,12 +461,12 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = MOV,		.am1 = DR_RSI,	.ot1 = OR_64,	.am2 = DR_R14,	.ot2 = AM_I,	.am3 = OT_V,	.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = MOV,		.am1 = DR_RDI,	.ot1 = OR_64,	.am2 = DR_R15,	.ot2 = AM_I,	.am3 = OT_V,	.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
-	///TODO: WTF NEXT 2
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	///TODO: INDEX GROUP
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	///TODO: THIS IS RET NEAR / RET FAR ISN'T SPECIFIED YET IN MNEMONICS
 	{ .mnemonic = RET,		.am1 = AM_I,	.ot1 = OT_W,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
-	{ .mnemonic = RET,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
+	{ .mnemonic = RET,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
 	{ .mnemonic = LES,		.am1 = AM_G,	.ot1 = OT_Z,	.am2 = AM_M,	.ot2 = OT_P,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
 	{ .mnemonic = LDS,		.am1 = AM_G,	.ot1 = OT_Z,	.am2 = AM_M,	.ot2 = OT_P,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
 	///TOOD: CHECK GROUP NEXT 2 {6, C}
@@ -483,11 +485,12 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = INTO,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
 	{ .mnemonic = IRET,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
-	///TODO: WTF NEXT 4
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	///TODO: INDEX GROUP
+	///TODO: NEXT 2 -> SECOND OPERAND IN DOCUMENTATION IS '1' WTF IS THIS ?!?!?!
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = DR_RDX,	.ot2 = DRS_8,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = DR_RCX,	.ot2 = DRS_8,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = AAM,		.am1 = AM_I,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
 	{ .mnemonic = AAD,		.am1 = AM_I,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
 	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -531,9 +534,9 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = XRELEASE,	.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = HLT,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = CMC,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	///TODO: WFT NEXT 2
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	///TODO: INDEX GROUP
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 
 	{ .mnemonic = CLC,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = STC,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -541,17 +544,17 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = STI,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = CLD,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = STD,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	///TODO: HAS GROUP AND IS AMBIGIOUS (ALSO COULD BE DEC)
-	{ .mnemonic = INC,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = INC,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	///TODO: INDEX GROUP
+	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 };
 
 ///TODO: COPY PASTE FOR PREFIX SPETIALIZATION
 ///OR: CREATE ANOTHER TABLE
-static const opfield_t lt_two_byte_no_prep_opmap[] = {
-	/// TODO: GROUPS (NEXT 2)
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+static const opfield_t lt_two_byte_opmap[] = {
+	/// TODO: INDEX GROUPS
+	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = LAR,		.am1 = AM_G,	.ot1 = OT_V,	.am2 = AM_E,	.ot2 = OT_W,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = LSL,		.am1 = AM_G,	.ot1 = OT_V,	.am2 = AM_E,	.ot2 = OT_W,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -783,9 +786,9 @@ static const opfield_t lt_two_byte_no_prep_opmap[] = {
 
 	/// TODO: NEXT ONE JMPE RESERVED FOR EMULATOR ON IPF
 	{ .mnemonic = AMB_JMPE_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	/// TODO: NEXT 2 ARE GROUPS
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	/// TODO: INDEX GROUPS
+	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = 0,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = BTC,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_G,	.ot2 = OT_V,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_BFS_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_BSR_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -1731,7 +1734,7 @@ static const opfield_t lt_two_byte_ambigious_opmap[] = {
 ///TODO: DO 0XF3 AND 0XF2 PREFIXES
 /// I DON'T THINK THE ALIGNEMENT METHOD IS THE MOST SUITABLE
 /// THINK ANOTHER WAY
-static const opfield_t lt_tree_byte_0x38_opmap[] = {
+static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = PSHUFB,		.am1 = AM_P,	.ot1 = OT_Q,	.am2 = AM_Q,	.ot2 = OT_Q,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = PHADDW,		.am1 = AM_P,	.ot1 = OT_Q,	.am2 = AM_Q,	.ot2 = OT_Q,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = PHADDD,		.am1 = AM_P,	.ot1 = OT_Q,	.am2 = AM_Q,	.ot2 = OT_Q,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -2484,7 +2487,7 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 #define AMB_VAESKEYGEN_INDEX 0x28
 #define AMB_RORX_INDEX 0x29
 
-static const opfield_t lt_tree_byte_0x3A__opmap[] = {
+static const opfield_t lt_three_byte_0x3A_opmap[] = {
 	{ .mnemonic = AMB_VPERMQ_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VPERMPD_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VPLENDD_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -2771,14 +2774,14 @@ static const opfield_t lt_tree_byte_0x3A__opmap[] = {
 static const opfield_t lt_escape_0xD8_within_modrm_opmap[] = {
 
 	///TODO: ATTR: SINGLE-REAL
-	{ .mnemonic = FADD,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FMUL,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FCOM,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FCOMP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FSUB,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FSUBR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FDIV,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FDIVR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+	{ .mnemonic = FADD,		.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FMUL,		.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOM,		.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FCOMP,	.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUB,		.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FSUBR,	.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIV,		.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FDIVR,	.am1 = AM_I,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
 };
 
 static const opfield_t lt_escape_0xD8_outside_modrm_opmap[] = {
@@ -2817,10 +2820,7 @@ static const opfield_t lt_escape_0xD8_outside_modrm_opmap[] = {
 	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-static const opfield_t lt_escape_0xD8_outside_modrm_opmap2[] = {
+	{ .mnemonic = FDIV,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -2914,10 +2914,7 @@ static const opfield_t lt_escape_0xD9_outside_modrm_opmap[] = {
 	{ .mnemonic = FXTRACT,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FPREM1,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDECSTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FINCSTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-static const opfield_t lt_escape_0xD9_outside_modrm_opmap2[] = {
+	{ .mnemonic = FINCSTP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FXCH,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -3005,10 +3002,7 @@ static const opfield_t lt_escape_0xDA_outside_modrm_opmap[] = {
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-static const opfield_t lt_escape_0xDA_outside_modrm_opmap2[] = {
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -3098,10 +3092,7 @@ static const opfield_t lt_escape_0xDB_outside_modrm_opmap[] = {
 	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-static const opfield_t lt_escape_0xDB_outside_modrm_opmap2[] = {
+	{ .mnemonic = FCOMI,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCMOVNE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -3188,10 +3179,7 @@ static const opfield_t lt_escape_0xDC_outside_modrm_opmap[] = {
 	{ .mnemonic = FDIVR,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIVR,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIVR,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FDIVR,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-static const opfield_t lt_escape_0xDC_outside_modrm_opmap2[] = {
+	{ .mnemonic = FDIVR,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = FMUL,		.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FMUL,		.am1 = DR_ST1,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -3283,10 +3271,7 @@ static const opfield_t lt_escape_0xDD_outside_modrm_opmap[] = {
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-static const opfield_t lt_escape_0xDD_outside_modrm_opmap2[] = {
+	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -3374,12 +3359,7 @@ static const opfield_t lt_escape_0xDE_outside_modrm_opmap[] = {
 	{ .mnemonic = FDIVRP,	.am1 = DR_ST4,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIVRP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIVRP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FDIVRP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-//// TODO: CHECK ALL PREVIOUS !!!!!!! MAY HAVE BAD ATTRIBUTES
-
-static const opfield_t lt_escape_0xDE_outside_modrm_opmap2[] = {
+	{ .mnemonic = FDIVRP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = FMULP,	.am1 = DR_ST0,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FMULP,	.am1 = DR_ST1,	.ot1 = 0,	.am2 = DR_ST0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -3416,6 +3396,13 @@ static const opfield_t lt_escape_0xDE_outside_modrm_opmap2[] = {
 	{ .mnemonic = FDIVP,	.am1 = DR_ST5,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIVP,	.am1 = DR_ST6,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FDIVP,	.am1 = DR_ST7,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+};
+
+//// TODO: CHECK ALL PREVIOUS !!!!!!! MAY HAVE BAD ATTRIBUTES
+
+static const opfield_t lt_escape_0xDE_outside_modrm_opmap2[] = {
+
+	
 };
 
 static const opfield_t lt_escape_0xDF_within_modrm_opmap[] = {
@@ -3471,10 +3458,7 @@ static const opfield_t lt_escape_0xDF_outside_modrm_opmap[] = {
 	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST4,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST5,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST6,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
-};
-
-static const opfield_t lt_escape_0xDF_outside_modrm_opmap2[] = {
+	{ .mnemonic = FCOMIP,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST7,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },

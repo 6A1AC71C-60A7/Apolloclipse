@@ -4,12 +4,13 @@
 
 ///TODO: SOME ARRAYS ARE TOO SHORT AND MAY SEGFAULT IN CASE OF CORRUPTED MODR/M
 
-opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, ubyte prefix)
+opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, ubyte prefix, opfield_t found)
 {
 	const ubyte mod = (modrm & 0b11000000) >> 6;
 	const ubyte reg = (modrm & 0b0111000) >> 3;
 	const ubyte rm = (modrm & 0b00000111);
 	opfield_t	inst = {};
+	ubyte		req_found = 0x0;
 
 	switch (group)
 	{
@@ -17,7 +18,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			if (prefix == 0x0)
 			{
 				static const opfield_t arr[] = {
-					///TODO: COMPLETE ATTRIBUTES
+					///TODO: COMPLETE ATTRIBUTES 
 					{ .mnemonic = ADD,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 					{ .mnemonic = OR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 					{ .mnemonic = ADC,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -35,13 +36,15 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			if (prefix == 0x0)
 			{
 				if (!reg)
-					inst = (opfield_t){ .mnemonic = POP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
+					///TODO: SEEMS TO ALSO HAVE S_D64 symbol
+					inst = (opfield_t){ .mnemonic = POP,	.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1A };
 			}
 			break ;
 
 		case 0x2:
 			if (prefix == 0x0)
 			{
+				///TODO: (GROUP 2 MISSING)
 				static const opfield_t arr[] = {
 					{ .mnemonic = ROL,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 					{ .mnemonic = ROR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -54,12 +57,14 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					{ .mnemonic = 0,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
 				};
 				inst = arr[reg];
+				req_found = 0x1;
 			}
 			break ;
 
 		case 0x3:
 			if (prefix == 0x0)
 			{
+				///TODO: I DON'T UNDERSTAND HOW THIS ONE WORKS
 				static const opfield_t arr[] = {
 					{ .mnemonic = TEST,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 					{ .mnemonic = 0,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -217,6 +222,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					{ .mnemonic = BTC,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
 				};
 				inst = arr[reg];
+				req_found = 0x1;
 			}
 			break ;
 
@@ -455,6 +461,19 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 				inst = arr[reg];
 			}
 			break ;
+	}
+
+	if (req_found)
+	{
+		inst.am1 = found.am1;
+		inst.ot1 = found.ot1;
+		inst.am2 = found.am2;
+		inst.ot2 = found.ot2;
+		inst.am3 = found.am3;
+		inst.ot3 = found.ot3;
+		inst.am4 = found.am4;
+		inst.ot4 = found.ot4;
+		inst.symbol = found.symbol;
 	}
 
 	return inst;

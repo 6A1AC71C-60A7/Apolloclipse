@@ -5,6 +5,7 @@
 #include <d_types.h>
 #include <d_error.h>
 #include <d_mnemonic.h>
+#include <d_opcode.h>
 
 /*
 ** Legacy prefixes masks
@@ -124,10 +125,13 @@ typedef struct
 	/// BUT: REX DO THIS DIDN'T IT ?
 	ubyte		operand_r;
 	uqword		operand_l;
+
+	uqword		immediate;
+
 	ubyte		size;
 } instruction_t;
 
 err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instruction_raw);
 void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
-
+opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, ubyte prefix, opfield_t found);

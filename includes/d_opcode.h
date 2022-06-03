@@ -20,7 +20,7 @@ typedef enum
 				//			by operand type. For legacy SSE encodings this operand does not exist, changing the instruction to destructive form.
 	AM_I,		// Immediate data: the operand value is encoded in subsequent bytes of the instruction.
 	AM_J,		// The instruction contains a relative offset to be added to the instruction pointer register (for example, JMP (0E9), LOOP).
-	AM_L,		// he upper 4 bits of the 8-bit immediate selects a 128-bit XMM register or a 256-bit YMM register, determined
+	AM_L,		// The upper 4 bits of the 8-bit immediate selects a 128-bit XMM register or a 256-bit YMM register, determined
 				//			by operand type. (the MSB is ignored in 32-bit mode)
 	AM_M,		// The ModR/M byte may refer only to memory (for example, BOUND, LES, LDS, LSS, LFS, LGS, CMPXCHG8B).
 	AM_N,		// The R/M field of the ModR/M byte selects a packed-quadword, MMX technology register.
@@ -43,7 +43,7 @@ typedef enum
 	AM_Y,		// Memory addressed by the ES:rDI register pair (for example, MOVS, CMPS, INS, STOS, or SCAS).
 	AMB			// The opcode held by this field is prefix-dependent. The mnemonic field holds the index to another
 				// 			look up table in which the prefix resolution should be performed.
-	
+
 } op_addressing_method_t;
 
 typedef enum
