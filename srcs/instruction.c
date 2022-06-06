@@ -428,6 +428,9 @@ err_t	get_instruction_V2(instruction_t* const dest, const ubyte** iraw)
 
 opcode_check:
 
+	///TODO: In some documentation i found that these are the 'SIMD prefixes'
+	///READ: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol2/o_b5573232dd8f1481-74.html
+	/// And take more notes
 	if (IS_GPM_MANDATORY_PREFIX(**iraw))
 	{
 		mandatory_prefix = **iraw;
