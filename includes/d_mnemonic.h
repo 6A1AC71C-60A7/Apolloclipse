@@ -9,7 +9,7 @@ typedef enum
 
 	/* 1) Data transfer */
 
-	MOV = 0x1,			// Move data between general-purpose registers; move data between memory and general-purpose or segment registers; move immediates to general-purpose registers.
+	MOV = 0x1,		// Move data between general-purpose registers; move data between memory and general-purpose or segment registers; move immediates to general-purpose registers.
 	CMOVE,			// Conditional move if equal.
 	CMOVZ,			// Conditional move if zero.
 	CMOVNE,			// Conditional move if not equal.
@@ -1445,7 +1445,343 @@ typedef enum
 	//////////////////////////////////
 
 	ENDBR32,		// Terminate an Indirect Branch in 32-bit and Compatibility Mode.
-	ENDBR64			// Terminate an Indirect Branch in 64-bit Mode.
+	ENDBR64,		// Terminate an Indirect Branch in 64-bit Mode.
+
+	///TODO: SORT NEXT 
+
+	VCVTDQ2PD,		// TODO: UNDOCUMENTED DESPRITION: VARIES PER SIZE SPETIALIZATION
+	VCVTDQ2PS,		// TODO: UNDOCUMENTED DESPRITION: VARIES PER SIZE SPETIALIZATION
+	VCVTPD2DQ,		// TODO: UNDOCUMENTED DESPRITION: VARIES PER SIZE SPETIALIZATION
+	VCVTPD2PS,
+	VCVTPS2DQ,
+	VCVTPS2PD,
+	VCVTSD2SI,
+	VCVTSD2SS,
+	VCVTSI2SD,
+	VCVTSI2SS,
+	VCVTSS2SD,
+	VCVTSS2SI,
+	VCVTTPD2DQ,
+	VCVTTPS2DQ,
+	VCVTTSD2SI,
+	VCVTTSS2SI,
+	VDIVPD,
+	VDIVPS,
+	VDIVSD,
+	VDPPD,
+	VDPPS,
+	ENCODEKEY256,	//  Wrap a 256-bit AES key from XMM1:XMM0 into a key handle and store it in XMM0-3.
+	VEXTRACTPS,
+	FRNDINT,		// Round ST(0) to an integer.
+	FXRSTOR,		// Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
+	FXRSTOR64, 		// Restore the x87 FPU, MMX, XMM, and MXCSR register state from m512byte.
+	FXSAVE,			// Save the x87 FPU, MMX, XMM, and MXCSR register state to m512byte.
+	FXSAVE64,		// Save the x87 FPU, MMX, XMM, and MXCSR register state to m512byte.
+	GF2P8AFFINEINVQB,	//  Computes inverse affine transformation in the finite field GF(2^8).
+	VGF2P8AFFINEINVQB,	// Computes inverse affine transformation in the finite field GF(2^8).
+	GF2P8AFFINEQB,	// Computes affine transformation in the finite field GF(2^8).
+	VGF2P8AFFINEQB, // Computes affine transformation in the finite field GF(2^8).
+	GF2P8MULB,		// Multiplies elements in the finite field GF(2^8). 
+	VGF2P8MULB,		// Multiplies elements in the finite field GF(2^8).
+	VHADDPD,		// Horizontal add packed double-precision floating-point values from (y/x)mm2 and (y/x)mm3/mem.
+	VHADDPS,		// Horizontal add packed single-precision floating-point values from (y/x)mm2 and (y/x)mm3/mem.
+	VHSUBPD,		// Horizontal subtract packed double-precision floating-point values from (y/x)mm2 and (y/x)mm3/mem.
+	VHSUBPS,		// Horizontal subtract packed single-precision floating-point values from (y/x)mm2 and (y/x)mm3/mem.
+	VINSERTPS,		//  Insert a single-precision floating-point value selected by imm8 from xmm3/m32 and merge with values in
+					//			xmm2 at the specified destination element specified by imm8 and write out the result and zero out
+					//			destination elements in xmm1 as indicated in imm8.
+	INT3,			// Generate breakpoint trap.
+	INT1,			// Generate debug trap.
+	IRETD,			// Interrupt return (32-bit operand size).
+	IRETQ,			// Interrupt return (64-bit operand size).
+
+	/*
+	KANDW,			// Bitwise AND 16 bits masks k2 and k3 and place result in k1.
+	KANDB,			// Bitwise AND 8 bits masks k2 and k3 and place result in k1. 
+	KANDQ,			// Bitwise AND 64 bits masks k2 and k3 and place result in k1.
+	KANDD,			// Bitwise AND 32 bits masks k2 and k3 and place result in k1.
+	KMOVW,			// 
+	KMOVB,			// 
+	KMOVQ,			// 
+	KMOVD,			// 
+	*/
+
+	VLDDQU,			// Load unaligned packed integer values from mem to (y/x)mm1.
+	VLDMXCSR,		//  Load MXCSR register from m32.
+	LOADIWKEY,		//  Load internal wrapping key from xmm1, xmm2, and XMM0.
+	VMASKMOVDQU,	// Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:DI/EDI/RDI.
+	VMAXPD,			// 
+	VMAXPS,			//
+	VMAXSD,			// Return the maximum scalar double-precision floating-point value between xmm3/m64 and xmm2.
+	VMAXSS,			// Return the maximum scalar single-precision floating-point value between xmm3/m32 and xmm2.
+	VMINPD,			// 
+	VMINPS,			//
+	VMINSD,			// Return the minimum scalar double-precision floatingpoint value between xmm3/m64 and xmm2.
+	VMINSS,			//  Return the minimum scalar single-precision floatingpoint value between xmm3/m32 and xmm2.
+	VMOVAPD,		// 
+	VMOVAPS,		//
+	VMOVD,			//
+	VMOVQ,			// 
+	VMOVDDUP,		// 
+	MOVDIRI,		// Move doubleword from (r32 to m32 / r64 to m64) using direct store.
+	MOVDIR64B,		// Move 64-bytes as direct-store with guaranteed 64-byte write atomicity from the source memory operand
+					//		address to destination memory address specified as offset to ES segment in the register operand.
+	VMOVDQU,		// 
+	VMOVHPD,		//
+	VMOVHPS,		//
+	VMOVLHPS,		// Merge two packed single-precision floating-point values from low quadword of xmm3 and low quadword of xmm2.
+	VMOVLPD,		// 
+	VMOVLPS,		//
+	VMOVMSKPD,		// Extract (2/4)-bit sign mask from (x/y)mm2 and store in reg. The upper bits of r32 or r64 are zeroed.
+	VMOVMSKPS,		// Extract (4/8)-bit sign mask from (x/y)mm2 and store in reg. The upper bits of r32 or r64 are zeroed.
+	VMOVNTDQA,		// 
+	VMOVNTDQ,		// 
+	VMOVNTPD,		//
+	VMOVNTPS,		// 
+	VMOVSD,			// 
+	VMOVSHDUP,		// 
+	VMOVSLDUP,		// 
+	VMOVSS,			// 
+	MOVSXD,			//
+	VMOVUPD,		// 
+	VMOVUPS,		// 
+	VMPSADBW,		// 
+	VMULPD,			//
+	VMULPS,			// 
+	VMULSD,			//
+	VMULSS,			// Multiply the low single-precision floating-point value in xmm3/m32 by the low single-precision floating-point value in xmm2.
+	VORPD,			//
+	VORPS,			//
+	VPABSB,			// Compute the absolute value of bytes in (x/y)mm2/m(128/256) and store UNSIGNED result in (x/y)mm1.
+	VPABSW,			// 
+	VPABSD,			//
+	VPACKSSWB,		//
+	VPACKSSDW,		//
+	VPACKUSDW,		//
+	VPACKUSWB,		//
+	VPADDB,			//
+	VPADDW,			//
+	VPADDD,			//
+	VPADDQ,			//
+	VPADDSB,		//
+	VPADDSW,		//
+	VPALIGNR,		//
+	VPAND,			//
+	VPANDD,			//
+	VPANDQ,			//
+	VPANDN,			//
+	VPANDND,		//
+	VPANDNQ,		//
+	VPAVGB,			//
+	VPAVGW,			//
+	VPCLMULQDQ,		//
+	VPCMPEQB,		//
+	VPCMPEQW,		//
+	VPCMPEQD,		//
+	VPCMPEQQ,		//
+	VPCMPESTRI,		// Perform a packed comparison of string data with explicit lengths, generating an index, and storing the result in ECX.
+	VPCMPESTRM,		//
+	VPCMPGTB,		//
+	VPCMPGTW,		//
+	VPCMPGTD,		//
+	VPCMPGTQ,		//
+	VPCMPISTRI,		//
+	VPCMPISTRM,		//
+	PCONFIG,		// This instruction is used to execute functions for configuring platform features.
+	PDEP,			// Parallel deposit of bits from r(32/64)b using mask in r/m(32/64), result is written to r(32/64)a.
+	VPEXTRB,		// Extract a byte integer value from xmm2 at the source byte offset specified by imm8 into reg or m8. The upper bits of r64/r32 is filled with zeros.
+	VPEXTRD,		// Extract a dword integer value from xmm2 at the source dword offset specified by imm8 into r32/m32.
+	VPEXTRQ,		//  Extract a qword integer value from xmm2 at the source dword offset specified by imm8 into r64/m64.
+	VPEXTRW,		// 
+	VPHADDW,		// Add 16-bit integers horizontally, pack to (x/y)mm1.
+	VPHADDD,		// Add 32-bit integers horizontally, pack to (x/y)mm1.
+	VPHADDSW,		//  Add 16-bit signed integers horizontally, pack saturated integers to (x/y)mm1.
+	VPHSUBW,		// 
+	VPHSUBD,		// 
+	VPINSRB,		//
+	VPINSRD,		//
+	VPINSRQ,		//
+	VPINSRW,		//  Insert the word from r32/m16 at the offset indicated by imm8 into the value from xmm2 and store result in xmm1.
+	VPMADDUBSW,		//
+	VPMADDWD,		//
+	VPMAXSB,		//
+	VPMAXSW,		//
+	VPMAXSD,		//
+	VPMAXUB,		//
+	VPMAXUW,		//
+	VPMINSB,		//
+	VPMINSW,		//
+	VPMINSD,		//
+	VPMINUB,		//
+	VPMINUW,		//
+	VPMOVMSKB,		//
+	VPMOVZXBW,		// 
+	VPMOVZXBD,		//
+	VPMOVZXBQ,		//
+	VPMOVZXWD,		//
+	VPMOVZXWQ,		//
+	VPMOVZXDQ,		//
+	VPMULDQ,		//
+	VPMULHRSW,		//
+	VPMULHUW,		//
+	VPMULHW,		//
+	VPMULLD,		//
+	VPMULLW,		//
+	VPMULUDQ,		//
+	VPSADBW,		//
+	VPSHUFB,		//
+	VPSHUFD,		//
+	VPSHUFHW,		//
+	VPSHUFLW,		//
+	VPSLLDQ,		//
+	VPSLLW,			//
+	VPSLLD,			//
+	VPSLLQ,			//
+	VPSRAW,			//
+	VPSRAD,			//
+	VPSRLDQ,		//
+	VPSRLW,			//
+	VPSRLQ,			//
+	VPSRLD,			//
+	VPSUBB,			//
+	VPSUBW,			//
+	VPSUBD,			//
+	VPSUBQ,			//
+	VPSUBSB,		//
+	VPSUBSW,		//
+	VPSUBUSB,		//
+	VPSUBUSW,		//
+	PTWRITE,		//
+	VRCPPS,			//
+	RDPID,			//
+	RDPKRU,			//
+	RDSSPD,			//
+	RDSSPQ,			//
+	VROUNDPS,		//
+	VROUNDSD,		//
+	VROUNDSS,		//
+	VRSQRTPS,		// Computes the approximate reciprocals of the square roots of packed single-precision values in xmm2/mem and stores the results in xmm1.
+	SERIALIZE,		//  Serialize instruction fetch and execution.
+	VSHUFPD,		//
+	VSHUFPS,		//
+	VSQRTPS,		//
+	VSQRTSD,		//
+	VSQRTSS,		//
+	VSTMXCSR,		//
+	VSUBPD,			//
+	VSUBPS,			//
+	VSUBSD,			//
+	VSUBSS,			//
+	VUNPCKHPD,		//
+	VUNPCKHPS,		//
+	VUNPCKLPD,		//
+	VUNPCKLPS,		//
+	VBROADCASTF32X2,	//
+	VBROADCASTF32X4,	//
+	VBROADCASTF64X2,	//
+	VBROADCASTF32X8,	//
+	VBROADCASTF64X4,	//
+	VCVTNE2PS2BF16,		//
+	VCVTNEPS2BF16,		//
+	VCVTTPD2UDQ,	//
+	VCVTTPD2UQQ,	//
+	VCVTTPS2UDQ,	//
+	VCVTTPS2QQ,		//
+	VCVTTPS2UQQ,	//
+	VCVTTSD2USI,	//
+	VCVTTSS2USI,	//
+	VCVTUSI2SD,		//
+	VCVTUSI2SS,		//
+	VDPBF16PS,		//
+	VEXTRACTF32X8,	//
+	VEXTRACTI128,	//
+	VEXTRACTI32X8,	//
+	VINSERTF32X8,	//
+	VINSERTI128,	//
+	VINSERTI32X4,	//
+	VINSERTI32X8,	//
+	VINSERTI64X4,	//
+	VP2INTERSECTD,	//
+	VP2INTERSECTQ,	//
+	VPBLENDD,		// Select dwords from (x/y)mm2 and (x/y)mm3/m(128/256) from mask specified in imm8 and store the values into (x/y)mm1.
+	VBROADCASTI32x2,	//
+	VBROADCASTI128,		//
+	VBROADCASTI32X4,	//
+	VBROADCASTI64X2,	//
+	VBROADCASTI32X8,	//
+	VBROADCASTI64X4,	//
+	VPBROADCASTMB2Q,	//
+	VPBROADCASTMW2D,	//
+	VPCMPUB,		//
+	VPCMPUD,		//
+	VPCMPUQ,		//
+	VPCMPUW,		//
+	VPCOMPRESSB,	//
+	VPCOMPRESSW,	//
+	VPDPWSSDS,		//
+	VPERM2I128,		// Permute 128-bit integer data in ymm2 and ymm3/mem using controls from imm8 and store result in ymm1.
+	VPERMB,			//
+	VPERMT2B,		//
+	VPERMT2W,		//
+	VPEXPANDB,		//
+	VPEXPANDW,		//
+	VPGATHERDD,		//
+	VPGATHERQD,		//
+	VPGATHERDQ,		//
+	VPGATHERQQ,		//
+	VPMADD52HUQ,	//
+	VPMADD52LUQ,	//
+	VPMASKMOVD,		//
+	VPMASKMOVQ,		//
+	VPMOVD2M,		//
+	VPMOVDB,		//
+	VPMOVDW,		//
+	VPMOVQB,		//
+	VPMOVQD,		//
+	VPMOVQW,		//
+	VPMOVWB,		//
+	VPMULTISHIFTQB,	//
+	VPOPCNTB,		//
+	VPOPCNTW,		//
+	VPOPCNTD,		//
+	VPOPCNTQ,		//
+	VPRORVD,		//
+	VPRORVQ,		//
+	VPSHLDW,		//
+	VPSHLDD,		//
+	VPSHLDQ,		//
+	VPSHLDVW,		//
+	VPSHLDVD,		//
+	VPSHLDVQ,		//
+	VPSHRDW,		//
+	VPSHRDD,		//
+	VPSHRDQ,		//
+	VPSHRDVW,		//
+	VPSHRDVD,		//
+	VPSHRDVQ,		//
+	VPSHUFBITQMB,	//
+	VPTERNLOGD,		//
+	VPTERNLOGQ,		//
+	VSCALEFPD,		//
+	VSCALEFSD,		//
+	VSCALEFPS,		//
+	VSCALEFSS,		//
+	VSCATTERDPS,	//
+	VSCATTERDPD,	//
+	VSCATTERQPS,	//
+	VSCATTERQPD,	//
+	VSHUFF64X2,		//
+	VSHUFI64X2,		//
+	WBNOINVD,		//
+	WRPKRU,			//
+	WRSSD,			//
+	WRSSQ,			//
+	VXORPD,			//
+	VXORPS,			//
+	XRSTORS64,		//
+	XSAVE64,		// Save state components specified by EDX:EAX to mem.
+	XSAVEC64,		//
+	XSAVES64,		//
 
 } mnemonic_t;
 

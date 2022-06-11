@@ -151,7 +151,36 @@ end:
 }
 
 __always_inline
-static const opfield_t*	get_map(instruction_t* const inst)
+static const opfield_t* get_map_vex(ubyte* const vex)
+{
+	/* If instruction is 2 bytes vec prefix, the map is always
+		as it was prefixed with 0x0F */
+	if (vex[2] == 0)
+		return lt_two_byte_opmap;
+
+	const ubyte mmmmm = VEXXOP_MAP_SELECT_GET(vex);
+	const opfield_t* map;
+
+	switch (mmmmm)
+	{
+		case 0b01:
+			map = lt_two_byte_opmap;
+			break ;
+
+		case 0b10:
+			map = lt_three_byte_0x38_opmap;
+			break ;
+
+		case 0b11:
+			map = lt_three_byte_0x3A_opmap;
+			break ;
+	}
+
+	return map;
+}
+
+__always_inline
+static const opfield_t*	get_map_legacy(instruction_t* const inst)
 {
 	const opfield_t* map;
 
@@ -172,7 +201,7 @@ static const opfield_t*	get_map(instruction_t* const inst)
 static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw);
 
 __always_inline
-static void	handle_x87_instructions(instruction_t* const inst, const ubyte** iraw)
+static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte** iraw)
 {
 	const opfield_t*	map;
 	uqword				map_index;
@@ -223,7 +252,9 @@ static void	handle_x87_instructions(instruction_t* const inst, const ubyte** ira
 
 	inst->mnemonic = found.mnemonic;
 
-	get_immediate(found, inst, iraw);
+	///TODO: PARSE MODRM HERE AS FOR OTHER
+
+	return found;
 }
 
 __always_inline
@@ -490,34 +521,34 @@ skip_prefix_check:
 
 	dest->opcode[2] = *((*iraw)++);
 
+	opfield_t found;
+
 	if (IS_ESCAPE_FX87(dest->opcode[0]))
 		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
-		handle_x87_instructions(dest, iraw);
+		found = handle_x87_instructions(dest, iraw);
 	else
 	{
-		const opfield_t*	map = get_map(dest);
-		opfield_t			found = map[GET_MAP_INDEX(dest->opcode[2])];
+		const opfield_t*	map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop);
+		
+		found = map[GET_MAP_INDEX(dest->opcode[2])];
+
+		if (HAS_GROUP_EXTENTION(found.symbol))
+			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, *(*iraw + 1), mandatory_prefix, found);
 
 		if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
 			redirect_indexing_opfield(map, &found, mandatory_prefix, dest->opcode[2]);
-
-		if (HAS_GROUP_EXTENTION(found.symbol))
-		{
-			///TODO: Handle this, use modR/M as extension
-			// found = get_instruction_by_extension_one_and_two_b_opmap();
-		}
-
-		opattr = get_opcode_attributes(&dest->mnemonic, found);
-
-		if (opattr & HAS_ATTR_MODRM)
-			opattr |= get_modrm(dest, iraw);
-		if (opattr & HAS_ATTR_SIB)
-			opattr |= get_sib(dest, iraw);
-		if (HAS_ATTR_DISP(opattr))
-			get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
-		if (opattr & HAS_ATTR_IMMEDIATE)
-			get_immediate(found, dest, iraw);
 	}
+
+	opattr = get_opcode_attributes(&dest->mnemonic, found);
+
+	if (opattr & HAS_ATTR_MODRM)
+		opattr |= get_modrm(dest, iraw);
+	if (opattr & HAS_ATTR_SIB)
+		opattr |= get_sib(dest, iraw);
+	if (HAS_ATTR_DISP(opattr))
+		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
+	if (opattr & HAS_ATTR_IMMEDIATE)
+		get_immediate(found, dest, iraw);
 
 error:
 	return st;

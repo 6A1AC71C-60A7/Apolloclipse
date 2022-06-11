@@ -70,6 +70,9 @@ typedef enum
 	OT_X,		// dq or qq based on the operand-size attribute.
 	OT_Y,		// Doubleword or quadword (in 64-bit mode), depending on operand-size attribute.
 	OT_Z,		// Word for 16-bit operand-size or doubleword for 32 or 64-bit operand-size.
+
+	OT_EXT,		// Reference to a 80-bit Double-Extented floating point data.
+	OT_BCD,		// Reference to a 4-bit packed-BCD data.
 	
 } op_operand_type_t;
 
@@ -205,7 +208,7 @@ typedef enum
 
 typedef enum
 {
-	DRS_8,		// Only 8-bits of the selected register can be used.
+	DRS_8,		
 	DRS_16,		// Only 16-bits of the selected register can be used.
 	DRS_32,		// Only 32-bits of the selected register can be used.
 	DRS_64,		// Only 64-bits of the selected register can be used.

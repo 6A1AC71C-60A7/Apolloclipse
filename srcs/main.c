@@ -2,7 +2,9 @@
 #include <tests.h>
 #include <d_opcode.h>
 
-///TODO: Opcodes maps (opcode, mnemonic, ismodrm, isimmediate, ...)
+///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
+/// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
+
 
 int main(int ac, const char* av[])
 {
