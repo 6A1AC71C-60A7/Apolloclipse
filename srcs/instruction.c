@@ -252,8 +252,6 @@ static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte*
 
 	inst->mnemonic = found.mnemonic;
 
-	///TODO: PARSE MODRM HERE AS FOR OTHER
-
 	return found;
 }
 

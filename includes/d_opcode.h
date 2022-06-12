@@ -41,8 +41,14 @@ typedef enum
 				//			register, a scaling factor, and a displacement.
 	AM_X,		// Memory addressed by the DS:rSI register pair (for example, MOVS, CMPS, OUTS, or LODS).
 	AM_Y,		// Memory addressed by the ES:rDI register pair (for example, MOVS, CMPS, INS, STOS, or SCAS).
-	AMB			// The opcode held by this field is prefix-dependent. The mnemonic field holds the index to another
+	AMB,			// The opcode held by this field is prefix-dependent. The mnemonic field holds the index to another
 				// 			look up table in which the prefix resolution should be performed.
+
+	///TODO: I THINK I DON'T NEED THAT
+	// CF_JCC,		// Control flow instruction: conditional jump.
+	// CF_JUMP,	// Control flow instruction: inconditional jump.
+	// CF_RET,		// Control flow instruction: ret.
+	// CF_CALL,	// Control flow instruction: call.
 
 } op_addressing_method_t;
 
@@ -73,6 +79,13 @@ typedef enum
 
 	OT_EXT,		// Reference to a 80-bit Double-Extented floating point data.
 	OT_BCD,		// Reference to a 4-bit packed-BCD data.
+
+	///TODO: I THINK I DON'T NEED THAT
+	// CF_NEAR,	// A jump/call/ret to an instruction within the current code segment (the segment currently pointed to by the CS register),
+	// 			//		sometimes referred to as an intrasegment jump/call/return.
+	// CF_SHORT,	// A near jump where the jump range is limited to –128 to +127 from the current EIP value.
+	// CF_FAR,		// A jump/call/ret to an instruction located in a different segment than the current code segment but at the same privilege level (for jumps),
+	// 			//		sometimes referred to as an intersegment jump/call/return.
 	
 } op_operand_type_t;
 
