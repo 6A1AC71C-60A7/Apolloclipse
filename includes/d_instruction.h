@@ -121,17 +121,16 @@ typedef struct
 	ubyte		mod_rm;
 	ubyte		sib;
 	udword		displacement;
-	///TODO: Maybe can store the size of the operand in the 4 last bits [7-4: size ; 3-0: reg]
-	/// BUT: REX DO THIS DIDN'T IT ?
-	ubyte		operand_r;
-	uqword		operand_l;
-
-	uqword		immediate;
-
 	ubyte		size;
+	ubyte		reg1;
+	ubyte		reg2;
+	ubyte		reg3;
+	uqword		immediate;
 } instruction_t;
 
 err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instruction_raw);
 void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
 opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, ubyte prefix, opfield_t found);
+
+void			get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw);

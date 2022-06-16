@@ -68,7 +68,7 @@ void	handle_modrm(instruction_t* const inst, const ubyte** instruction_raw)
 	/// Either into modRM or into SIB
 	/// This function won't work if both have a displacement
 
-	ubyte sib_disp;
+	ubyte sib_disp = 0;
 	const ubyte modrm_disp = parse_modRM(inst, instruction_raw);
 	uqword disp_lenght = 0;
 

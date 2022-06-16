@@ -34,6 +34,7 @@
 	|| (x) == 0xF2 \
 	|| (x) == 0xF3 \
 )
+
 #define IS_GPM_ESCAPE(x) ((x) == 0x0F)
 #define IS_GPM_ESCAPE2_0x38(x) ((x) == 0x38)
 #define IS_GPM_ESCAPE2_0x3A(x) ((x) == 0x3A)
@@ -42,7 +43,7 @@
 #define VEX2BYTES_PREFIX 0xC5
 #define VEX3BYTES_PREFIX 0xC4
 #define IS_VEX_PREFIX(x) ((x) == VEX2BYTES_PREFIX || (x) == VEX3BYTES_PREFIX)
-#define GET_MAP_INDEX(x) ((x) & 0x0F * (((x) & 0xF0) >> 0x4))
+#define GET_MAP_INDEX(x) (((x) & 0x0F) + ((((x) & 0xF0) >> 0x4) * 0x10))
 #define IS_OPMAP_INDEXING(x) ((x) == AMB)
 #define IS_ESCAPE_FX87(x) ((x) >= 0xD8 && (x) <= 0xDF)
 
@@ -193,12 +194,15 @@ static const opfield_t*	get_map_legacy(instruction_t* const inst)
 			map = lt_three_byte_0x3A_opmap;
 	}
 	else
+	{
+		DEBUG("DEBUG: ONE OPCODE MAP\n");
 		map = lt_one_byte_opmap;
+	}
 
 	return map;
 }
 
-static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw);
+static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw, uqword operand_size);
 
 __always_inline
 static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte** iraw)
@@ -302,7 +306,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	|| (x) & HAS_ATTR_SIBDISP_32 \
 )
 #define GET_DISP_LENGHT(x) ( \
-	(x) == HAS_ATTR_MODRMDISP_8 || (x) == HAS_ATTR_SIBDISP_8 ? 0x8 : 0x20 \
+	(x) & HAS_ATTR_MODRMDISP_8 || (x) & HAS_ATTR_SIBDISP_8 ? 0x8 : 0x20 \
 )
 
 #define HAS_MODRM(x) ( \
@@ -351,8 +355,10 @@ static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
 		(RM[3] is extended from REX.B/VEX.~B/XOP.~B */
-	const ubyte rm = (IS_RM_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | MODRM_RM_GET(inst->mod_rm);
+	const ubyte rm = (IS_RM_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK,  inst->vexxop) << 0x3) | MODRM_RM_GET(inst->mod_rm);
 	const ubyte index = (MODRM_MOD_GET(inst->mod_rm) << 0x4) | rm;
+
+	DEBUG("DEBUG: MODRM INDEX IS %d\n", index);
 
 	return lt_modrm_encoded[index];
 }
@@ -378,9 +384,11 @@ static ubyte	get_sib(instruction_t* const inst, const ubyte** iraw)
 }
 
 __always_inline
-static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbytes)
+static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbits)
 {
-	if (nbytes == 0x8)
+	DEBUG("GET DISPLACEMENT OF %lld BITS\n", nbits);
+
+	if (nbits == 0x8)
 		*dest = *((*iraw)++);
 	else
 		*dest = *((*(udword**)iraw)++);
@@ -393,7 +401,7 @@ static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nby
 __always_inline
 static ubyte	has_immediate(opfield_t opfield)
 {
-	return HAS_IMMEDIATE(opfield.am1) || HAS_IMMEDIATE(opfield.am1) || HAS_IMMEDIATE(opfield.am1) || HAS_IMMEDIATE(opfield.am1);
+	return HAS_IMMEDIATE(opfield.am1) || HAS_IMMEDIATE(opfield.am2) || HAS_IMMEDIATE(opfield.am3) || HAS_IMMEDIATE(opfield.am4);
 }
 
 __always_inline
@@ -414,32 +422,66 @@ static ubyte	get_immediate_operand_type(opfield_t opfield)
 }
 
 __always_inline
-static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw)
+static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw,
+	uqword operand_size)
 {
-	if (has_immediate(opfield))
-	{
 		const ubyte ot = get_immediate_operand_type(opfield);
 
-		switch (ot)
+	switch (ot)
+	{
+		case OT_B:
+			dest->immediate = *((*iraw)++);
+			break ;
+
+		case OT_W:
+			dest->immediate = *((*(uword**)iraw)++);
+			break ;
+
+		case OT_D:
+			dest->immediate = *((*(udword**)iraw)++);
+			break ;
+
+		case OT_Q:
+			dest->immediate = *((*(uqword**)iraw)++);
+			break ;
+
+	default:
+		if (*(udword*)dest->prefix & RP_REXW_MASK)
+			dest->immediate = *((*(uqword**)iraw)++);
+		else
 		{
-			///TODO: MIGHT HAVE MORE OT INDICATING DISPLACEMENT SIZE ...
-			/// OT_Z IS USED AND AMBIGIOUS AF
+			switch (ot)
+			{
+				case OT_C:
+					if (operand_size != 0x8)
+						dest->immediate = *((*(uword**)iraw)++);
+					else
+						dest->immediate = *((*iraw)++);
+					break ;
 
-			case OT_B:
-				dest->immediate = *((*iraw)++);
-				break ;
-			
-			case OT_W:
-				dest->immediate = *((*(uword**)iraw)++);
-				break ;
+				case OT_V:
+						if (operand_size == 0x10)
+							dest->immediate = *((*(uword**)iraw)++);
+						else if (operand_size == 0x20)
+							dest->immediate = *((*(udword**)iraw)++);
+						else if (operand_size == 0x40)
+							dest->immediate = *((*(uqword**)iraw)++);
+					break ;
 
-			case OT_D:
-				dest->immediate = *((*(udword**)iraw)++);
-				break ;
+				case OT_Y:
+					if (operand_size != 0x40)
+						dest->immediate = *((*(udword**)iraw)++);
+					else
+						dest->immediate = *((*(uqword**)iraw)++);
+					break ;
 
-			case OT_Q:
-				dest->immediate = *((*(uqword**)iraw)++);
-				break ;
+				case OT_Z:
+					if (operand_size == 0x10)
+						dest->immediate = *((*(uword**)iraw)++);
+					else if (operand_size > 0x10)
+						dest->immediate = *((*(udword**)iraw)++);
+					break ;
+			}
 		}
 	}
 }
@@ -457,11 +499,15 @@ err_t	get_instruction_V2(instruction_t* const dest, const ubyte** iraw)
 	ubyte		isrex;
 	ubyte		opattr;
 
+	const ubyte* const istart = *iraw;
+
 opcode_check:
 
 	///TODO: In some documentation i found that these are the 'SIMD prefixes'
 	///READ: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol2/o_b5573232dd8f1481-74.html
 	/// And take more notes
+	///TODO: IF OPCODE MAP 0X66 IS ONE BYTE OPCODE MAP 0X66 MEANS 16 BYTES OPERAND SIZE ...
+	/// https://stackoverflow.com/questions/68289333/is-there-a-default-operand-size-in-the-x86-64-amd64-architecture
 	if (IS_GPM_MANDATORY_PREFIX(**iraw))
 	{
 		mandatory_prefix = **iraw;
@@ -479,11 +525,12 @@ opcode_check:
 			(*iraw)++;
 		}
 	}
-	else if (mandatory_prefix)
-	{
-		st = EINVOPCODE;
-		goto error;
-	}
+	///TODO: This is not an error for: mov WORD PTR [rsp + 880000], 42
+	// else if (mandatory_prefix)
+	// {
+	// 	st = EINVOPCODE;
+	// 	goto error;
+	// }
 
 	if ((isrex = IS_REXBYTE(**iraw)))
 	{
@@ -530,27 +577,67 @@ skip_prefix_check:
 		
 		found = map[GET_MAP_INDEX(dest->opcode[2])];
 
+		DEBUG("DEBUG: MAP INDEX: %d\n", GET_MAP_INDEX(dest->opcode[2]));
+		DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
+		DEBUG("2 ADDR MODE: [%d] [%d]\n", found.am1, found.am2);
+		DEBUG("2 OPERAND TYPE: [%d %d]\n", found.ot1, found.ot2);
+
 		if (HAS_GROUP_EXTENTION(found.symbol))
+		{
+			DEBUG("HAS EXTENSION\n");
 			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, *(*iraw + 1), mandatory_prefix, found);
+		}
 
 		if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
+		{
+			DEBUG("IS INDEXING\n");
 			redirect_indexing_opfield(map, &found, mandatory_prefix, dest->opcode[2]);
+		}
 	}
 
 	opattr = get_opcode_attributes(&dest->mnemonic, found);
 
+
 	if (opattr & HAS_ATTR_MODRM)
 		opattr |= get_modrm(dest, iraw);
+	DEBUG("OPATTR IS (no sib): %d\n", opattr);
 	if (opattr & HAS_ATTR_SIB)
 		opattr |= get_sib(dest, iraw);
+	DEBUG("OPATTR IS (sib): %d\n", opattr);
+	DEBUG("BEFORE BUG\n");
 	if (HAS_ATTR_DISP(opattr))
 		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
-	if (opattr & HAS_ATTR_IMMEDIATE)
-		get_immediate(found, dest, iraw);
+	DEBUG("AFTER BUG\n");
+	//if (opattr & HAS_ATTR_IMMEDIATE)
+	
+	if (has_immediate(found))
+	{
+		DEBUG("HAS IMMEDIATE\n");
+		const udword operand_size = mandatory_prefix == 0x66 ? 0x10 : 0x20;
+		get_immediate(found, dest, iraw, operand_size);
+	}
+	else
+		DEBUG("DEBUG: HAS NOT IMMEDIATE\n");
+
+	///TODO: SOMEWHERE FILL THE REG1, REG2, REG3 MEMBER
+
+	dest->size = *iraw - istart;
 
 error:
 	return st;
 }
+
+void	get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw)
+{
+	for (uqword i = 0 ; i < destlen ; i++)
+		get_instruction_V2(&dest[i], iraw);
+}
+
+
+
+
+
+
 
 /// SUPORTED:
 /// LEGACYPREFIX::= [ 0xF0 | 0xF2 | 0xF3] [0x64 | 0x65 | 0x2E | 0x3E ] [ 0x66 ] [ 0x67 ]

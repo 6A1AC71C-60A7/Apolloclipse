@@ -124,10 +124,11 @@ static err_t	get_instruction_3dnow_opcode(instruction_t* const inst, const ubyte
 __always_inline
 static void		get_immediate(instruction_t* const inst, const ubyte** instruction_raw, uqword nbytes)
 {
-	register ubyte* imm = (ubyte*)inst->operand_l;
+	(void)inst; (void)instruction_raw, (void)nbytes;
+	//register ubyte* imm = (ubyte*)inst->operand_l;
 
-	for (uqword i = 0 ; i < nbytes ; i++)
-		imm[i] = *((*instruction_raw)++);
+	//for (uqword i = 0 ; i < nbytes ; i++)
+		//imm[i] = *((*instruction_raw)++);
 }
 
 __always_inline

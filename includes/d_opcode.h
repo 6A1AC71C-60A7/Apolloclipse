@@ -78,6 +78,7 @@ typedef enum
 	OT_Z,		// Word for 16-bit operand-size or doubleword for 32 or 64-bit operand-size.
 
 	OT_EXT,		// Reference to a 80-bit Double-Extented floating point data.
+	///TODO: 'EXT' CAN ALSO BE 'P'
 	OT_BCD,		// Reference to a 4-bit packed-BCD data.
 
 	///TODO: I THINK I DON'T NEED THAT
@@ -242,6 +243,7 @@ typedef enum
 
 typedef enum
 {
+	S_ZERO,		// RESERVED
 	S_1A,		// Bits 5, 4, and 3 of ModR/M byte used as an opcode extension.
 	S_1B,		// Use the 0F0B opcode (UD2 instruction), the 0FB9H opcode (UD1 instruction), or the 0FFFH opcode (UD0 instruction) when deliberately trying to generate an invalid opcode exception (#UD).
 	S_1C,		// Some instructions use the same two-byte opcode. If the instruction has variations, or the opcode represents

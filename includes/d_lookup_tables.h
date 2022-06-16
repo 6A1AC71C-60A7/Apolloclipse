@@ -8,11 +8,13 @@ static const ubyte lt_legacy_prefixes[] = {
 };
 
 ///TODO: Redefined in instruction.c : HAS_ATTR_MODRM, ...
-#define DREF_RM (0x1)
-#define DREF_SIB (DREF_RM << 1)
-#define DISP_8 (DREF_SIB << 1)
+#define DREF_RM (0) /// <----- TODO CANNOT BE 0
+#define DREF_SIB (2) /// <----- TODO CANNOT BE 0
+#define VAL_RM (0) /// <------ TODO CANNOT BE 0
+///BUT: NOT SPACE ENOUGH LEFT FOR MORE FALGS IN A BYTE
+
+#define DISP_8 (0x4) // tmp ...
 #define DISP_32 (DISP_8 << 1)
-#define VAL_RM (DISP_32 << 1)
 
 static const ubyte lt_modrm_encoded[] = {
 	DREF_RM, DREF_RM, DREF_RM, DREF_RM, DREF_SIB, DREF_SIB | DISP_32, DREF_RM, DREF_RM, DREF_RM, DREF_RM, DREF_RM, DREF_RM, DREF_SIB, DREF_SIB | DISP_32, DREF_RM, DREF_RM, // mod == 0b00

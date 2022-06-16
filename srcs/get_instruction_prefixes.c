@@ -130,7 +130,7 @@ static void		fill_inst_with_vexxop_3bytes(instruction_t* const inst, const ubyte
 	*prefix |= (VEXXOP_B_GET(vexxop) == (ubyte)~0x1) ? RP_REXB_MASK : 0x0;
 	*prefix |= (VEXXOP_WE_GET(vexxop) == (ubyte)~0x1) ? RP_REXW_MASK : 0x0;
 	///NOTE: The only one not stored is 'l' which is the operand size
-	inst->operand_r = VEXXOP_VVVV_GET(vexxop);
+	//inst->operand_r = VEXXOP_VVVV_GET(vexxop);
 	
 	switch (opp)
 	{
@@ -159,7 +159,7 @@ static void		fill_inst_with_vexxop_2bytes(instruction_t* const inst, const ubyte
 
 	///NOTE: The only one not stored is 'l' which is the operand size
 	/// USE: VEXXOP2_L_GET(vexxop)
-	inst->operand_r = VEXXOP2_VVVV_GET(vexxop);	
+	//inst->operand_r = VEXXOP2_VVVV_GET(vexxop);	
 
 	switch (opp)
 	{
