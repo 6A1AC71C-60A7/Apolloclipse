@@ -36,6 +36,8 @@
 ** REX prefixes masks
 */
 
+
+///TODO: Comments seems inverted
 /// When 1, a 64-bit operand size is used. Otherwise, when 0, the default operand size is used
 #define RP_REXB_MASK (udword)(LP_ADDRSZ_MASK << 1)
 /// This 1-bit value is an extension to the MODRM.reg field
@@ -44,6 +46,23 @@
 #define RP_REXR_MASK (udword)(RP_REXX_MASK << 1)
 /// This 1-bit value is an extension to the MODRM.rm field or the SIB.base field
 #define RP_REXW_MASK (udword)(RP_REXR_MASK << 1)
+
+/*
+** Mandatory prefix
+*/
+
+#define MP_0x66_MASK (udword)(RP_REXW_MASK << 1)
+#define MP_0xF2_MASK (udword)(MP_0x66_MASK << 1)
+#define MP_0xF3_MASK (udword)(MP_0xF2_MASK << 1)
+
+/*
+** Operand size
+*/
+
+#define OS_BYTE_MASK (udword)(MP_0xF3_MASK << 1)
+#define OS_WORD_MASK (udword)(OS_BYTE_MASK << 1)
+#define OS_DWORD_MASK (udword)(OS_WORD_MASK << 1)
+#define OS_QWORD_MASK (udword)(OS_DWORD_MASK << 1)
 
 ///TODO: Now i have more space, select a new index for these 2 bit-flags
 /* Operand kind get */
@@ -131,6 +150,6 @@ typedef struct
 err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instruction_raw);
 void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
-opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, ubyte prefix, opfield_t found);
+opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found);
 
 void			get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw);

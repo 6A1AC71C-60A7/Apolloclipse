@@ -10,6 +10,11 @@
 /// ALSO: CALL NEAR IS E8 (MORE OPCODES) 
 /// RET COMPARISON MUST BE DONE USING OPCOFES, JUMP & CALL MIGHT BE DONE WITH OPCODE TOO AND JCC MUST BE DONE WITH ATTR
 
+///TODO: REGS RESOLUTION:
+/// - up to 1 reg could be an address ---> 0b10000001
+/// - up to 3 regs could be empty/unused ---> 0b10000000
+/// - regs can be from : 64, 128, 256, 512 bits operations (this could be resolved other way (e.g: lookiing at opcode field))
+/// - reg value can be defined by the instruction addressing mode or the modR/M OR VEX.vvvv ---> 0b00000000 to 0b00001111
 
 int main(int ac, const char* av[])
 {

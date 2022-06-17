@@ -1,10 +1,13 @@
 
 #include <d_opcode.h>
 #include <d_mnemonic.h>
+#include <d_instruction.h>
 
 ///TODO: SOME ARRAYS ARE TOO SHORT AND MAY SEGFAULT IN CASE OF CORRUPTED MODR/M
 
-opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, ubyte prefix, opfield_t found)
+#define HAS_NOT_MANDATORY_PREFIX(x) (((x) & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) == 0)
+
+opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found)
 {
 	const ubyte mod = (modrm & 0b11000000) >> 6;
 	const ubyte reg = (modrm & 0b0111000) >> 3;
@@ -15,7 +18,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 	switch (group)
 	{
 		case 0x1:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				static const opfield_t arr[] = {
 					///TODO: COMPLETE ATTRIBUTES 
@@ -33,7 +36,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x1A:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				if (!reg)
 					///TODO: SEEMS TO ALSO HAVE S_D64 symbol
@@ -42,7 +45,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x2:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				///TODO: (GROUP 2 MISSING)
 				static const opfield_t arr[] = {
@@ -62,7 +65,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x3:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				///TODO: I DON'T UNDERSTAND HOW THIS ONE WORKS
 				static const opfield_t arr[] = {
@@ -80,7 +83,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x4:
-			if (prefix == 0x0 && reg < 0b010)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b010)
 			{
 				static const opfield_t arr[] = {
 					{ .mnemonic = INC,	.am1 = AM_E,	.ot1 = OT_B,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -91,7 +94,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x5:
-			if (prefix == 0x0 && reg < 0b111)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b111)
 			{
 				static const opfield_t arr[] = {
 					{ .mnemonic = INC,	.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -107,7 +110,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x6:
-			if (prefix == 0x0 && reg < 0b110)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b110)
 			{
 				static const opfield_t arr[] = {
 					/// TODO: NEXT 2 HAS AMBIGIOUS ATTRIBUTES
@@ -123,7 +126,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x7:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				if (mod == 0b11)
 				{
@@ -205,7 +208,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 	
 		case 0x8:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				static const opfield_t arr[] = {
 					{ .mnemonic = 0,	.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -225,7 +228,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 		case 0x9:
 			if (mod == 0b11)
 			{
-				if (prefix == 0x0 && reg < 0b010)
+				if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b010)
 				{
 					static const opfield_t arr[] = {
 						{ .mnemonic = RDRAND,	.am1 = AM_R,	.ot1 = OT_V,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -233,13 +236,13 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					};
 					inst = arr[rm];
 				}
-				else if (prefix == 0xF3)
+				else if (prefix & MP_0xF3_MASK)
 					/// TODO: RDPID MISSING MNEMONIC AND AMBIGIOUS ATTRIBUTE
 					inst = (opfield_t){ .mnemonic = 0,	.am1 = AM_R,	.ot1 = OT_Q,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 			}
 			else
 			{
-				if (prefix == 0x0)
+				if (HAS_NOT_MANDATORY_PREFIX(prefix))
 				{
 					if (reg == 0b001 && reg < 0b010)
 					{
@@ -267,7 +270,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x11:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				if (mod == 0b11)
 				{
@@ -284,7 +287,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 		case 0x12:
 			if (mod == 0b11 && reg < 0b111)
 			{
-				if (prefix == 0x0)
+				if (HAS_NOT_MANDATORY_PREFIX(prefix))
 				{
 					static const opfield_t arr[] = {
 						{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -297,7 +300,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					};
 					inst = arr[reg];
 				}
-				else if (prefix == 0x66)
+				else if (prefix & MP_0x66_MASK)
 				{
 					static const opfield_t arr[] = {
 						///TODO: ALL: VPSRLW, VPSRAW, VPSLLW MNEMONIC MISSING
@@ -317,7 +320,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 		case 0x13:
 			if (mod == 0b11 && reg < 0b111)
 			{
-				if (prefix == 0x0)
+				if (HAS_NOT_MANDATORY_PREFIX(prefix))
 				{
 					static const opfield_t arr[] = {
 						{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -350,7 +353,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 		case 0x14:
 			if (mod == 0b11)
 			{
-				if (prefix == 0x0 && reg < 0b111)
+				if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b111)
 				{
 					static const opfield_t arr[] = {
 						{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -363,7 +366,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					};
 					inst = arr[reg];
 				}
-				else if (prefix == 0x66)
+				else if (prefix & MP_0x66_MASK)
 				{
 					static const opfield_t arr[] = {
 						/// TODO: ALL: VPSRLQ, VPSRLDQ, VPSLLQ, VPSLLDQ MISSING
@@ -384,7 +387,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 		case 0x15:
 			if (mod == 0b11)
 			{
-				if (prefix == 0x0)
+				if (HAS_NOT_MANDATORY_PREFIX(prefix))
 				{
 					if (reg == 0b1010)
 						inst = (opfield_t){ .mnemonic = LFENCE,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C };
@@ -393,7 +396,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					else if (reg == 0b111)
 						inst = (opfield_t){ .mnemonic = SFENCE,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C };
 				}
-				else if (prefix == 0xF3 && reg < 0b100)
+				else if (prefix & MP_0xF3_MASK && reg < 0b100)
 				{
 					static const opfield_t arr[] = {
 						{ .mnemonic = RDFSBASE,	.am1 = AM_R,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
@@ -404,7 +407,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					inst = arr[reg];
 				}
 			}
-			else if (prefix == 0x0)
+			else if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				static const opfield_t arr[] = {
 					///TODO: 4 FIRST MNEMONICS 
@@ -422,7 +425,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x16:
-			if (prefix == 0x0)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				if (mod == 0b11)
 					inst = (opfield_t){ .mnemonic = NOP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
@@ -445,7 +448,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x17:
-			if (prefix == 0x0 && reg < 0b100)
+			if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b100)
 			{
 				static const opfield_t arr[] = {
 					{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = S_V },

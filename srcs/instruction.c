@@ -202,7 +202,7 @@ static const opfield_t*	get_map_legacy(instruction_t* const inst)
 	return map;
 }
 
-static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw, uqword operand_size);
+static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw);
 
 __always_inline
 static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte** iraw)
@@ -260,24 +260,24 @@ static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte*
 }
 
 __always_inline
-static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, ubyte prefix, ubyte opcode)
+static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, udword prefix, ubyte opcode)
 {
 	uqword scale = 1;
 
 	if (map == lt_two_byte_opmap)
 	{
-		if (prefix == 0X66)
+		if (prefix & MP_0x66_MASK)
 			scale = 2;
-		if (prefix == 0xF3)
+		if (prefix & MP_0xF2_MASK)
 			scale = 3;
-		if (prefix == 0xF2)
+		if (prefix & MP_0xF3_MASK)
 			scale = 4;
 		*found = lt_two_byte_ambigious_opmap[found->mnemonic * scale];
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
 		///TODO: ALL prefixes are not currently handled in the map
-		if (prefix == 0x66)
+		if (prefix & MP_0x66_MASK)
 			scale = 2;
 		*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) * scale];
 	}
@@ -394,6 +394,74 @@ static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbi
 		*dest = *((*(udword**)iraw)++);
 }
 
+__always_inline
+static ubyte		find_operand_size_overwrite(udword* const dest, ubyte ot)
+{
+	const udword old = *dest;
+
+	switch (ot)
+	{
+		case OT_B:
+			*dest |= OS_BYTE_MASK;
+			break ;
+
+		case OT_W:
+			*dest |= OS_WORD_MASK;
+			break ;
+
+		case OT_D:
+			*dest |= OS_DWORD_MASK;
+			break ;
+
+		case OT_Q:
+			*dest |= OS_QWORD_MASK;
+			break ;
+	}
+
+	return *dest != old;
+}
+
+__always_inline
+static void		get_operand_size_by_operand_type(udword* const dest, opfield_t found)
+{
+	ubyte unused __attribute__ ((unused)) = !find_operand_size_overwrite(dest, found.ot1) || !find_operand_size_overwrite(dest, found.ot2)
+	|| !find_operand_size_overwrite(dest, found.ot3) || !find_operand_size_overwrite(dest, found.ot4);
+}
+
+static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
+{
+	///TODO: Only CALL near JMP near and RET near ?!?!
+	///TODO: Mnemonic must have specific operands to be in this list ?
+	///TODO: Jcc, jrCXZ, LOOPcc, MOVcr, MOVdr, 
+	return mnemonic == CALL || mnemonic == ENTER || mnemonic == JMP || mnemonic == LEAVE
+	|| mnemonic == LGDT || mnemonic == LIDT || mnemonic == LLDT || mnemonic == LOOP
+	|| mnemonic == LTR || mnemonic == POP || mnemonic == POPF || mnemonic == PUSH
+	|| mnemonic == PUSHF || mnemonic == RET;
+}
+
+#define IS_ONE_BYTE_OPCODE_MAP(x) (*(uword*)(x) == 0x0)
+
+__always_inline
+static void		get_operand_size(instruction_t* const dest, opfield_t found)
+{
+	///TODO: Handle > 64-bits
+
+	udword* const prefix = (udword*)dest->prefix;
+
+	if (*prefix & RP_REXW_MASK)
+		*prefix |= OS_QWORD_MASK;
+	else if (*prefix & MP_0x66_MASK && IS_ONE_BYTE_OPCODE_MAP(dest->opcode))
+		*prefix |= OS_WORD_MASK;
+	else if (is_mnemonic_default_64_bits(dest->mnemonic))
+		*prefix |= OS_QWORD_MASK;
+	else
+		*prefix |= OS_DWORD_MASK;
+
+	/* Previous could be ovewrited by the operand type of the instruction */
+
+	get_operand_size_by_operand_type(prefix, found);		
+}
+
 #define HAS_IMMEDIATE(x) ( \
 	(x) != 0 && (x) >= AM_I && (x) <= AM_L \
 )
@@ -422,8 +490,7 @@ static ubyte	get_immediate_operand_type(opfield_t opfield)
 }
 
 __always_inline
-static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw,
-	uqword operand_size)
+static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw)
 {
 		const ubyte ot = get_immediate_operand_type(opfield);
 
@@ -445,42 +512,46 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 			dest->immediate = *((*(uqword**)iraw)++);
 			break ;
 
-	default:
-		if (*(udword*)dest->prefix & RP_REXW_MASK)
-			dest->immediate = *((*(uqword**)iraw)++);
-		else
+		default:
 		{
-			switch (ot)
+			const udword prefix = *(udword*)dest->prefix;
+
+			if (prefix & RP_REXW_MASK)
+				dest->immediate = *((*(uqword**)iraw)++);
+			else
 			{
-				case OT_C:
-					if (operand_size != 0x8)
-						dest->immediate = *((*(uword**)iraw)++);
-					else
-						dest->immediate = *((*iraw)++);
-					break ;
-
-				case OT_V:
-						if (operand_size == 0x10)
+				switch (ot)
+				{
+					case OT_C:
+						if ((prefix & OS_BYTE_MASK) != 0)
 							dest->immediate = *((*(uword**)iraw)++);
-						else if (operand_size == 0x20)
+						else
+							dest->immediate = *((*iraw)++);
+						break ;
+
+					case OT_V:
+							if (prefix & OS_WORD_MASK)
+								dest->immediate = *((*(uword**)iraw)++);
+							else if (prefix & OS_DWORD_MASK)
+								dest->immediate = *((*(udword**)iraw)++);
+							else if (prefix & OS_QWORD_MASK)
+								dest->immediate = *((*(uqword**)iraw)++);
+						break ;
+
+					case OT_Y:
+						if (prefix & OS_QWORD_MASK)
 							dest->immediate = *((*(udword**)iraw)++);
-						else if (operand_size == 0x40)
+						else
 							dest->immediate = *((*(uqword**)iraw)++);
-					break ;
+						break ;
 
-				case OT_Y:
-					if (operand_size != 0x40)
-						dest->immediate = *((*(udword**)iraw)++);
-					else
-						dest->immediate = *((*(uqword**)iraw)++);
-					break ;
-
-				case OT_Z:
-					if (operand_size == 0x10)
-						dest->immediate = *((*(uword**)iraw)++);
-					else if (operand_size > 0x10)
-						dest->immediate = *((*(udword**)iraw)++);
-					break ;
+					case OT_Z:
+						if (prefix & OS_WORD_MASK)
+							dest->immediate = *((*(uword**)iraw)++);
+						else if ((prefix & OS_WORD_MASK) != 0)
+							dest->immediate = *((*(udword**)iraw)++);
+						break ;
+				}
 			}
 		}
 	}
@@ -492,7 +563,7 @@ err_t	get_instruction_V2(instruction_t* const dest, const ubyte** iraw)
 {
 	err_t		st = SUCCESS;
 
-	ubyte		mandatory_prefix = 0x0;
+	//ubyte		mandatory_prefix = 0x0;
 	ubyte		isvex = 0x0;
 	ubyte		skip_pref = 0x0;
 	ubyte		isescape;
@@ -510,7 +581,21 @@ opcode_check:
 	/// https://stackoverflow.com/questions/68289333/is-there-a-default-operand-size-in-the-x86-64-amd64-architecture
 	if (IS_GPM_MANDATORY_PREFIX(**iraw))
 	{
-		mandatory_prefix = **iraw;
+		//mandatory_prefix = **iraw;
+		switch (**iraw)
+		{
+			case 0x66:
+				*(udword*)dest->prefix |= MP_0x66_MASK;
+				break ;
+
+			case 0xF2:
+				*(udword*)dest->prefix |= MP_0xF2_MASK;
+				break ;
+
+			case 0XF3:
+				*(udword*)dest->prefix |= MP_0xF3_MASK;
+				break ;
+		}
 		skip_duplicated(iraw, 0xFF);
 	}
 
@@ -526,7 +611,7 @@ opcode_check:
 		}
 	}
 	///TODO: This is not an error for: mov WORD PTR [rsp + 880000], 42
-	// else if (mandatory_prefix)
+	// else if (*(udword*)dest->prefix & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK))
 	// {
 	// 	st = EINVOPCODE;
 	// 	goto error;
@@ -585,13 +670,13 @@ skip_prefix_check:
 		if (HAS_GROUP_EXTENTION(found.symbol))
 		{
 			DEBUG("HAS EXTENSION\n");
-			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, *(*iraw + 1), mandatory_prefix, found);
+			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, *(*iraw + 1), *(udword*)dest->prefix, found);
 		}
 
 		if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
 		{
 			DEBUG("IS INDEXING\n");
-			redirect_indexing_opfield(map, &found, mandatory_prefix, dest->opcode[2]);
+			redirect_indexing_opfield(map, &found, *(udword*)dest->prefix, dest->opcode[2]);
 		}
 	}
 
@@ -608,13 +693,13 @@ skip_prefix_check:
 	if (HAS_ATTR_DISP(opattr))
 		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
 	DEBUG("AFTER BUG\n");
-	//if (opattr & HAS_ATTR_IMMEDIATE)
+
+	get_operand_size(dest, found);
 	
 	if (has_immediate(found))
 	{
 		DEBUG("HAS IMMEDIATE\n");
-		const udword operand_size = mandatory_prefix == 0x66 ? 0x10 : 0x20;
-		get_immediate(found, dest, iraw, operand_size);
+		get_immediate(found, dest, iraw);
 	}
 	else
 		DEBUG("DEBUG: HAS NOT IMMEDIATE\n");
