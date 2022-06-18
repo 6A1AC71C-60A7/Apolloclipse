@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include <d_types.h>
 #include <d_error.h>
 #include <d_mnemonic.h>
 #include <d_opcode.h>
+#include <d_register.h>
+
 
 /*
 ** Legacy prefixes masks
@@ -63,6 +64,12 @@
 #define OS_WORD_MASK (udword)(OS_BYTE_MASK << 1)
 #define OS_DWORD_MASK (udword)(OS_WORD_MASK << 1)
 #define OS_QWORD_MASK (udword)(OS_DWORD_MASK << 1)
+
+///TODO: These ones are not parse yet 
+#define OS_DQWORD_MASK (udword)(OS_QWORD_MASK << 1)
+#define OS_QQWORD_MASK (udword)(OS_DQWORD_MASK << 1)
+
+#define OP_IMMEDIATE_MASK (udword)(OS_QQWORD_MASK << 1)
 
 ///TODO: Now i have more space, select a new index for these 2 bit-flags
 /* Operand kind get */
@@ -141,9 +148,9 @@ typedef struct
 	ubyte		sib;
 	udword		displacement;
 	ubyte		size;
-	ubyte		reg1;
-	ubyte		reg2;
-	ubyte		reg3;
+	reg_t		reg1;
+	reg_t		reg2;
+	reg_t		reg3;
 	uqword		immediate;
 } instruction_t;
 
@@ -151,5 +158,6 @@ err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instru
 void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
 opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found);
+extern void			resolve_operands(instruction_t* const dest, opfield_t instruction);
 
 void			get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw);

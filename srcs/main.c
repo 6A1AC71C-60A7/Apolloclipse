@@ -1,6 +1,7 @@
 
 #include <tests.h>
 #include <d_opcode.h>
+#include <d_register.h>
 
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
@@ -10,11 +11,10 @@
 /// ALSO: CALL NEAR IS E8 (MORE OPCODES) 
 /// RET COMPARISON MUST BE DONE USING OPCOFES, JUMP & CALL MIGHT BE DONE WITH OPCODE TOO AND JCC MUST BE DONE WITH ATTR
 
-///TODO: REGS RESOLUTION:
-/// - up to 1 reg could be an address ---> 0b10000001
-/// - up to 3 regs could be empty/unused ---> 0b10000000
-/// - regs can be from : 64, 128, 256, 512 bits operations (this could be resolved other way (e.g: lookiing at opcode field))
-/// - reg value can be defined by the instruction addressing mode or the modR/M OR VEX.vvvv ---> 0b00000000 to 0b00001111
+///TODO: Handle 0x67 address size overwrite (makes it 32 bits, otherwise is 64-bits)
+/// Check Intel doc before handle this
+
+///TODO: AM_O is also an immediate ?
 
 int main(int ac, const char* av[])
 {
@@ -24,12 +24,14 @@ int main(int ac, const char* av[])
 
    // printf("%lu\n", sizeof(instruction_t));
 
+
    // ubyte t_isnt[] = {0xF0, 0xF2, 0xF3, 0x64, 0x65, 0x2E, 0x3E, 0x66, 0x67, 0b01001111};
    // test_instruction(t_isnt,  0);
 
     instruction_t dest[1];
-    //const ubyte iraw[] = "\x48\x89\xF8";
-    const ubyte iraw[] = "\x48\xC7\xC4\x2A\x00\x00\x00";
+    //const ubyte iraw[] = "\x48\xC7\xC0\x42\x00\x00\x00";
+    ///TODO: Current does not work cause i havent hadled the AM OR AM thing
+    const ubyte iraw[] = "\xB9\x42\x00\x00\x00";
 
     const ubyte* prt = iraw;
 
@@ -37,10 +39,11 @@ int main(int ac, const char* av[])
 
     fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
     for (uqword i = 0 ; i < sizeof(dest) / sizeof(*dest) ; i++)
+    {
         fprint_instruction(&dest[i], stdout);
+        fprintf_instruction(stdout, &dest[i]);
+    }
     fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
 
     return st;
-
-
 }

@@ -5,7 +5,6 @@
 #include <d_utils.h>
 
 
-
 // 1) Check for REX | [{66, f2, f3}], 0f
 // 2) If multiple REX, {66, f2, f3} or 0f skip and ignore
 // 3) If ((1)) check for opcode
@@ -492,7 +491,11 @@ static ubyte	get_immediate_operand_type(opfield_t opfield)
 __always_inline
 static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw)
 {
-		const ubyte ot = get_immediate_operand_type(opfield);
+	const ubyte ot = get_immediate_operand_type(opfield);
+
+	///TODO: Not 100% sure but i think if is AM_L the immediate value is always 8-bits.
+
+	*(udword*)dest->prefix |= OP_IMMEDIATE_MASK;
 
 	switch (ot)
 	{
@@ -704,7 +707,7 @@ skip_prefix_check:
 	else
 		DEBUG("DEBUG: HAS NOT IMMEDIATE\n");
 
-	///TODO: SOMEWHERE FILL THE REG1, REG2, REG3 MEMBER
+	resolve_operands(dest, found);
 
 	dest->size = *iraw - istart;
 

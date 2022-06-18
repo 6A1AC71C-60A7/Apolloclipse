@@ -22,7 +22,9 @@ $(addprefix srcs/,\
 	handle_modrm.c\
 	instruction.c\
 	main.c\
+	resolve_operands.c\
 	$(addprefix tests/,\
 		test_instruction.c\
+		print_instruction.c\
 	)\
 )

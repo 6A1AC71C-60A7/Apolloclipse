@@ -94,6 +94,8 @@ typedef enum
 {
 	// from 32 to max 63, if not enought use ot and extend the lenght
 
+	///TODO: REDO comments here (not otX, ... amX)
+
 	DR_RAX = 32,// Use otX field bits of RAX register.
 	DR_RCX,		// Use the otX field bytes of RCX register.
 	DR_RDX,		// Use the otX field bytes of RDX register.
