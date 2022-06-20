@@ -5,5 +5,5 @@
 
 void test_instruction(const ubyte *instruction_raw, instruction_t* answer);
 
-void    fprint_instruction(instruction_t* target, FILE* where);
-void    fprintf_instruction(FILE* where, instruction_t* const target);
+void    fprint_info(FILE* where, instruction_t* target);
+void    fprint_instruction(FILE* where, instruction_t* const target);

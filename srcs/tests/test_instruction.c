@@ -43,7 +43,7 @@ void test_instruction(const ubyte *instruction_raw, instruction_t* answer)
         DEBUG("CONCLUSION: %s\n", d_memcmp(&inst, answer, sizeof(instruction_t)) == 0 ? "PASS" : "FAIL");
 }
 
-void fprint_instruction(instruction_t* target, FILE* where)
+void fprint_info(FILE* where, instruction_t* target)
 {
     const udword prefix = *(udword*)target->prefix;
     fprintf(where, "PREFIXES:\n - LOCK: %d\n - REPNX: %d\n - REPX: %d\n"
@@ -72,5 +72,5 @@ void fprint_instruction(instruction_t* target, FILE* where)
 
     ///TODO: RESOLVE REGS
 
-    fprintf(where, "IMMEDIATE: %llX\n- - -\n", target->immediate);
+    fprintf(where, "IMMEDIATE: %llX\n- - -\n", (long long)target->immediate);
 }

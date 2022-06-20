@@ -25,6 +25,6 @@ $(addprefix srcs/,\
 	resolve_operands.c\
 	$(addprefix tests/,\
 		test_instruction.c\
-		print_instruction.c\
+		fprint_instruction.c\
 	)\
 )

@@ -385,7 +385,7 @@ static ubyte	get_sib(instruction_t* const inst, const ubyte** iraw)
 __always_inline
 static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbits)
 {
-	DEBUG("GET DISPLACEMENT OF %lld BITS\n", nbits);
+	DEBUG("GET DISPLACEMENT OF %lld BITS\n", (long long int)nbits);
 
 	if (nbits == 0x8)
 		*dest = *((*iraw)++);
@@ -394,28 +394,81 @@ static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbi
 }
 
 __always_inline
-static ubyte		find_operand_size_overwrite(udword* const dest, ubyte ot)
+static ubyte		find_operand_size_overwrite(udword* const dest, ubyte ot, ubyte am)
 {
 	const udword old = *dest;
 
-	switch (ot)
+	if (am < DR_RAX)
 	{
-		case OT_B:
-			*dest |= OS_BYTE_MASK;
-			break ;
+		switch (ot)
+		{
+			case OT_B:
+				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
+				*dest |= OS_BYTE_MASK;
+				break ;
 
-		case OT_W:
-			*dest |= OS_WORD_MASK;
-			break ;
+			case OT_W:
+				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
+				*dest |= OS_WORD_MASK;
+				break ;
 
-		case OT_D:
-			*dest |= OS_DWORD_MASK;
-			break ;
+			case OT_D:
+				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
+				*dest |= OS_DWORD_MASK;
+				break ;
 
-		case OT_Q:
-			*dest |= OS_QWORD_MASK;
-			break ;
+			case OT_Q:
+				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
+				*dest |= OS_QWORD_MASK;
+				break ;
+		}
 	}
+
+	///TODO: I don't know yet whether i need the follwing or not
+
+	// else
+	// {
+	// 	*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
+
+	// 	switch (ot)
+	// 	{
+	// 		case OR_8:
+	// 			// fall through
+	// 		case DRS_8:
+	// 			*dest |= OS_BYTE_MASK;
+	// 			break ;
+
+	// 		case OR_16:
+	// 			// fall through
+	// 		case DRS_16:
+	// 			*dest |= OS_WORD_MASK;
+	// 			break ;
+
+	// 		case OR_32:
+	// 			// fall throught
+	// 		case DRS_32:
+	// 			*dest |= OS_DWORD_MASK;
+	// 			break ;
+
+	// 		case OR_64:
+	// 			// fall through
+	// 		case DRS_64:
+	// 			*dest |= OS_QWORD_MASK;
+	// 			break ;
+
+	// 		case OR_128:
+	// 			// fall through
+	// 		case DRS_128:
+	// 			*dest |= OS_DQWORD_MASK;
+	// 			break ;
+			
+	// 		case OR_256:
+	// 			// fall through
+	// 		case DRS_256:
+	// 			*dest |= OS_QQWORD_MASK;
+	// 			break ;
+	// 	}
+	// }
 
 	return *dest != old;
 }
@@ -423,8 +476,8 @@ static ubyte		find_operand_size_overwrite(udword* const dest, ubyte ot)
 __always_inline
 static void		get_operand_size_by_operand_type(udword* const dest, opfield_t found)
 {
-	ubyte unused __attribute__ ((unused)) = !find_operand_size_overwrite(dest, found.ot1) || !find_operand_size_overwrite(dest, found.ot2)
-	|| !find_operand_size_overwrite(dest, found.ot3) || !find_operand_size_overwrite(dest, found.ot4);
+	ubyte unused __attribute__ ((unused)) = !find_operand_size_overwrite(dest, found.ot1, found.am1) || !find_operand_size_overwrite(dest, found.ot2, found.am2)
+	|| !find_operand_size_overwrite(dest, found.ot3, found.am3) || !find_operand_size_overwrite(dest, found.ot4, found.am4);
 }
 
 static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
@@ -470,6 +523,8 @@ static ubyte	has_immediate(opfield_t opfield)
 {
 	return HAS_IMMEDIATE(opfield.am1) || HAS_IMMEDIATE(opfield.am2) || HAS_IMMEDIATE(opfield.am3) || HAS_IMMEDIATE(opfield.am4);
 }
+
+#define IS_OT_UNRANGED(x) ((x) != OT_C && (x) != OT_V && (x) != OT_Y  && (x) != (OT_Z))
 
 __always_inline
 static ubyte	get_immediate_operand_type(opfield_t opfield)
@@ -519,7 +574,7 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 		{
 			const udword prefix = *(udword*)dest->prefix;
 
-			if (prefix & RP_REXW_MASK)
+			if (prefix & RP_REXW_MASK && IS_OT_UNRANGED(ot))
 				dest->immediate = *((*(uqword**)iraw)++);
 			else
 			{
@@ -551,7 +606,7 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 					case OT_Z:
 						if (prefix & OS_WORD_MASK)
 							dest->immediate = *((*(uword**)iraw)++);
-						else if ((prefix & OS_WORD_MASK) != 0)
+						else if ((prefix & (OS_BYTE_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK)) == 0)
 							dest->immediate = *((*(udword**)iraw)++);
 						break ;
 				}
@@ -700,10 +755,7 @@ skip_prefix_check:
 	get_operand_size(dest, found);
 	
 	if (has_immediate(found))
-	{
-		DEBUG("HAS IMMEDIATE\n");
 		get_immediate(found, dest, iraw);
-	}
 	else
 		DEBUG("DEBUG: HAS NOT IMMEDIATE\n");
 

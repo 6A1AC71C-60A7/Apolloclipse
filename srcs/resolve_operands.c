@@ -3,6 +3,9 @@
 #include <d_instruction.h>
 #include <d_register.h>
 #include <d_opcode.h>
+#include <d_utils.h>
+
+#define IS_AMBIGIOUS(x) ((x) > OR_8 && (x) < OR_512)
 
 static reg_t	get_general_purpose_register(uqword index)
 {
@@ -98,8 +101,10 @@ static reg_t get_debug_register(uqword index)
     return regs[index];
 }
 
-static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte am, ubyte ot)
+static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte am, ubyte ot, ubyte* const skip)
 {
+	DEBUG("[DEBUG] RESOLVE OPERAND: AM: %d OT: %d\n", am, ot);
+
     if (am == AM_ZERO)
 		return ;
 
@@ -231,6 +236,9 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
 			///TODO: For the moment i only handle general purpose registers but i have to hadle all
 
 			*dest = am - 30;
+			///TODO: For the moment i skip this kind of ambigiousness : mov eax/r8, imm32
+			if (IS_AMBIGIOUS(ot))
+        		*skip = 0x1;
 		}
 		else
 		{
@@ -261,7 +269,17 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
 __always_inline
 void	resolve_operands(instruction_t* const dest, opfield_t instruction)
 {
-	revolve_operand(dest, &dest->reg1, instruction.am1, instruction.ot1);
-	revolve_operand(dest, &dest->reg2, instruction.am2, instruction.ot2);
-	revolve_operand(dest, &dest->reg3, instruction.am3, instruction.ot3);
+    ubyte skip;
+    ubyte attr_index = 0x0;
+
+    reg_t* const	regs[] = { &dest->reg1, &dest->reg2, &dest->reg3 };
+    const byte		ams[] = {instruction.am1, instruction.am2, instruction.am3, instruction.am4 };
+    const byte		ots[] = {instruction.ot1, instruction.ot2, instruction.ot3, instruction.ot4 };
+
+    for (uqword i = 0 ; i < ARRLEN(regs) ; i++)
+    {
+		skip = 0x0;
+        revolve_operand(dest, regs[i], ams[attr_index], ots[attr_index], &skip);
+		attr_index += skip ? 0x2 : 0x1;
+    }
 }
