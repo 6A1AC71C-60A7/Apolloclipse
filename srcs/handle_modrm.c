@@ -26,9 +26,6 @@ static ubyte	parse_modRM(instruction_t* const inst, const ubyte** instruction_ra
 	return lt_modrm_encoded[index];
 }
 
-#define IS_SINDEX_EXTENDED(rex_x, vexxop) ((rex_x) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_X_GET(vexxop)))
-#define IS_SBASE_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
-
 __always_inline
 static ubyte	parse_sib(instruction_t* const inst, const ubyte** instruction_raw)
 {

@@ -136,7 +136,7 @@ static err_t	err_handle_legacy_prefixes(const udword* const dest)
 	dest_shift = *dest >> 3;
 	if (dest_shift & 0xff)
 	{
-		for (udword i = 0 ; i <= 0b10000000 ; i++)
+		for (udword i = 0 ; i <= 0b00001000 ; i++)
 		{
 			if (*dest & (1U << i))
 				matches++;
@@ -345,7 +345,7 @@ static ubyte	get_opcode_attributes(mnemonic_t* const mnemonic, opfield_t opfield
 	return opattr;
 }
 
-#define IS_RM_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
+//#define IS_RM_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
 
 __always_inline
 static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
@@ -354,7 +354,7 @@ static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
 		(RM[3] is extended from REX.B/VEX.~B/XOP.~B */
-	const ubyte rm = (IS_RM_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK,  inst->vexxop) << 0x3) | MODRM_RM_GET(inst->mod_rm);
+	const ubyte rm =  MODRM_RM_EXTENDED_GET(inst);
 	const ubyte index = (MODRM_MOD_GET(inst->mod_rm) << 0x4) | rm;
 
 	DEBUG("DEBUG: MODRM INDEX IS %d\n", index);
@@ -362,17 +362,14 @@ static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 	return lt_modrm_encoded[index];
 }
 
-#define IS_SINDEX_EXTENDED(rex_x, vexxop) ((rex_x) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_X_GET(vexxop)))
-#define IS_SBASE_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
-
 __always_inline
 static ubyte	get_sib(instruction_t* const inst, const ubyte** iraw)
 {
 	inst->sib = *((*iraw)++);
 
 	const ubyte mod = MODRM_MOD_GET(inst->mod_rm);
-	const ubyte index = (IS_SINDEX_EXTENDED(*(udword*)inst->prefix & RP_REXX_MASK, inst->vexxop) << 0x3) | SIB_INDEX_GET(inst->sib);
-	const ubyte base = (IS_SBASE_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | SIB_BASE_GET(inst->sib);
+	const ubyte index = SIB_INDEX_EXTENDED_GET(inst);
+	const ubyte base = SIB_BASE_EXTENDED_GET(inst);
 
 	/* WORD: bits: { 0, 0, 0, 0, 0, 0, MOD[1], MOD[0], INDEX[3], INDEX[2], INDEX[1], INDEX[0], BASE[3], BASE[2], BASE[1], BASE[0] }
 		(INDEX[4] is extended from REX.X/VEX.~X/XOP.~X
@@ -728,7 +725,7 @@ skip_prefix_check:
 		if (HAS_GROUP_EXTENTION(found.symbol))
 		{
 			DEBUG("HAS EXTENSION\n");
-			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, *(*iraw + 1), *(udword*)dest->prefix, found);
+			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, **iraw, *(udword*)dest->prefix, found);
 		}
 
 		if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
@@ -739,7 +736,6 @@ skip_prefix_check:
 	}
 
 	opattr = get_opcode_attributes(&dest->mnemonic, found);
-
 
 	if (opattr & HAS_ATTR_MODRM)
 		opattr |= get_modrm(dest, iraw);

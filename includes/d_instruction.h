@@ -71,20 +71,20 @@
 
 #define OP_IMMEDIATE_MASK (udword)(OS_QQWORD_MASK << 1)
 
-///TODO: Now i have more space, select a new index for these 2 bit-flags
-/* Operand kind get */
-#define GET_OPL_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x4) & 0b00000011)
-#define GET_OPR_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x6) & 0b00000011)
+// ///TODO: Now i have more space, select a new index for these 2 bit-flags
+// /* Operand kind get */
+// #define GET_OPL_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x4) & 0b00000011)
+// #define GET_OPR_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x6) & 0b00000011)
 
-/* Operands kinds */
-#define FL_OP1_IMM 0x0
-#define FL_OP1_MEM 0x1
-#define FL_OP1_REG 0x2
-#define FL_OP1_UNUSED 0x3 // free to use for something
-#define FL_OP2_IMM 0x0
-#define FL_OP2_MEM 0x2
-#define FL_OP2_REG 0x2
-#define FL_OP2_UNUSED 0x3 // free to use for something
+// /* Operands kinds */
+// #define FL_OP1_IMM 0x0
+// #define FL_OP1_MEM 0x1
+// #define FL_OP1_REG 0x2
+// #define FL_OP1_UNUSED 0x3 // free to use for something
+// #define FL_OP2_IMM 0x0
+// #define FL_OP2_MEM 0x2
+// #define FL_OP2_REG 0x2
+// #define FL_OP2_UNUSED 0x3 // free to use for something
 
 /*
 ** VEX/XOP members values 
@@ -127,6 +127,17 @@
 ///		otherwise register-indirect addressing mode is used. 
 #define MODRM_MOD_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
+
+#define IS_RM_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
+#define MODRM_RM_EXTENDED_GET(inst) (	\
+	(IS_RM_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK,  inst->vexxop) << 0x3) | MODRM_RM_GET(inst->mod_rm) \
+)
+
+#define IS_REG_EXTENDED(rex_r, vexxop) ((rex_r) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_R_GET(vexxop)))
+#define MODRM_REG_EXTENDED_GET(inst) (	\
+	(IS_REG_EXTENDED(*(udword*)inst->prefix & RP_REXR_MASK,  inst->vexxop) << 0x3) | MODRM_REG_GET(inst->mod_rm) \
+)
+
 /*
 ** SIB member values
 */
@@ -137,6 +148,16 @@
 # define SIB_INDEX_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
 /// The base register to use. Can be extented by 1 bit.
 # define SIB_SCALE_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
+
+#define IS_SBASE_EXTENDED(rex_b, vexxop) (IS_RM_EXTENDED(rex_b, vexxop))
+#define SIB_BASE_EXTENDED_GET(inst) (	\
+	(IS_SBASE_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | SIB_BASE_GET(inst->sib) \
+)
+
+#define IS_SINDEX_EXTENDED(rex_x, vexxop) ((rex_x) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_X_GET(vexxop)))
+#define SIB_INDEX_EXTENDED_GET(inst) (	\
+	(IS_SINDEX_EXTENDED(*(udword*)inst->prefix & RP_REXX_MASK, inst->vexxop) << 0x3) | SIB_INDEX_GET(inst->sib) \
+)
 
 typedef struct
 {
@@ -158,6 +179,6 @@ err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instru
 void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
 opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found);
-extern void			resolve_operands(instruction_t* const dest, opfield_t instruction);
+extern void		resolve_operands(instruction_t* const dest, opfield_t instruction);
 
 void			get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw);

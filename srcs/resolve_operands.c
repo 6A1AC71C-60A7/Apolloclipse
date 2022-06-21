@@ -112,12 +112,14 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
         ModR/M 'rm' field is extended by 1 bit by REX.B prefix or by VEX.~B. */
 
     const ubyte modrm_mod = MODRM_MOD_GET(inst->mod_rm);
-    const ubyte modrm_reg = MODRM_REG_GET(inst->mod_rm) | (((*(udword*)inst->prefix & RP_REXR_MASK)) << 3) | (~VEXXOP_R_GET(inst->vexxop) << 3);
-    ubyte modrm_rm = MODRM_RM_GET(inst->mod_rm);
+    const ubyte modrm_reg = MODRM_REG_EXTENDED_GET(inst);
+    ubyte modrm_rm = MODRM_RM_EXTENDED_GET(inst);
+
+    ///TODO:
     const ubyte vex_vvvv = 0 /* Is 2 byte vex */ ? ~VEXXOP2_VVVV_GET(inst->vexxop) : ~VEXXOP_VVVV_GET(inst->vexxop);
 
-    if (0 /* 3 bytes VEX opcode */)
-        modrm_rm |= (((*(udword*)inst->prefix & RP_REXB_MASK)) << 3) | (~VEXXOP_B_GET(inst->vexxop) << 3);
+    // if (0 /* 3 bytes VEX opcode */)
+    //     modrm_rm |= (((*(udword*)inst->prefix & RP_REXB_MASK)) << 3) | (~VEXXOP_B_GET(inst->vexxop) << 3);
 
     if (am < DR_RAX)
     {

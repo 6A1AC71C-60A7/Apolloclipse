@@ -9,19 +9,21 @@
 
 opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found)
 {
-	const ubyte mod = (modrm & 0b11000000) >> 6;
-	const ubyte reg = (modrm & 0b0111000) >> 3;
-	const ubyte rm = (modrm & 0b00000111);
+	DEBUG("MODRM IS 0x%x (GROUP: %d)\n", modrm, group);
+
+	const ubyte mod = (modrm & 0b11000000) >> 6; 
+	const ubyte reg = (modrm & 0b00111000) >> 3;
+	const ubyte rm =  (modrm & 0b00000111);
 	opfield_t	inst = {};
 	ubyte		req_found = 0x0;
 
 	switch (group)
 	{
 		case 0x1:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix))
+			///TODO: HANDLE MORE LIKE THIS
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				static const opfield_t arr[] = {
-					///TODO: COMPLETE ATTRIBUTES 
 					{ .mnemonic = ADD,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 					{ .mnemonic = OR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 					{ .mnemonic = ADC,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -32,11 +34,12 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 					{ .mnemonic = CMP,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
 				};
 				inst = arr[reg];
+				req_found = 0x1;
 			}
 			break ;
 
 		case 0x1A:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix))
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				if (!reg)
 					///TODO: SEEMS TO ALSO HAVE S_D64 symbol
@@ -45,7 +48,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x2:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix))
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				///TODO: (GROUP 2 MISSING)
 				static const opfield_t arr[] = {
@@ -65,7 +68,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x3:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix))
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				///TODO: I DON'T UNDERSTAND HOW THIS ONE WORKS
 				static const opfield_t arr[] = {
@@ -83,7 +86,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x4:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b010)
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b010)
 			{
 				static const opfield_t arr[] = {
 					{ .mnemonic = INC,	.am1 = AM_E,	.ot1 = OT_B,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -94,7 +97,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x5:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b111)
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b111)
 			{
 				static const opfield_t arr[] = {
 					{ .mnemonic = INC,	.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -110,7 +113,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x6:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b110)
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b110)
 			{
 				static const opfield_t arr[] = {
 					/// TODO: NEXT 2 HAS AMBIGIOUS ATTRIBUTES
@@ -126,7 +129,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x7:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix))
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				if (mod == 0b11)
 				{
@@ -208,7 +211,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 	
 		case 0x8:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix))
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				static const opfield_t arr[] = {
 					{ .mnemonic = 0,	.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
@@ -270,7 +273,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x11:
-			if (HAS_NOT_MANDATORY_PREFIX(prefix))
+			//if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
 				if (mod == 0b11)
 				{
@@ -463,15 +466,9 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 
 	if (req_found)
 	{
-		inst.am1 = found.am1;
-		inst.ot1 = found.ot1;
-		inst.am2 = found.am2;
-		inst.ot2 = found.ot2;
-		inst.am3 = found.am3;
-		inst.ot3 = found.ot3;
-		inst.am4 = found.am4;
-		inst.ot4 = found.ot4;
-		inst.symbol = found.symbol;
+		const ubyte mn = inst.mnemonic;
+		inst = found;
+		inst.mnemonic = mn;
 	}
 
 	return inst;

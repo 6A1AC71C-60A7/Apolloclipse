@@ -28,9 +28,10 @@ int main(int ac, const char* av[])
    // ubyte t_isnt[] = {0xF0, 0xF2, 0xF3, 0x64, 0x65, 0x2E, 0x3E, 0x66, 0x67, 0b01001111};
    // test_instruction(t_isnt,  0);
 
-    instruction_t dest[1] = {};
+    instruction_t dest[4] = {};
     //const ubyte iraw[] = "\x48\xC7\xC0\x42\x00\x00\x00";
-    const ubyte iraw[] = "\xB8\x42\x00\x00\x00";
+    const ubyte iraw[] = "\x66\x41\x83\x07\x42\xFF\x74\xBD\x00\xB8\x2A\x00\x00\x00\x48\x09\xF7";
+    //const ubyte iraw[] = "\xB8\x42\x00\x00\x00";
 
     const ubyte* prt = iraw;
 
@@ -39,7 +40,7 @@ int main(int ac, const char* av[])
     fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
     for (uqword i = 0 ; i < sizeof(dest) / sizeof(*dest) ; i++)
     {
-        fprint_info(stdout, &dest[i]);
+        //fprint_info(stdout, &dest[i]);
         fprint_instruction(stdout, &dest[i]);
     }
     fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");

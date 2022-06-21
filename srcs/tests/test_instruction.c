@@ -48,11 +48,11 @@ void fprint_info(FILE* where, instruction_t* target)
     const udword prefix = *(udword*)target->prefix;
     fprintf(where, "PREFIXES:\n - LOCK: %d\n - REPNX: %d\n - REPX: %d\n"
         " - FS: %d\n - GS: %d\n - NOBRANCH: %d\n - BRANCH: %d\n - OPERAND SZ: %d\n"
-        " - ADDRESS SZ: %d\n - REX.B: %d\n - REX.X: %d\n - REX.R: %d\n - REX.W: %d\n- - -\n",
+        " - ADDRESS SZ: %d\n - REX.B: %d\n - REX.X: %d\n - REX.R: %d\n - REX.W: %d\n - 0x66: %d\n- - -\n",
         prefix & LP_LOCK_MASK, prefix & LP_LOCK_MASK, prefix & LP_REPX_MASK, 
         prefix & LP_FS_MASK, prefix & LP_GS_MASK, prefix & LP_NOBRANCH_MASK, prefix & LP_BRANCH_MASK,
         prefix & LP_OPSZ_MASK, prefix & LP_ADDRSZ_MASK, prefix & RP_REXB_MASK, prefix & RP_REXX_MASK, 
-        prefix & RP_REXR_MASK, prefix & RP_REXW_MASK);
+        prefix & RP_REXR_MASK, prefix & RP_REXW_MASK, prefix & MP_0x66_MASK);
 
     fprintf(where, "MNEMONIC: [%d]\n- - -\n", target->mnemonic);
 
@@ -69,8 +69,6 @@ void fprint_info(FILE* where, instruction_t* target)
     fprintf(where, "DISPLACEMENT: %d\n- - -\n", target->displacement);
 
     fprintf(where, "SIZE: %d\n- - -\n", target->size);
-
-    ///TODO: RESOLVE REGS
 
     fprintf(where, "IMMEDIATE: %llX\n- - -\n", (long long)target->immediate);
 }

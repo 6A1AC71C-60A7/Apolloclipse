@@ -158,7 +158,7 @@ static const char* const gp_regs_16[] = {
 	"si",
 	"di",
 	"r8w",
-	"r9w"
+	"r9w",
 	"r10w",
 	"r11w",
 	"r12w",
@@ -489,23 +489,218 @@ static void print_mnemonic(FILE* where, instruction_t* const target)
 	fprintf(where, "%s ", mnemonics[target->mnemonic - 1]);
 }
 
-static ubyte print_operand(FILE* where, reg_t reg, udword prefix, ubyte isfirst)
+static ubyte print_register(FILE* where, reg_t reg, udword prefix)
+{
+	ubyte l;
+
+	if (!(prefix & OS_QWORD_MASK) && reg >= D_REG_RAX && reg <= D_REG_R15)
+	{
+		if (prefix & OS_BYTE_MASK)
+			l = fprintf(where, "%s", gp_regs_8[reg - 2]);
+		else if (prefix & OS_WORD_MASK)
+			l = fprintf(where, "%s", gp_regs_16[reg - 2]);
+		else if (prefix & OS_DWORD_MASK)
+			l = fprintf(where, "%s", gp_regs_32[reg - 2]);
+	}
+	else
+		l = fprintf(where, "%s", regs[reg - 1]);
+
+	return l;
+}
+
+static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
+{
+	///TODO: WHAT I AM SUPOSED TO DO WITH hasdisp ?!?! (Add twice the displacement ?!?)
+	/// I don't think so, i've only parsed 1 displacement
+	(void)hasdisp;
+
+	const ubyte mod = MODRM_MOD_GET(inst->mod_rm);
+	const ubyte scale = 0x1 << SIB_SCALE_GET(inst->sib);
+	const ubyte index = SIB_INDEX_EXTENDED_GET(inst);
+	const ubyte base = SIB_BASE_EXTENDED_GET(inst);
+
+	///TODO: For the moment only general purpose registers addressing is handled
+	
+	switch (mod)
+	{
+		case 0b00:
+		{
+			if (base <= 0b0100 || (base >= 0b0110 && base <= 0b1100) || base >= 0b1110)
+			{
+				if (index == 0b0100)
+				{
+					/* [BASE] */
+
+					fprintf(where, "[");
+					print_register(where, base + 2, *(udword*)inst->prefix);
+					fprintf(where, "]");
+				}
+				else
+				{
+					/* [BASE + (INDEX * SCALE)] */
+
+					fprintf(where, "[");
+					print_register(where, base + 2, *(udword*)inst->prefix);
+					fprintf(where, " + (");
+					print_register(where, index + 2, *(udword*)inst->prefix);
+					fprintf(where, " * %d)]", scale);
+				}
+			}
+			else
+			{
+				if (index == 0b0100)
+				{
+					/* [DISP32] */
+
+					fprintf(where, "[%d]", inst->displacement);
+				}
+				else
+				{
+					/* [(INDEX * SCALE) + DISP32] */
+
+					fprintf(where, "[(");
+					print_register(where, index + 2, *(udword*)inst->prefix);
+					fprintf(where, " * %d) + %d]", scale, inst->displacement);
+				}
+			}
+			break ;
+		}
+
+		case 0b01:
+		{
+			if (index == 0b0100)
+			{
+				/* [BASE + DISP8] */
+
+				fprintf(where, "[");
+				print_register(where, base + 2, *(udword*)inst->prefix);
+				fprintf(where, " + %hhd]", inst->displacement);
+			}
+			else
+			{
+				/* [BASE + (INDEX * SCALE) + DISP8] */
+
+				fprintf(where, "[");
+				print_register(where, base + 2, *(udword*)inst->prefix);
+				fprintf(where, " + (");
+				print_register(where, index + 2, *(udword*)inst->prefix);
+				fprintf(where, " * %d) + %hhd]", scale, inst->displacement);
+			}
+			break ;
+		}
+
+		case 0b10:
+		{
+			if (index == 0b0100)
+			{
+				/* [BASE + DISP32] */
+
+				fprintf(where, "[");
+				print_register(where, base + 2, *(udword*)inst->prefix);
+				fprintf(where, " + %d]", inst->displacement);
+			}
+			else
+			{
+				/* [BASE + (INDEX * SCALE) + DISP32] */
+
+				fprintf(where, "[");
+				print_register(where, base + 2, *(udword*)inst->prefix);
+				fprintf(where, " + (");
+				print_register(where, index + 2, *(udword*)inst->prefix);
+				fprintf(where, " * %d) + %d]", scale, inst->displacement);
+			}
+			break ;
+		}
+	}
+}
+
+__always_inline
+static void print_address(FILE* where, instruction_t* const inst, ubyte isfirst)
+{
+	const ubyte mod = MODRM_MOD_GET(inst->mod_rm);
+	const ubyte rm = MODRM_RM_EXTENDED_GET(inst);
+
+	const ubyte* direction = (dword)inst->displacement < 0 ? (ubyte*)"-" : (ubyte*)"+";
+
+	///TODO: For the moment only 64-bits addressing is handled
+	///TODO: For the moment only general purpose registers addressing is handled
+
+	if (!isfirst)
+		fprintf(where, ", ");
+
+	if (mod == 0b11 || (mod == 0b00 && (rm <= 0b0011 || (rm >= 0b0110 && rm <= 0b1011) || rm >= 0b1110)))
+	{
+		/* [R/M] */
+
+		fprintf(where, "[");
+		print_register(where, rm + 2, *(udword*)inst->prefix);
+		fprintf(where, "]");
+	}
+	else if (mod == 0b00)
+	{
+		if (rm == 0b0100 || rm == 0b1100)
+		{
+			/* [SIB] */
+
+			print_sib(where, inst, 0);
+		}
+		else if (rm == 0101 || rm == 0b1101)
+		{
+			/* [RIP + DISP32] */
+
+			fprintf(where, "[rip %s %d]", direction, inst->displacement);
+		}
+	}
+	else if (mod == 0b01)
+	{
+		if (rm == 0b0100 || rm == 0b1100)
+		{
+			/* [SIB + DIPS8] */
+
+			print_sib(where, inst, 8);
+		}
+		else
+		{
+			/* [R/M + DISP8] */
+
+			fprintf(where, "[");
+			print_register(where, rm + 2, *(udword*)inst->prefix);
+			fprintf(where, " %s %hhd]", direction, inst->displacement);
+		}
+	}
+	else if (mod == 0b10)
+	{
+		if (rm == 0b0100 || rm == 0b1100)
+		{
+			/* [SIB + DISP32] */
+
+			print_sib(where, inst, 32);
+		}
+		else
+		{
+			/* [R/M + DISP32] */
+
+			fprintf(where, "[");
+			print_register(where, rm + 2, *(udword*)inst->prefix);
+			fprintf(where, " %s %d]", direction, inst->displacement);
+		}
+	}
+}
+
+static ubyte print_operand(FILE* where, instruction_t* const inst, reg_t reg, udword prefix, ubyte isfirst)
 {
 	ubyte l = 0x0;
 
-	if (reg)
+	if (reg == D_REG_ADDR)
 	{
-		if (!(prefix & OS_QWORD_MASK) && reg >= D_REG_RAX && reg <= D_REG_R15)
-		{
-			if (prefix & OS_BYTE_MASK)
-				l = fprintf(where, "%s%s", isfirst ? "" : ", ", gp_regs_8[reg - 2]);
-			else if (prefix & OS_WORD_MASK)
-				l = fprintf(where, "%s%s", isfirst ? "" : ", ", gp_regs_16[reg - 2]);
-			else if (prefix & OS_DWORD_MASK)
-				l = fprintf(where, "%s%s", isfirst ? "" : ", ", gp_regs_32[reg - 2]);
-		}
-		else
-			l = fprintf(where, "%s%s", isfirst ? "" : ", ", regs[reg - 1]); 
+		print_address(where, inst, isfirst);
+		l++;
+	}
+	else if (reg)
+	{
+		if (!isfirst)
+			fprintf(where, ", ");
+		l = print_register(where, reg, prefix);
 	}
 
 	return l;
@@ -516,9 +711,9 @@ static ubyte print_operands(FILE* where, instruction_t* const target)
 {
 	const udword prefix = *(udword*)target->prefix;
 
-	return print_operand(where, target->reg1, prefix, 1)
-	+ print_operand(where, target->reg2, prefix, 0)
-	+ print_operand(where, target->reg3, prefix, 0);
+	return print_operand(where, target, target->reg1, prefix, 1)
+	+ print_operand(where, target, target->reg2, prefix, 0)
+	+ print_operand(where, target, target->reg3, prefix, 0);
 }
 
 __always_inline
