@@ -486,12 +486,15 @@ static const char* const mnemonics[] = {
 __always_inline
 static void print_mnemonic(FILE* where, instruction_t* const target)
 {
-	fprintf(where, "%s ", mnemonics[target->mnemonic - 1]);
+	if (target->mnemonic == 0)
+		fprintf(where, "(bad)\n");
+	else
+		fprintf(where, "%s ", mnemonics[target->mnemonic - 1]);
 }
 
 static ubyte print_register(FILE* where, reg_t reg, udword prefix)
 {
-	ubyte l;
+	ubyte l = 0;
 
 	if (!(prefix & OS_QWORD_MASK) && reg >= D_REG_RAX && reg <= D_REG_R15)
 	{
@@ -574,7 +577,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 
 				fprintf(where, "[");
 				print_register(where, base + 2, *(udword*)inst->prefix);
-				fprintf(where, " + %hhd]", inst->displacement);
+				fprintf(where, " + %"PRIdd"]", inst->displacement);
 			}
 			else
 			{
@@ -584,7 +587,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				print_register(where, base + 2, *(udword*)inst->prefix);
 				fprintf(where, " + (");
 				print_register(where, index + 2, *(udword*)inst->prefix);
-				fprintf(where, " * %d) + %hhd]", scale, inst->displacement);
+				fprintf(where, " * %d) + %"PRIdd"]", scale, inst->displacement);
 			}
 			break ;
 		}
@@ -665,7 +668,7 @@ static void print_address(FILE* where, instruction_t* const inst, ubyte isfirst)
 
 			fprintf(where, "[");
 			print_register(where, rm + 2, *(udword*)inst->prefix);
-			fprintf(where, " %s %hhd]", direction, inst->displacement);
+			fprintf(where, " %s %"PRIdd"]", direction, inst->displacement);
 		}
 	}
 	else if (mod == 0b10)
@@ -723,7 +726,7 @@ static void print_immediate(FILE* where, instruction_t* const target, ubyte has_
     {
         if (has_operands)
             fprintf(where, ", ");
-        fprintf(where, "0x%lX", target->immediate);
+        fprintf(where, "0x%"PRIXq"", target->immediate);
     }
 }
 

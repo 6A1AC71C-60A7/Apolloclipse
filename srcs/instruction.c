@@ -188,13 +188,21 @@ static const opfield_t*	get_map_legacy(instruction_t* const inst)
 	{
 		map = lt_two_byte_opmap;
 		if (IS_GPM_ESCAPE2_0x38(inst->opcode[1]))
+		{
+			DEBUG("DEBUG: IS 0x38 OPCODE MAP\n");
 			map = lt_three_byte_0x38_opmap;
+		}
 		else if (IS_GPM_ESCAPE2_0x3A(inst->opcode[1]))
+		{
+			DEBUG("DEBUG: IS 0x3A OPCODE MAP\n");
 			map = lt_three_byte_0x3A_opmap;
+		}
+		else
+			DEBUG("DEBUG: IS TWO OPCODE MAP\n");
 	}
 	else
 	{
-		DEBUG("DEBUG: ONE OPCODE MAP\n");
+		DEBUG("DEBUG: IS ONE OPCODE MAP\n");
 		map = lt_one_byte_opmap;
 	}
 
@@ -263,6 +271,8 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 {
 	uqword scale = 1;
 
+	DEBUG("DEBUG REDIRECT INDEXING OPFIELD: %x\n", opcode);
+
 	if (map == lt_two_byte_opmap)
 	{
 		if (prefix & MP_0x66_MASK)
@@ -278,7 +288,8 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		///TODO: ALL prefixes are not currently handled in the map
 		if (prefix & MP_0x66_MASK)
 			scale = 2;
-		*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) * scale];
+		DEBUG("SCALED MAP INDEX IS: %"PRIuq"\n", GET_MAP_INDEX(opcode) + (0x100 * (scale - 1)));
+		*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * (scale - 1))];
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
 	{
@@ -654,6 +665,16 @@ opcode_check:
 		skip_duplicated(iraw, 0xFF);
 	}
 
+	DEBUG("::::: BEFORE: %02X\n", **iraw);
+
+	if ((*(udword*)dest->prefix & (RP_REXB_MASK | RP_REXX_MASK | RP_REXR_MASK | RP_REXR_MASK)) == 0 && (isrex = IS_REXBYTE(**iraw)))
+	{
+		get_rex_prefix((udword*)dest->prefix, iraw);
+		skip_duplicated(iraw, 0xF0);
+	}
+
+	DEBUG("::::: AFTER: %02X\n", **iraw);
+
 	if ((isescape = IS_GPM_ESCAPE(**iraw)))
 	{
 		dest->opcode[0] = **iraw;
@@ -665,6 +686,8 @@ opcode_check:
 			(*iraw)++;
 		}
 	}
+
+
 	///TODO: This is not an error for: mov WORD PTR [rsp + 880000], 42
 	// else if (*(udword*)dest->prefix & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK))
 	// {
@@ -672,14 +695,11 @@ opcode_check:
 	// 	goto error;
 	// }
 
-	if ((isrex = IS_REXBYTE(**iraw)))
-	{
-		get_rex_prefix((udword*)dest->prefix, iraw);
-		skip_duplicated(iraw, 0xF0);
-	}
 
 	if (skip_pref)
 		goto skip_prefix_check;
+
+
 
 	if ((isescape & isrex) == 0x0)
 	{
@@ -706,6 +726,8 @@ skip_prefix_check:
 
 	dest->opcode[2] = *((*iraw)++);
 
+	DEBUG("DEBUG: OPCODE IS [%02X][%02X][%02X]\n", dest->opcode[0], dest->opcode[1], dest->opcode[2]);
+
 	opfield_t found;
 
 	if (IS_ESCAPE_FX87(dest->opcode[0]))
@@ -714,11 +736,11 @@ skip_prefix_check:
 	else
 	{
 		const opfield_t*	map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop);
-		
+
 		found = map[GET_MAP_INDEX(dest->opcode[2])];
 
 		DEBUG("DEBUG: MAP INDEX: %d\n", GET_MAP_INDEX(dest->opcode[2]));
-		DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
+		//DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
 		DEBUG("2 ADDR MODE: [%d] [%d]\n", found.am1, found.am2);
 		DEBUG("2 OPERAND TYPE: [%d %d]\n", found.ot1, found.ot2);
 
@@ -730,10 +752,12 @@ skip_prefix_check:
 
 		if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
 		{
-			DEBUG("IS INDEXING\n");
+			DEBUG("IS INDEXING: %x\n", dest->opcode[2]);
 			redirect_indexing_opfield(map, &found, *(udword*)dest->prefix, dest->opcode[2]);
 		}
 	}
+
+	DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
 
 	opattr = get_opcode_attributes(&dest->mnemonic, found);
 
