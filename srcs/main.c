@@ -6,12 +6,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 1
-#define BUFFSIZE 0x1000
+#define INST_NB 1260
+#define BUFFSIZE 0x2000
 #define FILENAME "srcs/tests/instructions.txt"
 
 #define TEST_FILE
-#undef TEST_FILE
+//#undef TEST_FILE
 
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
@@ -29,6 +29,31 @@
 ///STATUS: Current main value does not work
 /// Indexing seems ok now, but maybe opcode tables structs are bad aligned
 /// TEST MAPS ALIGNEMENT ...
+
+///TODO: CALL INSTRUCTION ADDRESS RESOLUTION IS DIFERENT FROM OBJDUMP
+
+///TODO: TEST BWSAP BETTER (AMB REGS) IN TWO BYTE OPCODE MAP
+
+///TODO: CASES WHERE OPERAND SIZE IS EXCEPTIONALLY DIFERENT ON OPERANDS ARE NOT
+/// HANDLED
+/// EXEMPLE: crc eax, cl -> has 32 bit operand size even if cl is 8 bits
+/// Cases like that are exeptional and is better to handle them after the diassembler output buy opcode value
+/// IN, lsl rax, rdx, lsl rax, [rdx], movsx, movzx, out, ...
+
+///TODO: EXEPTION: ENTER opcode has 2 immediates ...
+
+///TODO: Handle registers pairs as operands: INS, OUTS, MOVS, SCAS, STOS,  ...
+
+///TODO: AMBIGIOUS: xchg r8, rax and be NOP and also be pause ... WTF
+
+///TODO: Rotations and shifts actually takes a fcking '1' as operand WTF
+
+///CURRENT: STATUS:  mov edx, 0x69696969 (l1013), have to reimplement the operand size resolution
+
+///TODO: UMONITOR takes a register which is used as an address (but type is reg), default operand type
+///         is currently dword but this is 32 bits addressing (0x67), need to make it qword by default.
+///         Test and see 
+
 
 int main(int ac, const char* av[])
 {
@@ -54,7 +79,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] =  "\x66\x41\x0F\x38\xF5\xF7";
+    const ubyte iraw[] = "\x0F\xC7\x28\x48\x0F\xC7\x28\x0F\xC7\x20\x48\x0F\xC7\x20\x0F\xC7\x18\x48\x0F\xC7\x18";
 #endif
 
     const ubyte* prt = iraw;
@@ -67,7 +92,7 @@ int main(int ac, const char* av[])
         //fprint_info(stdout, &dest[i]);
         fprint_instruction(stdout, &dest[i]);
     }
-    fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
+    //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
 
     return st;
 }

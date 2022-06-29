@@ -1783,6 +1783,21 @@ typedef enum
 	XSAVEC64,		//
 	XSAVES64,		//
 
+	SHL, //
+	SHR, //
+	SAR, //
+	SHRD, //
+
+	PREFETCHTNTA,
+	PREFETCHT0,
+	PREFETCHT1,
+	PREFETCHT2,
+
+	UMONITOR,
+
+	SAVEC,
+	SAVES,
+
 } mnemonic_t;
 
 #define NM_GENERAL_PURPOSE_MAX TZCNT

@@ -5,7 +5,7 @@
 #include <d_opcode.h>
 #include <d_utils.h>
 
-#define IS_AMBIGIOUS(x) ((x) > OR_8 && (x) < OR_512)
+#define IS_AMBIGIOUS(x) ((x) >= OR_8 && (x) <= OR_512)
 
 static reg_t	get_general_purpose_register(uqword index)
 {
@@ -282,6 +282,6 @@ void	resolve_operands(instruction_t* const dest, opfield_t instruction)
     {
 		skip = 0x0;
         revolve_operand(dest, regs[i], ams[attr_index], ots[attr_index], &skip);
-		attr_index += skip ? 0x2 : 0x1;
+		attr_index += skip ? 0x2 : 0x1; // TODO: += (bool)skip + 1 also
     }
 }
