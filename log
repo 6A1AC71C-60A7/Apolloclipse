@@ -1,0 +1,1260 @@
+adc al, 0x69
+adc ax, 0x69
+adc eax, 0x69
+adc rax, 0x69
+adc dl, 0x69
+adc [dl], 0x69
+adc dx, 0x6969
+adc [dx], 0x6969
+adc edx, 0x69696969
+adc [edx], 0x69696969
+adc rdx, 0x69696969
+adc [rdx], 0x69696969
+adc dx, 0x69
+adc [dx], 0x69
+adc edx, 0x69
+adc [edx], 0x69
+adc rdx, 0x69
+adc [rdx], 0x69
+adc dil, r12b
+adc [dil], r12b
+adc di, r12w
+adc [di], r12w
+adc edi, r12d
+adc [edi], r12d
+adc rdi, r12
+adc [rdi], r12
+adc dil, [r12b]
+adc di, [r12w]
+adc dx, [r12w]
+adc rdx, [r12]
+adcx si, r15w
+adcx si, [r15w]
+adcx si, r15w
+adcx si, [r15w]
+add al, 0x69
+add ax, 0x69
+add eax, 0x69
+add rax, 0x69
+add dl, 0x69
+add [dl], 0x69
+add dx, 0x6969
+add [dx], 0x6969
+add edx, 0x69696969
+add [edx], 0x69696969
+add rdx, 0x69696969
+add [rdx], 0x69696969
+add dx, 0x69
+add [dx], 0x69
+add edx, 0x69
+add [edx], 0x69
+add rdx, 0x69
+add [rdx], 0x69
+add dil, r12b
+add [dil], r12b
+add di, r12w
+add [di], r12w
+add edi, r12d
+add [edi], r12d
+add rdi, r12
+add [rdi], r12
+add dil, [r12b]
+add di, [r12w]
+add dx, [r12w]
+add rdx, [r12]
+adox esi, r15d
+adox esi, [r15d]
+adox rsi, r15
+adox rsi, [r15]
+and al, 0x69
+and ax, 0x69
+and eax, 0x69
+and rax, 0x69
+and dl, 0x69
+and [dl], 0x69
+and dx, 0x6969
+and [dx], 0x6969
+and edx, 0x69696969
+and [edx], 0x69696969
+and rdx, 0x69696969
+and [rdx], 0x69696969
+and dx, 0x69
+and [dx], 0x69
+and edx, 0x69
+and [edx], 0x69
+and rdx, 0x69
+and [rdx], 0x69
+and dil, r12b
+and [dil], r12b
+and di, r12w
+and [di], r12w
+and edi, r12d
+and [edi], r12d
+and rdi, r12
+and [rdi], r12
+and dil, [r12b]
+and di, [r12w]
+and dx, [r12w]
+and rdx, [r12]
+bsf dx, cx
+bsf dx, [cx]
+bsf edx, ecx
+bsf edx, [ecx]
+bsf rdx, rcx
+bsf rdx, [rcx]
+bsr dx, cx
+bsr dx, [cx]
+bsr edx, ecx
+bsr edx, [ecx]
+bsr rdx, rcx
+bsr rdx, [rcx]
+bswap eax
+bswap rax
+bt bx, cx
+bt [bx], cx
+bt ebx, ecx
+bt [ebx], ecx
+bt rbx, rcx
+bt [rbx], rcx
+bt bx, 0x69
+bt [bx], 0x69
+bt ebx, 0x69
+bt [ebx], 0x69
+bt rbx, 0x69
+bt [rbx], 0x69
+btc bx, cx
+btc [bx], cx
+btc ebx, ecx
+btc [ebx], ecx
+btc rbx, rcx
+btc [rbx], rcx
+btc bx, 0x69
+btc [bx], 0x69
+btc ebx, 0x69
+btc [ebx], 0x69
+btc rbx, 0x69
+btc [rbx], 0x69
+btr bx, cx
+btr [bx], cx
+btr ebx, ecx
+btr [ebx], ecx
+btr rbx, rcx
+btr [rbx], rcx
+btr bx, 0x69
+btr [bx], 0x69
+btr ebx, 0x69
+btr [ebx], 0x69
+btr rbx, 0x69
+btr [rbx], 0x69
+bts bx, cx
+bts [bx], cx
+bts ebx, ecx
+bts [ebx], ecx
+bts rbx, rcx
+bts [rbx], rcx
+bts bx, 0x69
+bts [bx], 0x69
+bts ebx, 0x69
+bts [ebx], 0x69
+bts rbx, 0x69
+bts [rbx], 0x69
+call 0x6965
+call 0x69696965
+call [rbx]
+cbw 
+cbw 
+cbw 
+cwd 
+cwd 
+cwd 
+clac 
+clac 
+cld 
+cli 
+clts 
+cmc 
+cmova dx, bx
+cmova dx, [bx]
+cmova edx, ebx
+cmova edx, [ebx]
+cmova rdx, rbx
+cmova rdx, [rbx]
+cmovae dx, bx
+cmovae dx, [bx]
+cmovae edx, ebx
+cmovae edx, [ebx]
+cmovae rdx, rbx
+cmovae rdx, [rbx]
+cmovb dx, bx
+cmovb dx, [bx]
+cmovb edx, ebx
+cmovb edx, [ebx]
+cmovb rdx, rbx
+cmovb rdx, [rbx]
+cmovbe dx, bx
+cmovbe dx, [bx]
+cmovbe edx, ebx
+cmovbe edx, [ebx]
+cmovbe rdx, rbx
+cmovbe rdx, [rbx]
+cmovb dx, bx
+cmovb dx, [bx]
+cmovb edx, ebx
+cmovb edx, [ebx]
+cmovb rdx, rbx
+cmovb rdx, [rbx]
+cmove dx, bx
+cmove dx, [bx]
+cmove edx, ebx
+cmove edx, [ebx]
+cmove rdx, rbx
+cmove rdx, [rbx]
+cmovnle dx, bx
+cmovnle dx, [bx]
+cmovnle edx, ebx
+cmovnle edx, [ebx]
+cmovnle rdx, rbx
+cmovnle rdx, [rbx]
+cmovnl dx, bx
+cmovnl dx, [bx]
+cmovnl edx, ebx
+cmovnl edx, [ebx]
+cmovnl rdx, rbx
+cmovnl rdx, [rbx]
+cmovnge dx, bx
+cmovnge dx, [bx]
+cmovnge edx, ebx
+cmovnge edx, [ebx]
+cmovnge rdx, rbx
+cmovnge rdx, [rbx]
+cmovle dx, bx
+cmovle dx, [bx]
+cmovle edx, ebx
+cmovle edx, [ebx]
+cmovle rdx, rbx
+cmovle rdx, [rbx]
+cmovbe dx, bx
+cmovbe dx, [bx]
+cmovbe edx, ebx
+cmovbe edx, [ebx]
+cmovbe rdx, rbx
+cmovbe rdx, [rbx]
+cmovb dx, bx
+cmovb dx, [bx]
+cmovb edx, ebx
+cmovb edx, [ebx]
+cmovb rdx, rbx
+cmovb rdx, [rbx]
+cmovae dx, bx
+cmovae dx, [bx]
+cmovae edx, ebx
+cmovae edx, [ebx]
+cmovae rdx, rbx
+cmovae rdx, [rbx]
+cmova dx, bx
+cmova dx, [bx]
+cmova edx, ebx
+cmova edx, [ebx]
+cmova rdx, rbx
+cmova rdx, [rbx]
+cmovae dx, bx
+cmovae dx, [bx]
+cmovae edx, ebx
+cmovae edx, [ebx]
+cmovae rdx, rbx
+cmovae rdx, [rbx]
+cmovne dx, bx
+cmovne dx, [bx]
+cmovne edx, ebx
+cmovne edx, [ebx]
+cmovne rdx, rbx
+cmovne rdx, [rbx]
+cmovle dx, bx
+cmovle dx, [bx]
+cmovle edx, ebx
+cmovle edx, [ebx]
+cmovle rdx, rbx
+cmovle rdx, [rbx]
+cmovnge dx, bx
+cmovnge dx, [bx]
+cmovnge edx, ebx
+cmovnge edx, [ebx]
+cmovnge rdx, rbx
+cmovnge rdx, [rbx]
+cmovnl dx, bx
+cmovnl dx, [bx]
+cmovnl edx, ebx
+cmovnl edx, [ebx]
+cmovnl rdx, rbx
+cmovnl rdx, [rbx]
+cmovnle dx, bx
+cmovnle dx, [bx]
+cmovnle edx, ebx
+cmovnle edx, [ebx]
+cmovnle rdx, rbx
+cmovnle rdx, [rbx]
+cmovno dx, bx
+cmovno dx, [bx]
+cmovno edx, ebx
+cmovno edx, [ebx]
+cmovno rdx, rbx
+cmovno rdx, [rbx]
+cmovpo dx, bx
+cmovpo dx, [bx]
+cmovpo edx, ebx
+cmovpo edx, [ebx]
+cmovpo rdx, rbx
+cmovpo rdx, [rbx]
+cmovns dx, bx
+cmovns dx, [bx]
+cmovns edx, ebx
+cmovns edx, [ebx]
+cmovns rdx, rbx
+cmovns rdx, [rbx]
+cmovne dx, bx
+cmovne dx, [bx]
+cmovne edx, ebx
+cmovne edx, [ebx]
+cmovne rdx, rbx
+cmovne rdx, [rbx]
+cmovo dx, bx
+cmovo dx, [bx]
+cmovo edx, ebx
+cmovo edx, [ebx]
+cmovo rdx, rbx
+cmovo rdx, [rbx]
+cmovp dx, bx
+cmovp dx, [bx]
+cmovp edx, ebx
+cmovp edx, [ebx]
+cmovp rdx, rbx
+cmovp rdx, [rbx]
+cmovp dx, bx
+cmovp dx, [bx]
+cmovp edx, ebx
+cmovp edx, [ebx]
+cmovp rdx, rbx
+cmovp rdx, [rbx]
+cmovpo dx, bx
+cmovpo dx, [bx]
+cmovpo edx, ebx
+cmovpo edx, [ebx]
+cmovpo rdx, rbx
+cmovpo rdx, [rbx]
+cmovs dx, bx
+cmovs dx, [bx]
+cmovs edx, ebx
+cmovs edx, [ebx]
+cmovs rdx, rbx
+cmovs rdx, [rbx]
+cmove dx, bx
+cmove dx, [bx]
+cmove edx, ebx
+cmove edx, [ebx]
+cmove rdx, rbx
+cmove rdx, [rbx]
+cmp al, 0x69
+cmp ax, 0x69
+cmp eax, 0x69
+cmp rax, 0x69
+cmp dl, 0x69
+cmp [dl], 0x69
+cmp dx, 0x6969
+cmp [dx], 0x6969
+cmp edx, 0x69696969
+cmp [edx], 0x69696969
+cmp rdx, 0x69696969
+cmp [rdx], 0x69696969
+cmp dx, 0x69
+cmp [dx], 0x69
+cmp edx, 0x69
+cmp [edx], 0x69
+cmp rdx, 0x69
+cmp [rdx], 0x69
+cmp dil, r12b
+cmp [dil], r12b
+cmp di, r12w
+cmp [di], r12w
+cmp edi, r12d
+cmp [edi], r12d
+cmp rdi, r12
+cmp [rdi], r12
+cmp dil, [r12b]
+cmp di, [r12w]
+cmp dx, [r12w]
+cmp rdx, [r12]
+cmpsb 
+cmps 
+cmps 
+cmps 
+cmpxchg al, cl
+cmpxchg [al], cl
+cmpxchg ax, cx
+cmpxchg [ax], cx
+cmpxchg eax, ecx
+cmpxchg [eax], ecx
+cmpxchg rax, rcx
+cmpxchg [rax], rcx
+cmpxchg8b [rax]
+cmpxchg8b [rax]
+cpuid 
+cwd 
+cwd 
+cwd 
+crc32 eax, edx
+crc32 eax, edx
+crc32 eax, edx
+crc32 eax, edx
+crc32 eax, edx
+dec r8b
+dec [r8b]
+dec r8w
+dec [r8w]
+dec r8d
+dec [r8d]
+dec r8
+dec [r8]
+div r8b, al
+div [r8b], al
+div r8w, ax
+div [r8w], ax
+div r8d, eax
+div [r8d], eax
+div r8, rax
+div [r8], rax
+enter 0x10
+add [al], al
+enter 0x10
+add [cl], al
+enter 0x10
+add [al], dl
+hlt 
+idiv r8b, al
+idiv [r8b], al
+idiv r8w, ax
+idiv [r8w], ax
+idiv r8d, eax
+idiv [r8d], eax
+idiv r8, rax
+idiv [r8], rax
+imul r8b, al
+imul [r8b], al
+imul r8w, ax
+imul [r8w], ax
+imul r8d, eax
+imul [r8d], eax
+imul r8, rax
+imul [r8], rax
+imul r8w, r9w
+imul r8w, [r9w]
+imul r8d, r9d
+imul r8d, [r9d]
+imul r8, r9
+imul r8, [r9]
+imul r8w, r9w, 0x8
+imul r8w, [r9w], 0x8
+imul r8d, r9d, 0x8
+imul r8d, [r9d], 0x8
+imul r8, r9, 0x8
+imul r8, [r9], 0x8
+imul r8w, r9w, 0x6969
+imul r8w, [r9w], 0x6969
+imul r8d, r9d, 0x69696969
+imul r8d, [r9d], 0x69696969
+imul r8, r9, 0x69696969
+imul r8, [r9], 0x69696969
+in al, 0x69
+in ax, 0x69
+in eax, 0x69
+in ax, dx
+in ax, dx
+in eax, edx
+inc r8b
+inc [r8b]
+inc r8w
+inc [r8w]
+inc r8d
+inc [r8d]
+inc r8
+inc [r8]
+insb , dl
+ins , dx
+ins , edx
+int3 
+int 0x42
+int1 
+invd 
+invlpg [al]
+invpcid ax, [cx]
+iret 
+iret 
+jmp 0x65
+jmp 0x6965
+jmp 0x69696965
+jmp rbx
+jmp [rbx]
+ja 0x65
+jae 0x65
+jb 0x65
+jbe 0x65
+jb 0x65
+je 0x65
+jnle 0x65
+jnl 0x65
+jl 0x65
+jle 0x65
+jbe 0x65
+jb 0x65
+jae 0x65
+ja 0x65
+jae 0x65
+jne 0x65
+jle 0x65
+jl 0x65
+jnl 0x65
+jnle 0x65
+jno 0x65
+jnp 0x65
+jns 0x65
+jne 0x65
+jo 0x65
+jp 0x65
+jp 0x65
+jnp 0x65
+js 0x65
+je 0x65
+ja 0x6965
+jae 0x6965
+jae 0x69696965
+jb 0x6965
+jb 0x69696965
+jbe 0x6965
+jbe 0x69696965
+jb 0x6965
+jb 0x69696965
+je 0x6965
+je 0x69696965
+je 0x6965
+je 0x69696965
+jnle 0x6965
+jnle 0x69696965
+jnl 0x6965
+jnl 0x69696965
+jl 0x6965
+jl 0x69696965
+jle 0x6965
+jle 0x69696965
+jbe 0x6965
+jbe 0x69696965
+jb 0x6965
+jb 0x69696965
+jae 0x6965
+jae 0x69696965
+ja 0x6965
+ja 0x69696965
+jae 0x6965
+jae 0x69696965
+jne 0x6965
+jne 0x69696965
+jle 0x6965
+jle 0x69696965
+jl 0x6965
+jl 0x69696965
+jnl 0x6965
+jnl 0x69696965
+jnle 0x6965
+jnle 0x69696965
+jno 0x6965
+jno 0x69696965
+jnp 0x6965
+jnp 0x69696965
+jns 0x6965
+jns 0x69696965
+jne 0x6965
+jne 0x69696965
+jo 0x6965
+jo 0x69696965
+jp 0x6965
+jp 0x69696965
+jnp 0x6965
+jnp 0x69696965
+js 0x6965
+js 0x69696965
+je 0x6965
+je 0x69696965
+lar dx, bx
+lar dx, [bx]
+lar edx, ebx
+lar edx, [ebx]
+lea cx, [sp]
+lea ecx, [esp]
+lea rcx, [rsp]
+leave 
+lfence 
+lgdt [rax]
+lidt [rax]
+lmsw ax
+lmsw [ax]
+lodsb al
+lods ax
+lods eax
+lods rax
+loop 0x20
+loope 0x20
+loopne 0x20
+lsl ax, dx
+lsl ax, [dx]
+lsl rax, rdx
+lsl rax, [rdx]
+ltr ax
+ltr [ax]
+lzcnt dx, ax
+lzcnt dx, [ax]
+lzcnt edx, eax
+lzcnt edx, [eax]
+lzcnt rdx, rax
+lzcnt rdx, [rax]
+mfence 
+monitor 
+mov dl, bl
+mov [dl], bl
+mov dx, bx
+mov [dx], bx
+mov edx, ebx
+mov [edx], ebx
+mov rdx, rbx
+mov [rdx], rbx
+mov dl, [bl]
+mov dx, [bx]
+mov edx, [ebx]
+mov rdx, [rbx]
+mov dx, gs
+mov [edx], gs
+mov edx, gs
+mov edx, gs
+mov gs, dx
+mov gs, [bx]
+mov gs, dx
+mov dl, 0x69
+mov dx, 0x6969
+mov edx, 0x69696969
+mov rdx, 0x6969696969696969
+mov [dl], 0x69
+mov [dx], 0x69
+imul eax, edi, 0x69696902
+imul ecx, [eax + 199], 0x69696902
+imul ecx, [edi], 0xF44C820
+and al, al
+mov cr1, eax
+mov cr8, eax
+mov eax, dr1
+mov eax, dr8
+mov dr1, eax
+mov dr8, eax
+movbe eax, [edx]
+movbe rax, [rdx]
+movbe [eax], edx
+movbe [rax], rdx
+movsb 
+movs 
+movs 
+movs 
+movsx dx, cx
+movsx dx, [cx]
+movsx edx, ecx
+movsx rdx, rcx
+movsx eax, ecx
+movsxd rax, [rcx]
+movzx dx, cx
+movzx dx, [cx]
+movzx edx, ecx
+movzx rdx, rcx
+movzx eax, ecx
+movzx rax, rcx
+mul r8b, al
+mul [r8b], al
+mul r8w, ax
+mul [r8w], ax
+mul r8d, eax
+mul [r8d], eax
+mul r8, rax
+mul [r8], rax
+mwait 
+neg r8b
+neg [r8b]
+neg r8w
+neg [r8w]
+neg r8d
+neg [r8d]
+neg r8
+neg [r8]
+xchg r8d, eax
+nop [ax]
+nop ax
+nop [eax]
+nop eax
+not r8b
+not [r8b]
+not r8w
+not [r8w]
+not r8d
+not [r8d]
+not r8
+not [r8]
+or al, 0x69
+or ax, 0x69
+or eax, 0x69
+or rax, 0x69
+or dl, 0x69
+or [dl], 0x69
+or dx, 0x6969
+or [dx], 0x6969
+or edx, 0x69696969
+or [edx], 0x69696969
+or rdx, 0x69696969
+or [rdx], 0x69696969
+or dx, 0x69
+or [dx], 0x69
+or edx, 0x69
+or [edx], 0x69
+or rdx, 0x69
+or [rdx], 0x69
+or dil, r12b
+or [dil], r12b
+or di, r12w
+or [di], r12w
+or edi, r12d
+or [edi], r12d
+or rdi, r12
+or [rdi], r12
+or dil, [r12b]
+or di, [r12w]
+or dx, [r12w]
+or rdx, [r12]
+out , al, 0x69
+out , al, 0x69
+out , al, 0x69
+out dx, ax
+out dx, ax
+out edx, eax
+outsb dx
+outs dx
+outs dx
+pop r8
+pop [r8]
+pop r8
+pop [r8]
+pop rsp
+pop rbp
+popcnt ax, dx
+popcnt ax, [dx]
+popcnt eax, edx
+popcnt eax, [edx]
+popcnt rax, rdx
+popcnt rax, [rdx]
+popf rflags
+popf rflags
+prefetchw [al]
+prefetcht0 [al]
+prefetcht1 [al]
+prefetcht2 [al]
+prefetchnta [al]
+push r8
+push [r8]
+push r8
+push 0x69
+push 0x6969
+push 0x69696969
+push rsp
+push rbp
+pushf rflags
+pushf rflags
+rcl al, 1
+rcl [al], 1
+rcl al, dl
+rcl [al], dl
+rcl al, 0x69
+rcl [al], 0x69
+rcl ax, 1
+rcl [ax], 1
+rcl ax, cx
+rcl [ax], cx
+rcl al, 0x69
+rcl [al], 0x69
+rcl eax, 1
+rcl [eax], 1
+rcl rax, 1
+rcl [rax], 1
+rcl eax, ecx
+rcl [eax], ecx
+rcl rax, rcx
+rcl [rax], rcx
+rcl al, 0x69
+rcl [al], 0x69
+rcl al, 0x69
+rcl [al], 0x69
+rcr al, 1
+rcr [al], 1
+rcr al, dl
+rcr [al], dl
+rcr al, 0x69
+rcr [al], 0x69
+rcr ax, 1
+rcr [ax], 1
+rcr ax, cx
+rcr [ax], cx
+rcr al, 0x69
+rcr [al], 0x69
+rcr eax, 1
+rcr [eax], 1
+rcr rax, 1
+rcr [rax], 1
+rcr eax, ecx
+rcr [eax], ecx
+rcr rax, rcx
+rcr [rax], rcx
+rcr al, 0x69
+rcr [al], 0x69
+rcr al, 0x69
+rcr [al], 0x69
+rol al, 1
+rol [al], 1
+rol al, dl
+rol [al], dl
+rol al, 0x69
+rol [al], 0x69
+rol ax, 1
+rol [ax], 1
+rol ax, cx
+rol [ax], cx
+rol al, 0x69
+rol [al], 0x69
+rol eax, 1
+rol [eax], 1
+rol rax, 1
+rol [rax], 1
+rol eax, ecx
+rol [eax], ecx
+rol rax, rcx
+rol [rax], rcx
+rol al, 0x69
+rol [al], 0x69
+rol al, 0x69
+rol [al], 0x69
+ror al, 1
+ror [al], 1
+ror al, dl
+ror [al], dl
+ror al, 0x69
+ror [al], 0x69
+ror ax, 1
+ror [ax], 1
+ror ax, cx
+ror [ax], cx
+ror al, 0x69
+ror [al], 0x69
+ror eax, 1
+ror [eax], 1
+ror rax, 1
+ror [rax], 1
+ror eax, ecx
+ror [eax], ecx
+ror rax, rcx
+ror [rax], rcx
+ror al, 0x69
+ror [al], 0x69
+ror al, 0x69
+ror [al], 0x69
+rsm 
+shl al, 1
+shl [al], 1
+shl al, dl
+shl [al], dl
+shl al, 0x69
+shl [al], 0x69
+shl ax, 1
+shl [ax], 1
+shl ax, cx
+shl [ax], cx
+shl al, 0x69
+shl [al], 0x69
+shl eax, 1
+shl [eax], 1
+shl rax, 1
+shl [rax], 1
+shl eax, ecx
+shl [eax], ecx
+shl rax, rcx
+shl [rax], rcx
+shl al, 0x69
+shl [al], 0x69
+shl al, 0x69
+shl [al], 0x69
+sar al, 1
+sar [al], 1
+sar al, dl
+sar [al], dl
+sar al, 0x69
+sar [al], 0x69
+sar ax, 1
+sar [ax], 1
+sar ax, cx
+sar [ax], cx
+sar al, 0x69
+sar [al], 0x69
+sar eax, 1
+sar [eax], 1
+sar rax, 1
+sar [rax], 1
+sar eax, ecx
+sar [eax], ecx
+sar rax, rcx
+sar [rax], rcx
+sar al, 0x69
+sar [al], 0x69
+sar al, 0x69
+sar [al], 0x69
+shl al, 1
+shl [al], 1
+shl al, dl
+shl [al], dl
+shl al, 0x69
+shl [al], 0x69
+shl ax, 1
+shl [ax], 1
+shl ax, cx
+shl [ax], cx
+shl al, 0x69
+shl [al], 0x69
+shl eax, 1
+shl [eax], 1
+shl rax, 1
+shl [rax], 1
+shl eax, ecx
+shl [eax], ecx
+shl rax, rcx
+shl [rax], rcx
+shl al, 0x69
+shl [al], 0x69
+shl al, 0x69
+shl [al], 0x69
+shr al, 1
+shr [al], 1
+shr al, dl
+shr [al], dl
+shr al, 0x69
+shr [al], 0x69
+shr ax, 1
+shr [ax], 1
+shr ax, cx
+shr [ax], cx
+shr al, 0x69
+shr [al], 0x69
+shr eax, 1
+shr [eax], 1
+shr rax, 1
+shr [rax], 1
+shr eax, ecx
+shr [eax], ecx
+shr rax, rcx
+shr [rax], rcx
+shr al, 0x69
+shr [al], 0x69
+shr al, 0x69
+shr [al], 0x69
+rdmsr 
+rdpid rax
+rdpmc 
+rdrand ax
+rdrand eax
+rdrand rax
+rdrand ax
+rdrand eax
+rdrand rax
+rdtsc 
+rdtscp 
+ret 
+ret 0x6969
+sbb al, 0x69
+sbb ax, 0x69
+sbb eax, 0x69
+sbb rax, 0x69
+sbb dl, 0x69
+sbb [dl], 0x69
+sbb dx, 0x6969
+sbb [dx], 0x6969
+sbb edx, 0x69696969
+sbb [edx], 0x69696969
+sbb rdx, 0x69696969
+sbb [rdx], 0x69696969
+sbb dx, 0x69
+sbb [dx], 0x69
+sbb edx, 0x69
+sbb [edx], 0x69
+sbb rdx, 0x69
+sbb [rdx], 0x69
+sbb dil, r12b
+sbb [dil], r12b
+sbb di, r12w
+sbb [di], r12w
+sbb edi, r12d
+sbb [edi], r12d
+sbb rdi, r12
+sbb [rdi], r12
+sbb dil, [r12b]
+sbb di, [r12w]
+sbb dx, [r12w]
+sbb rdx, [r12]
+scasb al
+scas ax
+scas eax
+scas rax
+seta al
+seta [al]
+setae al
+setae [al]
+setb al
+setb [al]
+setne al
+setbe [al]
+setb al
+setb [al]
+sete al
+sete [al]
+setnle al
+setnle [al]
+setnl al
+setnl [al]
+setl al
+setl [al]
+setle al
+setle [al]
+setbe al
+setbe [al]
+setb al
+setb [al]
+setae al
+setae [al]
+seta al
+seta [al]
+setae al
+setae [al]
+setne al
+setne [al]
+setle al
+setle [al]
+setl al
+setl [al]
+setnl al
+setnl [al]
+setnle al
+setnle [al]
+setno al
+setno [al]
+setnp al
+setnp [al]
+setns al
+setns [al]
+setne al
+setne [al]
+seto al
+seto [al]
+setp al
+setp [al]
+setp al
+setp [al]
+setnp al
+setnp [al]
+sets al
+sets [al]
+sete al
+sete [al]
+sfence 
+sgdt [eax]
+shld ax, 0x69
+shld [ax], 0x69
+shld ax, cx
+shld [ax], 0x69
+shld eax, 0x69
+shld [eax], 0x69
+shld eax, ecx
+shld [eax], 0x69
+shld rax, 0x69
+shld [rax], 0x69
+shld rax, rcx
+shld [rax], 0x69
+shrd ax, bx, 0x69
+shrd [ax], bx, 0x69
+shrd ax, bx, cx
+shrd [ax], bx, 0x69
+shrd eax, ebx, 0x69
+shrd [eax], ebx, 0x69
+shrd eax, ebx, ecx
+shrd [eax], ebx, 0x69
+shrd rax, rbx, 0x69
+shrd [rax], rbx, 0x69
+shrd rax, rbx, rcx
+shrd [rax], rbx, 0x69
+sidt [eax]
+sldt ax
+sldt [ax]
+sldt eax
+smsw ax
+smsw eax
+smsw rax
+smsw [ax]
+stac 
+stc 
+std 
+sti 
+stosb , al
+stos , ax
+stos , eax
+stos , rax
+str ax
+str [ax]
+sub al, 0x69
+sub ax, 0x69
+sub eax, 0x69
+sub rax, 0x69
+sub dl, 0x69
+sub [dl], 0x69
+sub dx, 0x6969
+sub [dx], 0x6969
+sub edx, 0x69696969
+sub [edx], 0x69696969
+sub rdx, 0x69696969
+sub [rdx], 0x69696969
+sub dx, 0x69
+sub [dx], 0x69
+sub edx, 0x69
+sub [edx], 0x69
+sub rdx, 0x69
+sub [rdx], 0x69
+sub dil, r12b
+sub [dil], r12b
+sub di, r12w
+sub [di], r12w
+sub edi, r12d
+sub [edi], r12d
+sub rdi, r12
+sub [rdi], r12
+sub dil, [r12b]
+sub di, [r12w]
+sub edi, [r12d]
+sub rdx, [r12]
+swapgs 
+syscall 
+sysenter 
+sysexit 
+sysret 
+test al, 0x69
+test ax, 0x69
+test eax, 0x69
+test rax, 0x69
+test dl, 0x69
+test [dl], 0x69
+test dx, 0x6969
+test [dx], 0x6969
+test edx, 0x69696969
+test [edx], 0x69696969
+test rdx, 0x69696969
+test [rdx], 0x69696969
+test dx, 0x69
+test [dx], 0x69
+test edx, 0x69
+test [edx], 0x69
+test rdx, 0x69
+test [rdx], 0x69
+test dil, r12b
+test [dil], r12b
+test di, r12w
+test [di], r12w
+test edi, r12d
+test [edi], r12d
+test rdi, r12
+test [rdi], r12
+tzcnt ax, bx
+tzcnt ax, [bx]
+tzcnt eax, ebx
+tzcnt eax, [ebx]
+tzcnt rax, rbx
+tzcnt rax, [rbx]
+umonitor eax
+fwait 
+wbinvd 
+wrmsr 
+wrpkru 
+xabort 0x69
+xadd al, r8b
+xadd [al], r8b
+xadd ax, r8w
+xadd [ax], r8w
+xadd eax, r8d
+xadd [eax], r8d
+xadd rax, r8
+xadd [rax], r8
+xbegin 0x6965
+xbegin 0x69696965
+xchg dx, ax
+xchg dx, ax
+xchg edx, eax
+xchg rdx, rax
+xchg edx, eax
+xchg rdx, rax
+xchg dl, al
+xchg [dl], al
+xchg al, dl
+xchg [al], dl
+xchg bx, dx
+xchg [bx], dx
+xchg [dx], bx
+xchg ebx, edx
+xchg [ebx], edx
+xchg [edx], ebx
+xchg rbx, rdx
+xchg [rbx], rdx
+xchg [rdx], rbx
+xend 
+xgetbv 
+xlat 
+xor al, 0x69
+xor ax, 0x69
+xor dl, 0x69
+xor [dl], 0x69
+xor dx, 0x6969
+xor [dx], 0x6969
+xor edx, 0x69696969
+xor [edx], 0x69696969
+xor rdx, 0x69696969
+xor [rdx], 0x69696969
+xor dx, 0x69
+xor [dx], 0x69
+xor edx, 0x69
+xor [edx], 0x69
+xor rdx, 0x69
+xor [rdx], 0x69
+xor dil, r12b
+xor [dil], r12b
+xor di, r12w
+xor [di], r12w
+xor edi, r12d
+xor [edi], r12d
+xor rdi, r12
+xor [rdi], r12
+xor dil, [r12b]
+xor di, [r12w]
+xor edi, [r12d]
+xor rdx, [r12]
+xrstor [eax]
+xrstor [rax]
+xrstors [eax]
+xrstors [rax]
+xsave [eax]
+xsave [rax]
+savec [eax]
+savec [rax]
+saves [eax]
+saves [rax]
+xsetbv 
+xtest 
