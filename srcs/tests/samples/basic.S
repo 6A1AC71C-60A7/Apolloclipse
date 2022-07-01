@@ -1773,10 +1773,6 @@
 
     umonitor rax
 
-    ; Wait
-
-    wait
-
     ; Write Back and Invalitade Cache
 
     wbinvd

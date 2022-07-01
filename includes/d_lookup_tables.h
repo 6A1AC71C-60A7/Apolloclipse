@@ -2625,6 +2625,7 @@ static const opfield_t lt_escape_0xDA_outside_modrm_opmap[] = {
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 
+	///TODO: VERIFY PARAMS AND MNEMONIC HERE
 	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST0,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST1,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FCMOVBE,	.am1 = DR_ST0,	.ot1 = DRS_87,	.am2 = DR_ST2,	.ot2 = DRS_87,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
