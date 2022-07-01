@@ -44,12 +44,6 @@ typedef enum
 	AMB,			// The opcode held by this field is prefix-dependent. The mnemonic field holds the index to another
 				// 			look up table in which the prefix resolution should be performed.
 
-	///TODO: I THINK I DON'T NEED THAT
-	// CF_JCC,		// Control flow instruction: conditional jump.
-	// CF_JUMP,	// Control flow instruction: inconditional jump.
-	// CF_RET,		// Control flow instruction: ret.
-	// CF_CALL,	// Control flow instruction: call.
-
 } op_addressing_method_t;
 
 typedef enum
@@ -79,39 +73,27 @@ typedef enum
 
 	OT_EXT,		// Reference to a 80-bit Double-Extented floating point data.
 	///TODO: 'EXT' CAN ALSO BE 'P'
-	OT_BCD,		// Reference to a 4-bit packed-BCD data.
-
-	///TODO: I THINK I DON'T NEED THAT
-	// CF_NEAR,	// A jump/call/ret to an instruction within the current code segment (the segment currently pointed to by the CS register),
-	// 			//		sometimes referred to as an intrasegment jump/call/return.
-	// CF_SHORT,	// A near jump where the jump range is limited to –128 to +127 from the current EIP value.
-	// CF_FAR,		// A jump/call/ret to an instruction located in a different segment than the current code segment but at the same privilege level (for jumps),
-	// 			//		sometimes referred to as an intersegment jump/call/return.
-	
+	OT_BCD,		// Reference to a 4-bit packed-BCD data.	
 } op_operand_type_t;
 
 typedef enum
 {
-	// from 32 to max 63, if not enought use ot and extend the lenght
-
-	///TODO: REDO comments here (not otX, ... amX)
-
-	DR_RAX = 32,// Use otX field bits of RAX register.
-	DR_RCX,		// Use the otX field bytes of RCX register.
-	DR_RDX,		// Use the otX field bytes of RDX register.
-	DR_RBX,		// Use the otX field bytes of RBX register.
-	DR_RSP,		// Use the otX field bytes of RSP register.
-	DR_RBP,		// Use the otX field bytes of RBP register.
-	DR_RSI,		// Use the otX field bytes of RSI register.
-	DR_RDI,		// Use the otX field bytes of RDI register.
-	DR_R8,		// Use the otX field bytes of R8 register.
-	DR_R9,		// Use the otX field bytes of R9 register.
-	DR_R10,		// Use the otX field bytes of R10 register.
-	DR_R11,		// Use the otX field bytes of R11 register.
-	DR_R12,		// Use the otX field bytes of R12 register.
-	DR_R13,		// Use the otX field bytes of R13 register.
-	DR_R14,		// Use the otX field bytes of R14 register.
-	DR_R15,		// Use the otX field bytes of R15 register.
+	DR_RAX = 32,// Use amX field bits of RAX register.
+	DR_RCX,		// Use the amX field bytes of RCX register.
+	DR_RDX,		// Use the amX field bytes of RDX register.
+	DR_RBX,		// Use the amX field bytes of RBX register.
+	DR_RSP,		// Use the amX field bytes of RSP register.
+	DR_RBP,		// Use the amX field bytes of RBP register.
+	DR_RSI,		// Use the amX field bytes of RSI register.
+	DR_RDI,		// Use the amX field bytes of RDI register.
+	DR_R8,		// Use the amX field bytes of R8 register.
+	DR_R9,		// Use the amX field bytes of R9 register.
+	DR_R10,		// Use the amX field bytes of R10 register.
+	DR_R11,		// Use the amX field bytes of R11 register.
+	DR_R12,		// Use the amX field bytes of R12 register.
+	DR_R13,		// Use the amX field bytes of R13 register.
+	DR_R14,		// Use the amX field bytes of R14 register.
+	DR_R15,		// Use the amX field bytes of R15 register.
 	DR_AH,		// Force use AH bytes of RAX register.
 	DR_CH,		// Force use CH bytes of RCX register.
 	DR_DH,		// Force use DH bytes of RDX register.

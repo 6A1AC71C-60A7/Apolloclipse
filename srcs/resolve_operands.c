@@ -238,9 +238,12 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
 			///TODO: For the moment i only handle general purpose registers but i have to hadle all
 
 			*dest = am - 30;
-			///TODO: For the moment i skip this kind of ambigiousness : mov eax/r8, imm32
 			if (IS_AMBIGIOUS(ot))
+            {
+                if (*(udword*)inst->prefix & RP_REXB_MASK)
+                    *dest += 8;
         		*skip = 0x1;
+            }
 		}
 		else
 		{
@@ -282,6 +285,6 @@ void	resolve_operands(instruction_t* const dest, opfield_t instruction)
     {
 		skip = 0x0;
         revolve_operand(dest, regs[i], ams[attr_index], ots[attr_index], &skip);
-		attr_index += skip ? 0x2 : 0x1; // TODO: += (bool)skip + 1 also
+		attr_index += skip + 1;
     }
 }

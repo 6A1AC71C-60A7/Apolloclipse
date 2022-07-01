@@ -343,7 +343,6 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
-		///TODO: ALL prefixes are not currently handled in the map
 		if (prefix & (MP_0xF2_MASK | MP_0xF3_MASK))
 		{
 			if (opcode >= 0xF0 && opcode < 0xf8)
@@ -466,96 +465,6 @@ static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbi
 		*dest = *((*(udword**)iraw)++);
 }
 
-// __always_inline
-// static ubyte		find_operand_size_overwrite(udword* const dest, ubyte ot, ubyte am, uword notoverwrite)
-// {
-// 	const udword old = *dest;
-
-// 	if (am < DR_RAX)
-// 	{
-// 		switch (ot)
-// 		{
-// 			case OT_B:
-// 				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
-// 				*dest |= OS_BYTE_MASK;
-// 				break ;
-
-// 			case OT_W:
-// 				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
-// 				*dest |= OS_WORD_MASK;
-// 				break ;
-
-// 			case OT_D:
-// 				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
-// 				*dest |= OS_DWORD_MASK;
-// 				break ;
-
-// 			case OT_Q:
-// 				*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
-// 				*dest |= OS_QWORD_MASK;
-// 				break ;
-// 		}
-// 	}
-
-// 	///TODO: EXCLUDE ALSO 0x66 OVERWRITE IF (MAYBE ?!?!?)
-// 	/// HAVE TO HANDLE DIFERENTS CASES:
-// 	/// - POSSIBLE TO EXTEND TO 16 ?
-// 	/// - ONLY FOR INSTRCTIONS THAT USE GENERAL PURPOSE REGISTERS
-
-// 	else if (!notoverwrite)
-// 	{
-// 		*dest &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK);
-
-// 		switch (ot)
-// 		{
-// 			case OR_8:
-// 				// fall through
-// 			case DRS_8:
-// 				*dest |= OS_BYTE_MASK;
-// 				break ;
-
-// 			case OR_16:
-// 				// fall through
-// 			case DRS_16:
-// 				*dest |= OS_WORD_MASK;
-// 				break ;
-
-// 			case OR_32:
-// 				// fall throught
-// 			case DRS_32:
-// 				*dest |= OS_DWORD_MASK;
-// 				break ;
-
-// 			case OR_64:
-// 				// fall through
-// 			case DRS_64:
-// 				*dest |= OS_QWORD_MASK;
-// 				break ;
-
-// 			case OR_128:
-// 				// fall through
-// 			case DRS_128:
-// 				*dest |= OS_DQWORD_MASK;
-// 				break ;
-			
-// 			case OR_256:
-// 				// fall through
-// 			case DRS_256:
-// 				*dest |= OS_QQWORD_MASK;
-// 				break ;
-// 		}
-// 	}
-
-// 	return *dest != old;
-// }
-
-// __always_inline
-// static void		get_operand_size_by_operand_type(udword* const dest, opfield_t found, udword notoverwrite)
-// {
-// 	ubyte unused __attribute__ ((unused)) = !find_operand_size_overwrite(dest, found.ot1, found.am1, notoverwrite) || !find_operand_size_overwrite(dest, found.ot2, found.am2, notoverwrite)
-// 	|| !find_operand_size_overwrite(dest, found.ot3, found.am3, notoverwrite) || !find_operand_size_overwrite(dest, found.ot4, found.am4, notoverwrite);
-// }
-
 static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 {
 	///TODO: Only CALL near JMP near and RET near ?!?!
@@ -574,7 +483,7 @@ static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 #define IS_DEFAULT_REGISTER(x) ((x) >= 32)
 
 __always_inline
-static void		get_operand_size_V2(instruction_t* const dest, opfield_t found)
+static void		get_operand_size(instruction_t* const dest, opfield_t found)
 {
 	/* Operand size of first operand dictates the operand size of
 		the whole instruction */
@@ -619,12 +528,6 @@ static void		get_operand_size_V2(instruction_t* const dest, opfield_t found)
 		}
 	}
 
-	/* Overwrite previous with addressing modes that ignore prefixes,
-		yes i assume that the same operand size is shared amoung all the operands,
-		and that's true for most of the instructons.
-		I can't hadle the 'exceptions' without incrementing the size of 'instruction_t' by 8 bytes,
-		i think is better to let the next layer handle the 'exceptions'. */
-
 	if (isreg == 0x0)
 	{
 		switch (found.ot1)
@@ -651,54 +554,6 @@ static void		get_operand_size_V2(instruction_t* const dest, opfield_t found)
 		}
 	}
 }
-
-// __always_inline
-// static void		get_operand_size(instruction_t* const dest, opfield_t found)
-// {
-// 	///TODO: Handle > 64-bits
-
-// 	udword* const prefix = (udword*)dest->prefix;
-// 	udword notoverwrite = 0x0;
-
-// 	/// TODO: TRY NEW IMPLEMENTATION:
-// 	/// 1) SET TO DEFAULT
-// 	///		IF REG 64 -> OS 32
-// 	///		ELSE IF REG 16 -> OS 16
-// 	///		ELSE IF REG 8 -> OS 8
-// 	///		ELSE IF  DEFAULT 64 -> OS 64
-// 	///		ELSE -> OS 32
-// 	/// 2) SET TO PREFIXES IF(SIZE == 32)
-// 	///		IF 0x66 -> OS 16
-// 	///		ELSE IF REX.W -> OS 64
-// 	/// 3) OVERWRITE TO 'OT_{B, W, D, Q}'
-// 	/// WITHOUT notoverwrite variable ...
-
-// 	if (*prefix & RP_REXW_MASK)
-// 	{
-// 		*prefix |= OS_QWORD_MASK;
-// 		notoverwrite = 0x1;
-// 	}
-// 	else if (*prefix & MP_0x66_MASK && (IS_ONE_BYTE_OPCODE_MAP(dest->opcode)
-// 	|| (IS_TWO_BYTE_OPCODE_MAP(dest->opcode) && IS_WORD_OVERWRITABLE_TWOBYTES_OPMAP((dest->opcode[2] & 0xF0) >> 4))))
-// 	{
-// 		*prefix |= OS_WORD_MASK;
-// 		notoverwrite = 0x1;
-// 	}
-// 	else if (is_mnemonic_default_64_bits(dest->mnemonic))
-// 	{
-
-// 		notoverwrite = 0x1;
-// 		*prefix |= OS_QWORD_MASK;
-// 	}
-// 	else
-// 		*prefix |= OS_DWORD_MASK;
-
-
-// 	/* Previous could be ovewrited by the operand type of the instruction */
-
-// 	///TODO: is_mnemonic_default_64_bits SHOULD NEVER BE OVEWRITED
-// 	get_operand_size_by_operand_type(prefix, found, notoverwrite);		
-// }
 
 #define HAS_IMMEDIATE(x) ( \
 	(x) != 0 && (x) >= AM_I && (x) <= AM_L \
@@ -807,7 +662,6 @@ err_t	get_instruction_V2(instruction_t* const dest, const ubyte** iraw)
 {
 	err_t		st = SUCCESS;
 
-	//ubyte		mandatory_prefix = 0x0;
 	ubyte		isvex = 0x0;
 	ubyte		skip_pref = 0x0;
 	ubyte		isescape;
@@ -913,7 +767,8 @@ skip_prefix_check:
 		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
 		found = handle_x87_instructions(dest, iraw);
 	else
-	{
+	{		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
+
 		const opfield_t*	map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop);
 
 		found = map[GET_MAP_INDEX(dest->opcode[2])];
@@ -954,7 +809,7 @@ skip_prefix_check:
 		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
 	DEBUG("AFTER BUG\n");
 
-	get_operand_size_V2(dest, found);
+	get_operand_size(dest, found);
 	
 	if (has_immediate(found))
 		get_immediate(found, dest, iraw);

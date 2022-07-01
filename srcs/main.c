@@ -26,10 +26,6 @@
 
 ///TODO: AM_O is also an immediate ?
 
-///STATUS: Current main value does not work
-/// Indexing seems ok now, but maybe opcode tables structs are bad aligned
-/// TEST MAPS ALIGNEMENT ...
-
 ///TODO: CALL INSTRUCTION ADDRESS RESOLUTION IS DIFERENT FROM OBJDUMP
 
 ///TODO: TEST BWSAP BETTER (AMB REGS) IN TWO BYTE OPCODE MAP
@@ -46,10 +42,6 @@
 
 ///TODO: AMBIGIOUS: xchg r8, rax and be NOP and also be pause ... WTF
 
-///TODO: Rotations and shifts actually takes a fcking '1' as operand WTF
-
-///CURRENT: STATUS:  mov edx, 0x69696969 (l1013), have to reimplement the operand size resolution
-
 ///TODO: UMONITOR takes a register which is used as an address (but type is reg), default operand type
 ///         is currently dword but this is 32 bits addressing (0x67), need to make it qword by default.
 ///         Test and see 
@@ -61,16 +53,7 @@ int main(int ac, const char* av[])
 
     (void)ac; (void)av;
 
-   // printf("%lu\n", sizeof(instruction_t));
-
-
-   // ubyte t_isnt[] = {0xF0, 0xF2, 0xF3, 0x64, 0x65, 0x2E, 0x3E, 0x66, 0x67, 0b01001111};
-   // test_instruction(t_isnt,  0);
-
     instruction_t dest[INST_NB] = {};
-    //const ubyte iraw[] = "\x48\xC7\xC0\x42\x00\x00\x00";
-    // const ubyte iraw[] = "\x14\x69\x66\x83\xD0\x69\x83\xD0\x69\x48\x83\xD0\x69";
-    //const ubyte iraw[] = "\xB8\x42\x00\x00\x00";
 
 #ifdef TEST_FILE
     ubyte iraw[BUFFSIZE] = {};

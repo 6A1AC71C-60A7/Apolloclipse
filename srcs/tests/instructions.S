@@ -165,7 +165,7 @@
 
 ; Add with Carry
 
-    adc al, 0x69 ; BUG (operand size ?)
+    adc al, 0x69
     adc ax, 0x69
     adc eax, 0x69
     adc rax, 0x69

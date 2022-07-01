@@ -37,15 +37,13 @@
 ** REX prefixes masks
 */
 
-
-///TODO: Comments seems inverted
-/// When 1, a 64-bit operand size is used. Otherwise, when 0, the default operand size is used
-#define RP_REXB_MASK (udword)(LP_ADDRSZ_MASK << 1)
-/// This 1-bit value is an extension to the MODRM.reg field
-#define RP_REXX_MASK (udword)(RP_REXB_MASK << 1)
-/// This 1-bit value is an extension to the SIB.index field
-#define RP_REXR_MASK (udword)(RP_REXX_MASK << 1)
 /// This 1-bit value is an extension to the MODRM.rm field or the SIB.base field
+#define RP_REXB_MASK (udword)(LP_ADDRSZ_MASK << 1)
+/// This 1-bit value is an extension to the SIB.index field
+#define RP_REXX_MASK (udword)(RP_REXB_MASK << 1)
+/// This 1-bit value is an extension to the MODRM.reg field
+#define RP_REXR_MASK (udword)(RP_REXX_MASK << 1)
+/// When 1, a 64-bit operand size is used. Otherwise, when 0, the default operand size is used
 #define RP_REXW_MASK (udword)(RP_REXR_MASK << 1)
 
 /*
@@ -70,21 +68,6 @@
 #define OS_QQWORD_MASK (udword)(OS_DQWORD_MASK << 1)
 
 #define OP_IMMEDIATE_MASK (udword)(OS_QQWORD_MASK << 1)
-
-// ///TODO: Now i have more space, select a new index for these 2 bit-flags
-// /* Operand kind get */
-// #define GET_OPL_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x4) & 0b00000011)
-// #define GET_OPR_TYPE(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x4) >> 0x6) & 0b00000011)
-
-// /* Operands kinds */
-// #define FL_OP1_IMM 0x0
-// #define FL_OP1_MEM 0x1
-// #define FL_OP1_REG 0x2
-// #define FL_OP1_UNUSED 0x3 // free to use for something
-// #define FL_OP2_IMM 0x0
-// #define FL_OP2_MEM 0x2
-// #define FL_OP2_REG 0x2
-// #define FL_OP2_UNUSED 0x3 // free to use for something
 
 /*
 ** VEX/XOP members values 
