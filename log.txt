@@ -1,0 +1,202 @@
+f2xm1 
+fabs 
+fadd [r15d]
+fadd [r15]
+fadd st0, st0
+fadd st0, st7
+fadd st7, st0
+fadd st0, st7
+faddp st1, st0
+faddp st7, st0
+fiadd [eax]
+fiadd [ax]
+fbld [eax]
+fbstp [r15d]
+fchs 
+fwait 
+fclex 
+fclex 
+fcom [r14d]
+fcom [r14]
+fcom st0, st7
+fcom st0, st1
+fcomp [r8d]
+fcomp [r8]
+fcomp st0, st7
+fcomp st0, st1
+fcompp 
+fdecstp 
+fdiv [esi]
+fdiv [rsi]
+fdiv st0, st0
+fdiv st0, st1
+fdiv st1, st0
+fdivp st1, st0
+fdivp st0, st0
+fdivp st1, st0
+fdivp st1, st0
+fidiv [di]
+fidiv [edi]
+fdivr [esi]
+fdivr [rsi]
+fdivr st0, st0
+fdivr st0, st1
+fdivr st1, st0
+fdivrp st1, st0
+fdivrp st0, st0
+fdivrp st1, st0
+fdivrp st1, st0
+fidivr [di]
+fidivr [edi]
+ffree st7
+ficom [bx]
+ficom [ebx]
+ficomp [bx]
+ficomp [ebx]
+fild [dx]
+fild [edx]
+fild [edx]
+fincstp 
+fwait 
+finit 
+finit 
+fist [cx]
+fist [ecx]
+fistp [cx]
+fistp [ecx]
+fistp [ecx]
+fld [eax]
+fld [rax]
+fld st0, st7
+fld1 
+fldl2t 
+fldl2e 
+fldpi 
+fldlg2 
+fldln2 
+fldz 
+fldcw [ax]
+fldenv [eax]
+fwait 
+fstenv [eax]
+fmul [eax]
+fmul [rax]
+fmul st0, st0
+fmul st0, st7
+fmul st7, st0
+fmulp st1, st0
+fmulp st0, st0
+fmulp st7, st0
+fmulp st1, st0
+fimul [ax]
+fimul [eax]
+fnop 
+fpatan 
+fprem 
+fptan 
+frdint 
+frstor [r15d]
+fwait 
+fsave [r14d]
+fsave [r14d]
+fscale 
+fsqrt 
+fst [eax]
+fst [rax]
+fst st7
+fstp [eax]
+fstp [rax]
+fstp st7
+fsub [eax]
+fsub [rax]
+fsub st0, st0
+fsub st0, st7
+fsub st7, st0
+fsubp st1, st0
+fsubp st0, st0
+fsubp st7, st0
+fsubp st1, st0
+fisub [ax]
+fisub [eax]
+fsubr [eax]
+fsubr [rax]
+fsubr st0, st0
+fsubr st0, st7
+fsubr st7, st0
+fsubrp st1, st0
+fsubrp st0, st0
+fsubrp st7, st0
+fsubrp st1, st0
+fisubr [ax]
+fisubr [eax]
+ftst 
+fwait 
+fwait 
+fxam 
+fxch st0, st7
+fxch st0, st1
+fxtract 
+fyl2x 
+fyl2xp1 
+fprem1 
+fsin 
+fcos 
+fsincos 
+fucom st7, st0
+fucom st1, st0
+fucomp st7
+fucomp st1
+fucompp 
+fldcw [di]
+fcmovb st0, st0
+fcmovb st0, st1
+fcmovb st0, st2
+fcmovb st0, st3
+fcmovb st0, st4
+fcmovb st0, st5
+fcmovb st0, st6
+fcmovb st0, st7
+fcmovbe st0, st0
+fcmovbe st0, st1
+fcmovbe st0, st2
+fcmovbe st0, st3
+fcmovbe st0, st4
+fcmovbe st0, st5
+fcmovbe st0, st6
+fcmovbe st0, st7
+fcmovu st0, st0
+fcmovu st0, st1
+fcmovu st0, st2
+fcmovu st0, st3
+fcmovu st0, st4
+fcmovu st0, st5
+fcmovu st0, st6
+fcmovu st0, st7
+fcmovnb st0, st0
+fcmovnb st0, st1
+fcmovnb st0, st2
+fcmovnb st0, st3
+fcmovnb st0, st4
+fcmovnb st0, st5
+fcmovnb st0, st6
+fcmovnb st0, st7
+fcmovne st0, st0
+fcmovne st0, st1
+fcmovne st0, st2
+fcmovne st0, st3
+fcmovne st0, st4
+fcmovne st0, st5
+fcmovne st0, st6
+fcmovne st0, st7
+fcmovnu st0, st0
+fcmovnu st0, st1
+fcmovnu st0, st2
+fcmovnu st0, st3
+fcmovnu st0, st4
+fcmovnu st0, st5
+fcmovnu st0, st6
+fcmovnu st0, st7
+fcomi st0, st7
+fucomi st0, st7
+fcomip st0, st7
+fucomip st0, st7

@@ -483,7 +483,7 @@ static const char* const mnemonics[] = {
 	"tzcnt",   // count the number trailing zero bits.
 
 	"fld",	// load floating-point value.
-	"tst",	// store floating-point value.
+	"fst",	// store floating-point value.
 	"fstp",	// store floating-point value and pop.
 	"fild",	// load integer.
 	"fist",	// store integer.

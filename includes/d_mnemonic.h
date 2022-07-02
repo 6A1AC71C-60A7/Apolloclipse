@@ -310,7 +310,7 @@ typedef enum
 	/* 1) Data transfer */
 
 	FLD,			// Load floating-point value.
-	TST,			// Store floating-point value.
+	FST,			// Store floating-point value.
 	FSTP,			// Store floating-point value and pop.
 	FILD,			// Load integer.
 	FIST,			// Store integer.

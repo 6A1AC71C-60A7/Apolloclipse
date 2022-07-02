@@ -218,18 +218,19 @@ static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte*
 	uqword				map_index;
 	opfield_t			found;
 
-
 	inst->mod_rm = *((*iraw)++);
 
-	/* Documentation map starts at 0x60 (fields from 0x0 to 0x60 are zeroed), so I've stripped those in mine */
-	map_index = inst->mod_rm > 0xBF ? GET_MAP_INDEX(inst->mod_rm) - 0X60 : MODRM_REG_GET(inst->mod_rm);
+	DEBUG("DEBUG x87: MODRM IS 0x%02X\n", inst->mod_rm);
 
-	switch (inst->opcode[0])
+	/* Documentation's map starts at 0xC0 (fields from 0x0 to 0x0 are zeroed), so I've stripped those in mine */
+	map_index = inst->mod_rm > 0xBF ? GET_MAP_INDEX(inst->mod_rm) - 0XC0 : MODRM_REG_GET(inst->mod_rm);
+
+	switch (inst->opcode[2])
 	{
 		case 0xD8:
 			map = inst->mod_rm > 0xBF ? lt_escape_0xD8_outside_modrm_opmap : lt_escape_0xD8_within_modrm_opmap;
 			break ;
-	
+
 		case 0xD9:
 			map = inst->mod_rm > 0xBF ? lt_escape_0xD9_outside_modrm_opmap : lt_escape_0xD9_within_modrm_opmap;
 			break ;
@@ -259,9 +260,15 @@ static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte*
 			break ;
 	}
 
+	DEBUG("DEBUG x87: MAP INDEX: %"PRId64"\n", map_index);
+
+	DEBUG("DEBUG x87: IS BIG MAP: %d\n", map == lt_escape_0xD9_outside_modrm_opmap);
+
 	found = map[map_index];
 
 	inst->mnemonic = found.mnemonic;
+
+	DEBUG("DEBUG x87: MNEMONIC IS: %d\n", inst->mnemonic);
 
 	return found;
 }
@@ -425,7 +432,9 @@ static ubyte	get_opcode_attributes(mnemonic_t* const mnemonic, opfield_t opfield
 __always_inline
 static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 {
-	inst->mod_rm = *((*iraw)++);
+	/* If is x87 instruction, the modR/M is already parsed */
+	if (!IS_ESCAPE_FX87(inst->opcode[2]))
+		inst->mod_rm = *((*iraw)++);
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
 		(RM[3] is extended from REX.B/VEX.~B/XOP.~B */
@@ -763,8 +772,7 @@ skip_prefix_check:
 
 	opfield_t found;
 
-	if (IS_ESCAPE_FX87(dest->opcode[0]))
-		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
+	if (IS_ESCAPE_FX87(dest->opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
 	else
 	{		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
@@ -804,13 +812,11 @@ skip_prefix_check:
 	if (opattr & HAS_ATTR_SIB)
 		opattr |= get_sib(dest, iraw);
 	DEBUG("OPATTR IS (sib): %d\n", opattr);
-	DEBUG("BEFORE BUG\n");
 	if (HAS_ATTR_DISP(opattr))
 		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
-	DEBUG("AFTER BUG\n");
 
 	get_operand_size(dest, found);
-	
+
 	if (has_immediate(found))
 		get_immediate(found, dest, iraw);
 	else

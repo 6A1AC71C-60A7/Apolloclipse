@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 1260
+#define INST_NB 202
 #define BUFFSIZE 0x2000
-#define FILENAME "srcs/tests/instructions.txt"
+#define FILENAME "srcs/tests/samples/x87.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -46,6 +46,13 @@
 ///         is currently dword but this is 32 bits addressing (0x67), need to make it qword by default.
 ///         Test and see 
 
+///TODO: x87 let the possibility to add 3 newer kinds of operand size:
+/// 14/28 byte data (OT_DS)
+/// 98/108 byte data (OT_DSS)
+/// 80-bits byte data (OT_P)
+/// The operand size is not handle yet and i don't know yet if is imperative to do
+/// or just an addon (i don't know whether or not)
+/// After all the user can resolve the operand size looking at prefixes ...
 
 int main(int ac, const char* av[])
 {
