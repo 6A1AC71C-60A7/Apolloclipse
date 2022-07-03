@@ -111,13 +111,13 @@
 ;   - pabsd
 ;   - pabsq
 ;   - pabsw
-;   - packssdw/sswb/usdw/uswb
+;   //- packssdw/sswb/usdw/uswb
 ;   - ...
 ;   - pmuludq
-;   - por
+;   //- por
 ;   - psadbw
 ;   - pshufb too punpcklwd
-;   - pxor
+;   //- pxor
 ;   - rorx
 ;   - rounded
 ;   - roundps/sd/ss
