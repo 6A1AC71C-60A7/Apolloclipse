@@ -296,3 +296,37 @@ vpmulhuw ymm1, ymm2, [rax]
 
 vpsadbw ymm1, ymm2, ymm3
 vpsadbw ymm1, ymm2, [rax]
+
+; Subtract packed quadword integers in ymm3/m256 from ymm2.
+
+vpsubq ymm1, ymm2
+vpsubq ymm1, [rax]
+
+; Multiply packed unsigned doubleword integers in ymm2 by packed unsigned doubleword integers in ymm3/m256, and store the quadword results in ymm1.
+
+vpmuldq ymm1, ymm2, ymm3
+vpmuldq ymm1, ymm2, [rax]
+
+; Shuffle the low words in ymm2/m256 based on the encoding in imm8 and store the result in ymm1.
+
+vpshuflw ymm1, ymm2, 0x69
+vpshuflw ymm2, [rax], 0x69
+
+; Shuffle the hugh words in ymm2/m256 based on the encoding in imm8 and store the result in ymm1.
+
+vpshufhw ymm1, ymm2, 0x69
+vpshufhw ymm2, [rax], 0x69
+
+; Shuffle the doublewords in ymm2/m256 based on the encoding in imm8 and store the result in ymm1.
+
+vpshufd ymm1, ymm2, 0x69
+vpshufd ymm2, [rax], 0x69
+
+; Shift ymm2 left by imm8 bytes while shifting in 0s and store result in ymm1.
+
+vpslldq ymm1, ymm2, 0x69
+
+; Shift ymm2 right by imm8 bytes while shifting in 0s and store result in ymm1.
+
+vpsrldq ymm1, ymm2, 0x69
+

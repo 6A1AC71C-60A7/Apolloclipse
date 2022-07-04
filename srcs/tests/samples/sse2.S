@@ -310,3 +310,354 @@ pmulhuw xmm1, [rax]
 
 psadbw xmm1, xmm2
 psadbw xmm1, [rax]
+
+; Move aligned packed double-precision floating-point values from xmm2/mem to xmm1.
+
+movapd xmm7, xmm14
+movapd xmm7, [rax]
+
+; Move aligned packed double-precision floating-point values from xmm1 to xmm2/mem.
+
+movapd [rax], xmm7
+
+
+; Move unaligned packed double-precision floating-point values from xmm2/mem to xmm1.
+
+movupd xmm7, xmm14
+movupd xmm7, [rax]
+
+; Move unaligned packed double-precision floating-point values from xmm1 to xmm2/mem.
+
+movupd [rax], xmm7
+
+; Merge scalar double-precision floating-point value from xmm2 to xmm1 register.
+
+movsd xmm7, xmm6
+
+; Load scalar double-precision floating-point value from m32 to xmm1 register.
+
+movsd xmm7, QWORD [rdi]
+
+; Move scalar double-precision floating-point value from xmm1 register to xmm2/m32.
+
+movsd QWORD [rdi], xmm7
+
+; Move two packed double-precision floating-point values from m64 to low quadword of xmm1.
+
+movlpd xmm1, [rax]
+
+; Move two packed double-precision floating-point values from low quadword of xmm1 to m64.
+
+movlpd [rax], xmm1
+
+; Move two packed double-precision floating-point values from m64 to high quadword of xmm1.
+
+movhpd xmm1, [rax]
+
+; Move two packed double-precision floating-point values from high quadword of xmm1 to m64.
+
+movhpd [rax], xmm1
+
+; Extract 4-bit sign mask from xmm and store in reg. The upper bits of r32 or r64 are filled with zeros.
+
+movmskpd rax, xmm2
+
+; Add packed double-precision floating-point values from xmm2/m128 to xmm1 and store result in xmm1.
+
+addpd xmm5, xmm10
+addpd xmm5, [rdi]
+
+; Add the low double-precision floating-point value from xmm2/mem to xmm1 and store the result in xmm1.
+
+addsd xmm1, xmm2
+addsd xmm1, QWORD [rsp]
+
+; Multiply packed double-precision floating-point values in xmm2/m128 with xmm1 and store result in xmm1.
+
+mulpd xmm1, xmm2
+mulpd xmm1, [rax]
+
+; Multiply the low double-precision floating-point value in xmm2/m32 by the low double-precision floating-point value in xmm1.
+
+mulsd xmm1, xmm2
+mulsd xmm1, [rax]
+
+; Divide packed double-precision floating-point values in xmm1 by packed double-precision floating-point values in xmm2/mem.
+
+divpd xmm1, xmm2
+divpd xmm1, [rax]
+
+; Divide low double-precision floating-point value in xmm1 by low double-precision floating-point value in xmm2/m32.
+
+divsd xmm1, xmm2
+divsd xmm1, [rax]
+
+; Computes Square Roots of the packed double-precision floating-point values in xmm2/m128 and stores the result in xmm1.
+
+sqrtpd xmm1, xmm2
+sqrtpd xmm1, [rax]
+
+; Computes square root of the low double-precision floating-point value in xmm2/m32 and stores the results in xmm1.
+
+sqrtsd xmm1, xmm2
+sqrtsd xmm1, [rax]
+
+; Return the maximum double-precision floating-point values between xmm1 and xmm2/mem.
+
+maxpd xmm1, xmm2
+maxpd xmm1, [rax]
+
+; Return the maximum scalar double-precision floating-point value between xmm2/m32 and xmm1.
+
+maxsd xmm1, xmm2
+maxsd xmm1, [rax]
+
+; Return the minimum double-precision floating-point values between xmm1 and xmm2/mem.
+
+minpd xmm1, xmm2
+minpd xmm1, [rax]
+
+; Return the minimum scalar double-precision floating-point value between xmm2/m32 and xmm1.
+
+minsd xmm1, xmm2
+minsd xmm1, [rax]
+
+
+
+
+; Return the bitwise logical AND of packed double-precision floating-point values in xmm1 and xmm2/mem.
+
+andpd xmm1, xmm2
+andpd xmm1, [rax]
+
+; Return the bitwise logical AND NOT of packed double-precision floating-point values in xmm1 and xmm2/mem.
+
+andnpd xmm1, xmm2
+andnpd xmm1, [rax]
+
+; Return the bitwise logical OR of packed double-precision floating-point values in xmm1 and xmm2/mem.
+
+orpd xmm1, xmm2
+orpd xmm1, [rax]
+
+; Return the bitwise logical XOR of packed double-precision floating-point values in xmm1 and xmm2/mem.
+
+xorpd xmm1, xmm2
+xorpd xmm1, [rax]
+
+; Compare packed double-precision floating-point values in xmm2/m128 and xmm1 using bits 2:0 of imm8 as a comparison predicate.
+
+cmppd xmm1, xmm2, 0x69
+cmppd xmm1, [rax], 0x69
+
+; Compare low double-precision floating-point value in xmm2/m32 and xmm1 using bits 2:0 of imm8 as comparison predicate.
+
+cmpsd xmm1, xmm2, 0x69
+cmpsd xmm1, [rax], 0x69
+
+; Compare low double-precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
+
+comisd xmm1, xmm2
+comisd xmm1, [rax]
+
+; Compare low double-precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
+
+ucomisd xmm1, xmm2
+ucomisd xmm1, [rax]
+
+
+
+; Select from quadruplet of double-precision floating-point values in xmm1 and xmm2/m128 using imm8, interleaved result pairs are stored in xmm1.
+
+shufpd xmm1, xmm2, 0x69
+shufpd xmm1, [rax], 0x69
+
+; Unpacks and Interleaves double-precision floating-point values from high quadwords of xmm1 and xmm2/m128.
+
+unpckhpd xmm1, xmm2
+unpckhpd xmm1, [rax]
+
+; Unpacks and Interleaves double-precision floating-point values from low quadwords of xmm1 and xmm2/m128.
+
+unpcklpd xmm1, xmm2
+unpcklpd xmm1, [rax]
+
+; Convert two packed single-precision floating-point values in xmm2/m64 to two packed double-precision floating-point values in xmm1.
+
+cvtps2pd xmm1, xmm2
+cvtps2pd xmm1, [rax]
+
+; Convert two packed double-precision floating-point values in xmm2/mem to two single-precision floating-point values in xmm1.
+
+cvtpd2ps xmm1, xmm2
+cvtpd2ps xmm1, [rax]
+
+; Convert one single-precision floating-point value in xmm2/m32 to one double-precision floating-point value in xmm1.
+
+cvtss2sd xmm1, xmm2
+cvtss2sd xmm1, [rax]
+
+; Convert one double-precision floating-point value in xmm2/m64 to one single-precision floating-point value in xmm1.
+
+cvtsd2ss xmm1, xmm2
+cvtsd2ss xmm1, [rax]
+
+; Convert two packed double-precision floating-point values from xmm/m128 to two packed signed doubleword integers in mm.
+
+cvtpd2pi mm2, xmm1
+cvtpd2pi mm2, [rax]
+
+; Convert two packer double-precision floating-point values from xmm/m128 to two packed signed doubleword integers in mm using truncation.
+
+cvttpd2pi mm2, xmm1
+cvttpd2pi mm2, [rax]
+
+; Convert two packed double-precision floating-point values in xmm2/mem to two signed doubleword integers in xmm1.
+
+cvtpd2dq xmm1, xmm2
+cvtpd2dq xmm1, [rax]
+
+; Convert two packed double-precision floating-point values in xmm2/mem to two signed doubleword integers in xmm1 using truncation.
+
+cvttpd2dq xmm1, xmm2
+cvttpd2dq xmm1, [rax]
+
+; Convert two packed signed doubleword integers from xmm2/mem to two packed double-precision floating-point values in xmm1.
+
+cvtdq2pd xmm1, xmm2
+cvtdq2pd xmm1, [rax]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed doubleword integer r32.
+
+cvtsd2si eax, xmm1
+cvtsd2si eax, QWORD [rdi]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed quadword integer sign-extended into r64.
+
+cvtsd2si rax, xmm1
+cvtsd2si rax, QWORD [rdi]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed doubleword integer in r32 using truncation.
+
+cvttsd2si eax, xmm1
+cvttsd2si eax, QWORD [rdi]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed quadword integer in r64 using truncation.
+
+cvttsd2si rax, xmm1
+cvttsd2si rax, QWORD [rdi]
+
+; Convert one signed doubleword integer from r32/m32 to one double-precision floating-point value in xmm1.
+
+cvtsi2sd xmm1, eax
+cvtsi2sd xmm1,  DWORD [rax]
+
+; Convert one signed quadword integer from r/m64 to one double-precision floating-point value in xmm1.
+
+cvtsi2sd xmm1, rax
+cvtsi2sd xmm1, QWORD [rax]
+
+; Convert four packed single-precision floating-point values from xmm2/mem to four packed signed doubleword values in xmm1.
+
+cvtps2dq xmm1, xmm2
+cvtps2dq xmm1, [rax]
+
+; Convert four packed single-precision floating-point values from xmm2/mem to four packed signed doubleword values in xmm1 using truncation.
+
+cvttps2dq xmm1, xmm2
+cvttps2dq xmm1, [rax]
+
+; Convert four packed signed doubleword integers from xmm2/mem to four packed single-precision floating-point values in xmm1.
+
+cvtdq2ps xmm1, xmm2
+cvtdq2ps xmm1, [rax]
+
+; Move aligned packed integer values from xmm2/mem to xmm1.
+
+movdqa xmm1, xmm2
+movdqa xmm1, [rax]
+
+; Move aligned packed integer values from xmm1 to xmm2/mem.
+
+movdqa [rax], xmm1
+
+; Move unaligned packed integer values from xmm2/mem to xmm1.
+
+movdqu xmm1, xmm2
+movdqu xmm1, [rax]
+
+; Move unaligned packed integer values from xmm1 to xmm2/mem.
+
+movdqu [rax], xmm1
+
+; Subtract quadword integer in mm1 from mm2 /m64.
+
+psubq mm1, mm2
+psubq mm1, [rax]
+
+; Subtract packed quadword integers in xmm1 from xmm2 /m128.
+
+psubq xmm1, xmm2
+psubq xmm2, [rax]
+
+; Multiply unsigned doubleword integer in mm1 by unsigned doubleword integer in mm2/m64, and store the quadword result in mm1.
+
+pmuludq mm1, mm2
+pmuludq mm1, [rax]
+
+; Multiply packed unsigned doubleword integers in xmm1 by packed unsigned doubleword integers in xmm2/m128, and store the quadword results in xmm1.
+
+pmuludq xmm1, xmm2
+pmuludq xmm2, [rax]
+
+; Shuffle the low words in xmm2/m128 based on the encoding in imm8 and store the result in xmm1.
+
+pshuflw xmm1, xmm2, 0x69
+pshuflw xmm2, [rax], 0x69
+
+; Shuffle the high words in xmm2/m128 based on the encoding in imm8 and store the result in xmm1.
+
+pshufhw xmm1, xmm2, 0x69
+pshufhw xmm2, [rax], 0x69
+
+; Shuffle the doublewords in xmm2/m128 based on the encoding in imm8 and store the result in xmm1.
+
+pshufd xmm1, xmm2, 0x69
+pshufd xmm2, [rax], 0x69
+
+; Shift xmm1 left by imm8 bytes while shifting in 0s.
+
+pslldq xmm1, 0x69
+
+; Shift xmm1 right by imm8 bytes while shifting in 0s.
+
+psrldq xmm1, 0x69
+
+; Move Quadword from XMM to MMX Technology Register
+
+movdq2q mm1, xmm1
+
+; Flush Cache Line
+
+clflush [rax]
+
+; Move packed integer values in xmm1 to m128 using non-temporal hint.
+
+movntdq [rax], xmm1
+
+; Move packed double-precision values in xmm1 to m128 using non-temporal hint.
+
+movntpd [rax], xmm1
+
+; Move doubleword from r32 to m32 using non-temporal hint.
+
+movnti DWORD [rax], edi
+
+; Move quadword from r64 to m64 using non-temporal hint.
+
+movnti QWORD [rax], rdi
+
+; Selectively write bytes from xmm1 to memory location using the byte mask in xmm2. The default memory location is specified by DS:DI/EDI/RDI.
+
+maskmovdqu xmm1, xmm2
+

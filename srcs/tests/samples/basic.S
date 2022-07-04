@@ -83,7 +83,6 @@
 ;   - maxps
 ;   - maxsd
 ;   - maxss
-;   - mfence
 ;   - minpd
 ;   - minps
 ;   - minsd

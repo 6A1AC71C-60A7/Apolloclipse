@@ -1780,3 +1780,867 @@ vpsadbw ymm1, ymm2, [rax]
 
 vpsadbw zmm1, zmm2, zmm3
 vpsadbw zmm1, zmm2, [rax]
+
+; Move aligned packed double-precision floating-point values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovapd xmm7 {k6} {z}, xmm3
+vmovapd xmm7 {k6} {z}, [rax]
+
+; Move aligned packed double-precision floating-point values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovapd ymm7 {k6} {z}, ymm3
+vmovapd ymm7 {k6} {z}, [rax]
+
+; Move aligned packed double-precision floating-point values from zmm2/m512 to zmm1 using writemask k1.
+
+vmovapd zmm7 {k6} {z}, zmm3
+vmovapd zmm7 {k6} {z}, [rax]
+
+; Move aligned packed double-precision floating-point values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovapd [rax], xmm7
+
+; Move aligned packed double-precision floating-point values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovapd [rax], ymm7
+
+; Move aligned packed double-precision floating-point values from zmm1 to zmm2/m512 using writemask k1.
+
+vmovapd [rax], zmm7
+
+; Move unaligned packed double-precision floating-point values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovupd xmm7 {k6} {z}, xmm3
+vmovupd xmm7 {k6} {z}, [rax]
+
+; Move unaligned packed double-precision floating-point values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovupd ymm7 {k6} {z}, ymm3
+vmovupd ymm7 {k6} {z}, [rax]
+
+; Move unaligned packed double-precision floating-point values from zmm2/m512 to zmm1 using writemask k1.
+
+vmovupd zmm7 {k6} {z}, zmm3
+vmovupd zmm7 {k6} {z}, [rax]
+
+; Move unaligned packed double-precision floating-point values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovupd [rax], xmm7
+
+; Move unaligned packed double-precision floating-point values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovupd [rax], ymm7
+
+; Move unaligned packed double-precision floating-point values from zmm1 to zmm2/m512 using writemask k1.
+
+vmovupd [rax], zmm7
+
+; Move scalar double-precision floating-point value from xmm2 and xmm3 to xmm1 register under writemask k1.
+
+vmovsd xmm1 {k3} {z}, xmm2, xmm3
+
+; Move scalar double-precision floating-point values from m32 to xmm1 under writemask k1.
+
+vmovsd xmm1, [rdi]
+
+; Move scalar double-precision floating-point values from xmm1 to m32 under writemask k1.
+
+vmovsd [rdi], xmm2
+
+; Merge two packed double-precision floating-point values from m64 and the low quadword of xmm1.
+
+vmovlpd xmm2, xmm1, [rax]
+
+; Move two packed double-precision floating-point values from low quadword of xmm1 to m64.
+
+vmovlpd [rax], xmm1
+
+; Merge two packed double-precision floating-point values from m64 and the high quadword of xmm1.
+
+vmovhpd xmm2, xmm1, [rax]
+
+; Move two packed double-precision floating-point values from high quadword of xmm1 to m64.
+
+vmovhpd [rax], xmm1
+
+; Extract 8-bit sign mask from ymm2 and store in reg. The upper bits of r32 or r64 are zeroed.
+
+vmovmskpd rax, ymm2
+
+; Add packed double-precision floating-point values from xmm3/m128/m32bcst to xmm2 and store result in xmm1 with writemask k1.
+; TODO: 'm32bcst' possible thrid argument
+
+vaddpd xmm1 {k3} {z}, xmm4, xmm3
+vaddpd xmm1 {k3} {z}, xmm4, [rax]
+
+; Add packed double-precision floating-point values from ymm3/m256/m32bcst to ymm2 and store result in ymm1 with writemask k1.
+; TODO: 'm32bcst' possible thrid argument
+
+vaddpd ymm1 {k3} {z}, ymm4, ymm3
+vaddpd ymm1 {k3} {z}, ymm4, [rax]
+
+; Add packed double-precision floating-point values from zmm3/m512/m32bcst to zmm2 and store result in zmm1 with writemask k1.
+; TODO: 'm32bcst' possible thrid argument
+
+vaddpd zmm1 {k3} {z}, zmm4, zmm3
+vaddpd zmm1 {k3} {z}, zmm4, [rax]
+
+; Add the low double-precision floating-point value from xmm3/m32 to xmm2 and store the result in xmm1with writemask k1.
+
+vaddsd xmm1, xmm2, xmm3
+vaddsd xmm1 {k4} {z}, xmm2, QWORD [rax]
+
+; Multiply packed double-precision floating-point values from xmm3/m128/m32bcst to xmm2 and store result in xmm1.
+; TODO: 'm32bcst' possible thrid argument
+
+vmulpd xmm1 {k3} {z}, xmm2, xmm3
+vmulpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Multiply packed double-precision floating-point values from ymm3/m256/m32bcst to ymm2 and store result in ymm1.
+; TODO: 'm32bcst' possible thrid argument
+
+vmulpd ymm1 {k3} {z}, ymm2, ymm3
+vmulpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Multiply packed double-precision floating-point values from ymm3/m256/m32bcst to ymm2 and store result in ymm1.
+; TODO: 'm32bcst' possible thrid argument
+
+vmulpd zmm1 {k3} {z}, zmm2, zmm3
+vmulpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Multiply the low double-precision floating-point value in xmm3/m32 by the low double-precision floating-point value in xmm2.
+
+vmulsd xmm1 {k3} {z}, xmm2, xmm3
+vmulsd xmm1 {k3} {z}, xmm2, [rax]
+
+; Divide packed double-precision floating-point values in xmm2 by packed double-precision floating-point values in xmm3/m128/m32bcst and write results to xmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible thrid argument
+
+vdivpd xmm1 {k3} {z}, xmm2, xmm3
+vdivpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Divide packed double-precision floating-point values in ymm2 by packed double-precision floating-point values in ymm3/m256/m32bcst and write results to ymm1 subject to writemask k1.
+; TODO: 'm32bcst' possible thrid argument
+
+vdivpd ymm1 {k3} {z}, ymm2, ymm3
+vdivpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Divide packed double-precision floating-point values in zmm2 by packed double-precision floating-point values in zmm3/m512/m32bcst and write results to zmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible thrid argument
+
+vdivpd zmm1 {k3} {z}, zmm2, zmm3
+vdivpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Divide low double-precision floating-point value in xmm2 by low double-precision floating-point value in xmm3/m32.
+
+vdivsd xmm1 {k3} {z}, xmm2, xmm3
+vdivsd xmm1 {k3} {z}, xmm2, [rax]
+
+; Computes Square Roots of the packed double-precision floating-point values in xmm2/m128/m32bcst and stores the result in xmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vsqrtpd xmm1 {k3} {z}, xmm3
+vsqrtpd xmm1 {k3} {z}, [rax]
+
+; Computes Square Roots of the packed double-precision floating-point values in ymm2/m256/m32bcst and stores the result in ymm1 subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vsqrtpd ymm1 {k3} {z}, ymm3
+vsqrtpd ymm1 {k3} {z}, [rax]
+
+; Computes Square Roots of the packed double-precision floating-point values in zmm2/m512/m32bcst and stores the result in zmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vsqrtpd zmm1 {k3} {z}, zmm3
+vsqrtpd zmm1 {k3} {z}, [rax]
+
+; Computes square root of the low double-precision floating-point value in xmm3/m32 and stores the results in xmm1 under writemask k1. Also, upper double-precision floating-point values (bits[127:32]) from xmm2 are copied to xmm1[127:32].
+
+vsqrtsd xmm1 {k3} {z}, xmm2, xmm3
+vsqrtsd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the maximum packed double-precision floating-point values between xmm2 and xmm3/m128/m32bcst and store result in xmm1 subject to writemask k1.re result in xmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vmaxpd xmm1 {k3} {z}, xmm2, xmm3
+vmaxpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the maximum packed double-precision floating-point values between ymm2 and ymm3/m256/m32bcst and store result in ymm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vmaxpd ymm1 {k3} {z}, ymm2, ymm3
+vmaxpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Return the maximum packed double-precision floating-point values between zmm2 and zmm3/m512/m32bcst and store result in zmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vmaxpd zmm1 {k3} {z}, zmm2, zmm3
+vmaxpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Return the maximum scalar double-precision floating-point value between xmm3/m32 and xmm2.
+
+vmaxsd xmm1 {k3} {z}, xmm2, xmm3
+vmaxsd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the minimum packed double-precision floating-point values between xmm2 and xmm3/m128/m32bcst and store result in xmm1 subject to writemask k1.re result in xmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vminpd xmm1 {k3} {z}, xmm2, xmm3
+vminpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the minimum packed double-precision floating-point values between ymm2 and ymm3/m256/m32bcst and store result in ymm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vminpd ymm1 {k3} {z}, ymm2, ymm3
+vminpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Return the minimum packed double-precision floating-point values between zmm2 and zmm3/m512/m32bcst and store result in zmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vminpd zmm1 {k3} {z}, zmm2, zmm3
+vminpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Return the minimum scalar double-precision floating-point value between xmm3/m32 and xmm2.
+
+vminsd xmm1 {k3} {z}, xmm2, xmm3
+vminsd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the bitwise logical AND of packed double-precision floating-point values in xmm2 and xmm3/m128/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vandpd xmm1 {k3} {z}, xmm2, xmm3
+vandpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the bitwise logical AND of packed double-precision floating-point values in ymm2 and ymm3/m256/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vandpd ymm1 {k3} {z}, ymm2, ymm3
+vandpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Return the bitwise logical AND of packed double-precision floating-point values in zmm2 and zmm3/m512/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vandpd zmm1 {k3} {z}, zmm2, zmm3
+vandpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Return the bitwise logical AND NOT of packed double-precision floating-point values in xmm2 and xmm3/m128/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vandnpd xmm1 {k3} {z}, xmm2, xmm3
+vandnpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the bitwise logical AND NOT of packed double-precision floating-point values in ymm2 and ymm3/m256/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vandnpd ymm1 {k3} {z}, ymm2, ymm3
+vandnpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Return the bitwise logical AND NOT of packed double-precision floating-point values in zmm2 and zmm3/m512/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vandnpd zmm1 {k3} {z}, zmm2, zmm3
+vandnpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Return the bitwise logical OR of packed double-precision floating-point values in xmm2 and xmm3/m128/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vorpd xmm1 {k3} {z}, xmm2, xmm3
+vorpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the bitwise logical OR of packed double-precision floating-point values in ymm2 and ymm3/m256/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vorpd ymm1 {k3} {z}, ymm2, ymm3
+vorpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Return the bitwise logical OR of packed double-precision floating-point values in zmm2 and zmm3/m512/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vorpd zmm1 {k3} {z}, zmm2, zmm3
+vorpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Return the bitwise logical XOR of packed double-precision floating-point values in xmm2 and xmm3/m128/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vxorpd xmm1 {k3} {z}, xmm2, xmm3
+vxorpd xmm1 {k3} {z}, xmm2, [rax]
+
+; Return the bitwise logical XOR of packed double-precision floating-point values in ymm2 and ymm3/m256/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vxorpd ymm1 {k3} {z}, ymm2, ymm3
+vxorpd ymm1 {k3} {z}, ymm2, [rax]
+
+; Return the bitwise logical XOR of packed double-precision floating-point values in zmm2 and zmm3/m512/m32bcst subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vxorpd zmm1 {k3} {z}, zmm2, zmm3
+vxorpd zmm1 {k3} {z}, zmm2, [rax]
+
+; Compare packed double-precision floating-point values in xmm3/m128/m32bcst and xmm2 using bits 4:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.
+; TODO: 'm32bcst' possible third argument
+
+vcmppd k3 {k2}, xmm2, xmm3, 0x69
+vcmppd k3 {k2}, xmm2, [rax], 0x69
+
+; Compare packed double-precision floating-point values in ymm3/m256/m32bcst and ymm2 using bits 4:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.
+; TODO: 'm32bcst' possible third argument
+
+vcmppd k3 {k2}, ymm2, ymm3, 0x69
+vcmppd k3 {k2}, ymm2, [rax], 0x69
+
+; Compare packed double-precision floating-point values in zmm3/m512/m32bcst and zmm2 using bits 4:0 of imm8 as a comparison predicate with writemask k2 and leave the result in mask register k1.
+; TODO: 'm32bcst' possible third argument
+
+vcmppd k3 {k2}, zmm2, zmm3, 0x69
+vcmppd k3 {k2}, zmm2, [rax], 0x69
+
+; Compare low double-precision floating-point value in xmm3/m32 and xmm2 using bits 4:0 of imm8 as comparison predicate with writemask k2 and leave the result in mask register k1.
+
+vcmpsd k3 {k2}, xmm2, xmm3, 0x69
+vcmpsd k3 {k2}, xmm2, [rax], 0x69
+
+; Compare low double-precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
+
+vcomisd xmm1, xmm2
+vcomisd xmm1, [rax]
+
+; Compare low double-precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
+
+vucomisd xmm1, xmm2
+vucomisd xmm1, [rax]
+
+; Select from quadruplet of double-precision floating-point values in xmm1 and xmm2/m128 using imm8, interleaved result pairs are stored in xmm1, subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vshufpd xmm1 {k7} {z}, xmm2, xmm3, 0x69
+vshufpd xmm1 {k7} {z}, xmm2, [rax], 0x69
+
+; Select from quadruplet of double-precision floating-point values in ymm2 and ymm3/m256 using imm8, interleaved result pairs are stored in ymm1, subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vshufpd ymm1 {k7} {z}, ymm2, ymm3, 0x69
+vshufpd ymm1 {k7} {z}, ymm2, [rax], 0x69
+
+; Select from quadruplet of double-precision floating-point values in zmm2 and zmm3/m512 using imm8, interleaved result pairs are stored in zmm1, subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vshufpd zmm1 {k7} {z}, zmm2, zmm3, 0x69
+vshufpd zmm1 {k7} {z}, zmm2, [rax], 0x69
+
+; Unpacks and Interleaves double-precision floating-point values from high quadwords of xmm2 and xmm3/m128/m32bcst and write result to xmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vunpckhpd xmm1 {k4} {z}, xmm2, xmm3
+vunpckhpd xmm1 {k4} {z}, xmm2, [rax]
+
+; Unpacks and Interleaves double-precision floating-point values from high quadwords of ymm2 and ymm3/m256/m32bcst and write result to ymm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vunpckhpd ymm1 {k4} {z}, ymm2, ymm3
+vunpckhpd ymm1 {k4} {z}, ymm2, [rax]
+
+; Unpacks and Interleaves double-precision floating-point values from high quadwords of zmm2 and zmm3/m512/m32bcst and write result to zmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vunpckhpd zmm1 {k4} {z}, zmm2, zmm3
+vunpckhpd zmm1 {k4} {z}, zmm2, [rax]
+
+; Unpacks and Interleaves double-precision floating-point values from low quadwords of xmm2 and xmm3/m128/m32bcst and write result to xmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vunpcklpd xmm1 {k4} {z}, xmm2, xmm3
+vunpcklpd xmm1 {k4} {z}, xmm2, [rax]
+
+; Unpacks and Interleaves double-precision floating-point values from low quadwords of ymm2 and ymm3/m256/m32bcst and write result to ymm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vunpcklpd ymm1 {k4} {z}, ymm2, ymm3
+vunpcklpd ymm1 {k4} {z}, ymm2, [rax]
+
+; Unpacks and Interleaves double-precision floating-point values from low quadwords of zmm2 and zmm3/m512/m32bcst and write result to zmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vunpcklpd zmm1 {k4} {z}, zmm2, zmm3
+vunpcklpd zmm1 {k4} {z}, zmm2, [rax]
+
+; Convert two packed single-precision floating-point values in xmm2/m64/m32bcst to packed double-precision floating-point values in xmm1 with writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtps2pd xmm1 {k1} {z}, xmm2
+vcvtps2pd xmm1 {k1} {z}, [rax]
+
+; Convert four packed single-precision floating-point values in xmm2/m128/m32bcst to packed double-precision floating-point values in ymm1 with writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtps2pd ymm1 {k1} {z}, xmm2
+vcvtps2pd ymm1 {k1} {z}, [rax]
+
+; Convert eight packed single-precision floating-point values in ymm2/m256/b32bcst to eight packed double-precision floating-point values in zmm1 with writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtps2pd zmm1, ymm2
+vcvtps2pd zmm1 {k1} {z}, [rax]
+
+; Convert two packed double-precision floating-point values in xmm2/m128/m64bcst to two single-precision floating-point values in xmm1with writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvtpd2ps xmm1 {k1} {z}, xmm2
+vcvtpd2ps xmm1, [rax]
+
+; Convert four packed double-precision floating-point values in ymm2/m256/m64bcst to four single-precision floating-point values in xmm1with writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvtpd2ps xmm1 {k1} {z}, ymm2
+vcvtpd2ps xmm1, [rax]
+
+; Convert eight packed double-precision floating-point values in zmm2/m512/m64bcst to eight single-precision floating-point values in ymm1with writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvtpd2ps ymm1, zmm2
+vcvtpd2ps xmm1, [rax]
+
+; Convert one single-precision floating-point value in xmm3/m32 to one double-precision floating-point value and merge with high bits of xmm2 under writemask k1.
+
+vcvtss2sd xmm1 {k1} {z}, xmm2, xmm3
+vcvtss2sd xmm1 {k1} {z}, xmm2, DWORD [rax]
+
+; Convert one double-precision floating-point value in xmm3/m64 to one single-precision floating-point value and merge with high bits in xmm2 under writemask k1.
+
+vcvtsd2ss xmm1 {k1} {z}, xmm2, xmm3
+vcvtsd2ss xmm1 {k1} {z}, xmm2, QWORD [rax]
+
+; Convert two packed double-precision floating-point values in xmm2/m128/m64bcst to two signed doubleword integers in xmm1 subject to writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvtpd2dq xmm1 {k1} {z}, xmm2
+vcvtpd2dq xmm1, [rax]
+
+; Convert four packed double-precision floating-point values in ymm2/m256/m64bcst to four signed doubleword integers in xmm1 subject to writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvtpd2dq xmm1 {k1} {z}, ymm2
+vcvtpd2dq xmm1, [rax]
+
+; Convert eight packed double-precision floating-point values in zmm2/m512/m64bcst to eight signed doubleword integers in ymm1 subject to writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvtpd2dq ymm1 {k1} {z}, zmm2
+vcvtpd2dq ymm1, [rax]
+
+; Convert two packed double-precision floating-point values in xmm2/m128/m64bcst to two signed doubleword integers in xmm1 using truncation subject to writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvttpd2dq xmm1 {k1} {z}, xmm2
+vcvttpd2dq xmm1, [rax]
+
+; Convert four packed double-precision floating-point values in ymm2/m256/m64bcst to four signed doubleword integers in xmm1 using truncation subject to writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvttpd2dq xmm1 {k1} {z}, ymm2
+vcvttpd2dq xmm1, [rax]
+
+; Convert eight packed double-precision floating-point values in zmm2/m512/m64bcst to eight signed doubleword integers in ymm1 using truncation subject to writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vcvttpd2dq ymm1 {k1} {z}, zmm2
+vcvttpd2dq ymm1, [rax]
+
+; Convert 2 packed signed doubleword integers from xmm2/m128/m32bcst to eight packed double-precision floating-point values in xmm1 with writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtdq2pd xmm1 {k1} {z}, xmm2
+vcvtdq2pd xmm1 {k1} {z}, [rax]
+
+; Convert 4 packed signed doubleword integers from xmm2/m128/m32bcst to 4 packed double-precision floating-point values in ymm1 with writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtdq2pd ymm1 {k1} {z}, xmm2
+vcvtdq2pd ymm1 {k1} {z}, [rax]
+
+; Convert eight packed signed doubleword integers from ymm2/m256/m32bcst to eight packed double-precision floating-point values in zmm1 with writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtdq2pd zmm1 {k1} {z}, ymm2
+vcvtdq2pd zmm1 {k1} {z}, [rax]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed doubleword integer r32.
+
+vcvtsd2si eax, xmm1
+vcvtsd2si eax, QWORD [rdi]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed quadword integer sign-extended into r64.
+
+vcvtsd2si rax, xmm1
+vcvtsd2si rax, QWORD [rdi]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed doubleword integer in r32 using truncation.
+
+vcvttsd2si eax, xmm1
+vcvttsd2si eax, QWORD [rdi]
+
+; Convert one double-precision floating-point value from xmm1/m64 to one signed quadword integer in r64 using truncation.
+
+vcvttsd2si rax, xmm1
+vcvttsd2si rax, QWORD [rdi]
+
+; Convert one signed doubleword integer from r/m32 to one double-precision floating-point value in xmm1.
+
+vcvtsi2sd xmm1, xmm2, eax
+vcvtsi2sd xmm1, xmm2, DWORD [rax]
+
+; Convert one signed quadword integer from r/m64 to one double-precision floating-point value in xmm1.
+
+vcvtsi2sd xmm1, xmm2, rax
+vcvtsi2sd xmm1, xmm2, QWORD [rax]
+
+; Convert four packed single precision floating-point values from xmm2/m128/m32bcst to four packed signed doubleword values in xmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtps2dq xmm1 {k1} {z}, xmm2
+vcvtps2dq xmm1 {k1} {z}, [rax]
+
+; Convert eight packed single precision floating-point values from ymm2/m256/m32bcst to eight packed signed doubleword values in ymm1 subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtps2dq ymm1 {k1} {z}, ymm2
+vcvtps2dq ymm1 {k1} {z}, [rax]
+
+; Convert sixteen packed single-precision floating-point values from zmm2/m512/m32bcst to sixteen packed signed doubleword values in zmm1 subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvtps2dq zmm1 {k1} {z}, zmm2
+vcvtps2dq zmm1 {k1} {z}, [rax]
+
+; Convert four packed single precision floating-point values from xmm2/m128/m32bcst to four packed signed doubleword values in xmm1 using truncation subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvttps2dq xmm1 {k1} {z}, xmm2
+vcvttps2dq xmm1 {k1} {z}, [rax]
+
+; Convert eight packed single precision floating-point values from ymm2/m256/m32bcst to eight packed signed doubleword values in ymm1 using truncation subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvttps2dq ymm1 {k1} {z}, ymm2
+vcvttps2dq ymm1 {k1} {z}, [rax]
+
+; Convert sixteen packed single-precision floating-point values from zmm2/m512/m32bcst to sixteen packed signed doubleword values in zmm1 using truncation subject to writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vcvttps2dq zmm1 {k1} {z}, zmm2
+vcvttps2dq zmm1 {k1} {z}, [rax]
+
+; Convert four packed signed doubleword integers from xmm2/m128/m32bcst to four packed single-precision floating-point values in xmm1with writemask k1.
+
+vcvtdq2ps xmm1 {k1} {z}, xmm2
+vcvtdq2ps xmm1 {k1} {z}, [rax]
+
+; Convert eight packed signed doubleword integers from ymm2/m256/m32bcst to eight packed single-precision floating-point values in ymm1with writemask k1.
+
+vcvtdq2ps ymm1 {k1} {z}, ymm2
+vcvtdq2ps ymm1, [rax]
+
+; Convert sixteen packed signed doubleword integers from zmm2/m512/m32bcst to sixteen packed single-precision floating-point values in zmm1with writemask k1.
+
+vcvtdq2ps zmm1 {k1} {z}, zmm2
+vcvtdq2ps zmm1, [rax]
+
+; Move aligned packed doubleword integer values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovdqa xmm1, xmm2
+vmovdqa xmm1, [rax]
+
+; Move aligned packed doubleword integer values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovdqa ymm1, ymm2
+vmovdqa ymm1, [rax]
+
+; Move aligned packed doubleword integer values from zmm2/m512 to zmm1 using writemask k1.
+
+; vmovdqa zmm1, zmm2 ; TODO: DOES NOT COMPILE
+; vmovdqa zmm1, [rax]
+
+; Move aligned packed doubleword integer values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovdqa [rax], xmm1
+
+; Move aligned packed doubleword integer values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovdqa [rax], ymm1
+
+; Move aligned packed doubleword integer values from zmm1 to zmm2/m512 using writemask k1.
+
+; vmovdqa [rax], zmm1 ; TODO: DOESNOT COMPILE
+
+; Move aligned packed doubleword integer values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovdqa32 xmm1, xmm2
+vmovdqa32 xmm1, [rax]
+
+; Move aligned packed doubleword integer values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovdqa32 ymm1, ymm2
+vmovdqa32 ymm1, [rax]
+
+; Move aligned packed doubleword integer values from zmm2/m512 to zmm1 using writemask k1.
+
+vmovdqa32 zmm1, zmm2
+vmovdqa32 zmm1, [rax]
+
+; Move aligned packed doubleword integer values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovdqa32 [rax], xmm1
+
+; Move aligned packed doubleword integer values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovdqa32 [rax], ymm1
+
+; Move aligned packed doubleword integer values from zmm1 to zmm2/m512 using writemask k1.
+
+vmovdqa32 [rax], zmm1
+
+; Move aligned packed doubleword integer values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovdqa64 xmm1, xmm2
+vmovdqa64 xmm1, [rax]
+
+; Move aligned packed doubleword integer values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovdqa64 ymm1, ymm2
+vmovdqa64 ymm1, [rax]
+
+; Move aligned packed doubleword integer values from zmm2/m512 to zmm1 using writemask k1.
+
+vmovdqa64 zmm1, zmm2
+vmovdqa64 zmm1, [rax]
+
+; Move aligned packed doubleword integer values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovdqa64 [rax], xmm1
+
+; Move aligned packed doubleword integer values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovdqa64 [rax], ymm1
+
+; Move aligned packed doubleword integer values from zmm1 to zmm2/m512 using writemask k1.
+
+vmovdqa64 [rax], zmm1
+
+; Move unaligned packed doubleword integer values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovdqu xmm1, xmm2
+vmovdqu xmm1, [rax]
+
+; Move unaligned packed doubleword integer values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovdqu ymm1, ymm2
+vmovdqu ymm1, [rax]
+
+; Move unaligned packed doubleword integer values from zmm2/m512 to zmm1 using writemask k1.
+
+; vmovdqu zmm1, zmm2 ; TODO: DOES NOT COMPILE
+; vmovdqu zmm1, [rax]
+
+; Move unaligned packed doubleword integer values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovdqu [rax], xmm1
+
+; Move unaligned packed doubleword integer values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovdqu [rax], ymm1
+
+; Move unaligned packed doubleword integer values from zmm1 to zmm2/m512 using writemask k1.
+
+; vmovdqu [rax], zmm1 ; TODO: DOESNOT COMPILE
+
+; Move unaligned packed doubleword integer values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovdqu32 xmm1, xmm2
+vmovdqu32 xmm1, [rax]
+
+; Move unaligned packed doubleword integer values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovdqu32 ymm1, ymm2
+vmovdqu32 ymm1, [rax]
+
+; Move unaligned packed doubleword integer values from zmm2/m512 to zmm1 using writemask k1.
+
+vmovdqu32 zmm1, zmm2
+vmovdqu32 zmm1, [rax]
+
+; Move unaligned packed doubleword integer values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovdqu32 [rax], xmm1
+
+; Move unaligned packed doubleword integer values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovdqu32 [rax], ymm1
+
+; Move unaligned packed doubleword integer values from zmm1 to zmm2/m512 using writemask k1.
+
+vmovdqu32 [rax], zmm1
+
+; Move unaligned packed doubleword integer values from xmm2/m128 to xmm1 using writemask k1.
+
+vmovdqu64 xmm1, xmm2
+vmovdqu64 xmm1, [rax]
+
+; Move unaligned packed doubleword integer values from ymm2/m256 to ymm1 using writemask k1.
+
+vmovdqu64 ymm1, ymm2
+vmovdqu64 ymm1, [rax]
+
+; Move unaligned packed doubleword integer values from zmm2/m512 to zmm1 using writemask k1.
+
+vmovdqu64 zmm1, zmm2
+vmovdqu64 zmm1, [rax]
+
+; Move unaligned packed doubleword integer values from xmm1 to xmm2/m128 using writemask k1.
+
+vmovdqu64 [rax], xmm1
+
+; Move unaligned packed doubleword integer values from ymm1 to ymm2/m256 using writemask k1.
+
+vmovdqu64 [rax], ymm1
+
+; Move unaligned packed doubleword integer values from zmm1 to zmm2/m512 using writemask k1.
+
+vmovdqu64 [rax], zmm1
+
+; Subtract packed quadword integers in xmm3/m128/m64bcst from xmm2 and store in xmm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpsubq xmm1 {k1} {z}, xmm2
+vpsubq xmm1 {k1} {z}, [rax]
+
+; Subtract packed quadword integers in ymm3/m256/m64bcst from ymm2 and store in ymm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpsubq ymm1 {k1} {z}, ymm2
+vpsubq ymm1 {k1} {z}, [rax]
+
+; Subtract packed quadword integers in zmm3/m512/m64bcst from zmm2 and store in zmm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpsubq zmm1 {k1} {z}, zmm2
+vpsubq zmm1 {k1} {z}, [rax]
+
+; Multiply packed unsigned doubleword integers in xmm2 by packed unsigned doubleword integers in xmm3/m128/m64bcst, and store the quadword results in xmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmuldq xmm1 {k1} {z}, xmm2, xmm3
+vpmuldq xmm1 {k1} {z}, xmm2, [rax]
+
+; Multiply packed unsigned doubleword integers in ymm2 by packed unsigned doubleword integers in ymm3/m256/m64bcst, and store the quadword results in ymm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmuldq ymm1 {k1} {z}, ymm2, ymm3
+vpmuldq ymm1 {k1} {z}, ymm2, [rax]
+
+; Multiply packed unsigned doubleword integers in zmm2 by packed unsigned doubleword integers in zmm3/m512/m64bcst, and store the quadword results in zmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmuldq zmm1 {k1} {z}, zmm2, zmm3
+vpmuldq zmm1 {k1} {z}, zmm2, [rax]
+
+; Shuffle the low words in xmm2/m128 based on the encoding in imm8 and store the result in xmm1 under write mask k1.
+
+vpshuflw xmm1 {k1} {z}, xmm2, 0x69
+vpshuflw xmm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the low words in ymm2/m256 based on the encoding in imm8 and store the result in ymm1 under write mask k1.
+
+vpshuflw ymm1 {k1} {z}, ymm2, 0x69
+vpshuflw ymm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the low words in zmm2/m512 based on the encoding in imm8 and store the result in zmm1 under write mask k1.
+
+vpshuflw zmm1 {k1} {z}, zmm2, 0x69
+vpshuflw zmm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the high words in xmm2/m128 based on the encoding in imm8 and store the result in xmm1 under write mask k1.
+
+vpshufhw xmm1 {k1} {z}, xmm2, 0x69
+vpshufhw xmm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the high words in ymm2/m256 based on the encoding in imm8 and store the result in ymm1 under write mask k1.
+
+vpshufhw ymm1 {k1} {z}, ymm2, 0x69
+vpshufhw ymm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the high words in zmm2/m512 based on the encoding in imm8 and store the result in zmm1 under write mask k1.
+
+vpshufhw zmm1 {k1} {z}, zmm2, 0x69
+vpshufhw zmm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the doublewords in xmm2/m128/m32bcst based on the encoding in imm8 and store the result in xmm1 using writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vpshufd xmm1 {k1} {z}, xmm2, 0x69
+vpshufd xmm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the doublewords in ymm2/m256/m32bcst based on the encoding in imm8 and store the result in ymm1 using writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vpshufd ymm1 {k1} {z}, ymm2, 0x69
+vpshufd ymm2 {k1} {z}, [rax], 0x69
+
+; Shuffle the doublewords in zmm2/m512/m32bcst based on the encoding in imm8 and store the result in zmm1 using writemask k1.
+; TODO: 'm32bcst' possible second argument
+
+vpshufd zmm1 {k1} {z}, zmm2, 0x69
+vpshufd zmm2 {k1} {z}, [rax], 0x69
+
+; Shift xmm2/m128 left by imm8 bytes while shifting in 0s and store result in xmm1.
+
+vpslldq xmm1, xmm2, 0x69
+vpslldq xmm2, [rax], 0x69
+
+; Shift ymm2/m256 left by imm8 bytes while shifting in 0s and store result in ymm1.
+
+vpslldq ymm1, ymm2, 0x69
+vpslldq ymm2, [rax], 0x69
+
+; Shift zmm2/m512 left by imm8 bytes while shifting in 0s and store result in zmm1.
+
+vpsrldq zmm1, zmm2, 0x69
+vpsrldq zmm2, [rax], 0x69
+
+; Shift xmm2/m128 right by imm8 bytes while shifting in 0s and store result in xmm1.
+
+vpsrldq xmm1, xmm2, 0x69
+vpsrldq xmm2, [rax], 0x69
+
+; Shift ymm2/m256 right by imm8 bytes while shifting in 0s and store result in ymm1.
+
+vpsrldq ymm1, ymm2, 0x69
+vpsrldq ymm2, [rax], 0x69
+
+; Shift zmm2/m512 right by imm8 bytes while shifting in 0s and store result in zmm1.
+
+vpsrldq zmm1, zmm2, 0x69
+vpsrldq zmm2, [rax], 0x69
+
+; Move packed integer values in xmm1 to m128 using non-temporal hint.
+
+vmovntdq [rax], xmm1
+
+; Move packed integer values in ymm1 to m256 using non-temporal hint.
+
+vmovntdq [rax], ymm1
+
+; Move packed integer values in zmm1 to m512 using non-temporal hint.
+
+vmovntdq [rax], zmm1
+
+; Move packed double-precision values in xmm1 to m128 using non-temporal hint.
+
+vmovntpd [rax], xmm1
+
+; Move packed double-precision values in ymm1 to m256 using non-temporal hint.
+
+vmovntpd [rax], ymm1
+
+; Move packed double-precision values in zmm1 to m512 using non-temporal hint.
+
+vmovntpd [rax], zmm1
