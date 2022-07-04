@@ -257,3 +257,56 @@ movd DWORD [rcx], xmm7
 
 movq rcx, xmm7
 movq QWORD [rcx], xmm7
+
+; Average packed unsigned byte integers from xmm2/m128 and xmm1 with rounding.
+
+pavgb xmm1, xmm2
+pavgb xmm2, [rax]
+
+; Average packed unsigned byte integers from xmm2/m128 and xmm1 with rounding.
+
+pavgw xmm1, xmm2
+pavgw xmm2, [rax]
+
+; Extract the word specified by imm8 from xmm and move it to reg, bits 15-0. The upper bits of r32 or r64 is zeroed.
+
+pextrw rax, xmm2, 0x69
+
+; Move the low word of r32 or from m16 into xmm at the word position specified by imm8.
+
+pinsrw xmm1, eax, 0x69
+pinsrw xmm1, WORD [rax], 0x69
+
+; Compare packed unsigned byte integers in xmm1 and xmm2/m128 and store packed maximum values in xmm1.
+
+pmaxub xmm1, xmm2
+pmaxub xmm1, [rax]
+
+; Compare packed unsigned byte integers in xmm1 and xmm2/m128 and store packed minimum values in xmm1.
+
+pminub xmm1, xmm2
+pminub xmm1, [rax]
+
+; Compare packed signed word integers in xmm2/m128 and xmm1 and stores maximum packed values in xmm1.
+
+pmaxsw xmm1, xmm2
+pmaxsw xmm1, [rax]
+
+; Compare packed signed word integers in xmm2/m128 and xmm1 and store packed minimum values in xmm1.
+
+pminsd xmm1, xmm2
+pminsd xmm1, [rax]
+
+; Move a byte mask of xmm to reg. The upper bits of r32 or r64 are zeroed
+
+; pmovmskb rax, xmm1 ; TODO: WHY DOESNT COMPILE ?
+
+; Multiply the packed unsigned word integers in xmm1 and xmm2/m128, and store the high 16 bits of the results in xmm1.
+
+pmulhuw xmm1, xmm2
+pmulhuw xmm1, [rax]
+
+; Computes the absolute differences of the packed unsigned byte integers from xmm2 /m128 and xmm1; the 8 low differences and 8 high differences are then summed separately to produce two unsigned word integer results.
+
+psadbw xmm1, xmm2
+psadbw xmm1, [rax]

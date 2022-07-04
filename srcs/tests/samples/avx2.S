@@ -238,3 +238,61 @@ vpsrad ymm1, ymm3, [rcx]
 
 vpsrad ymm2, ymm8, 0x69
 
+; Average packed unsigned byte integers from ymm2, and ymm3/m256 with rounding and store to ymm1.
+
+vpavgb ymm1, ymm2, ymm3
+vpavgb ymm1, ymm2, [rax]
+
+; Average packed unsigned word integers from ymm2, ymm3/m256 with rounding to ymm1.
+
+vpavgw ymm1, ymm2, ymm3
+vpavgw ymm1, ymm2, [rax]
+
+; Compare packed unsigned byte integers in ymm2 and ymm3/m256 and store packed maximum values in ymm1.
+
+vpmaxub ymm1, ymm2, ymm3
+vpmaxub ymm1, ymm2, [rax]
+
+; Compare packed unsigned word integers in ymm3/m256 and ymm2 and store maximum packed values in ymm1.
+
+vpmaxuw ymm1, ymm2, ymm3
+vpmaxuw ymm1, ymm2, [rax]
+
+; Compare packed signed byte integers in ymm2 and ymm3/m256 and store packed maximum values in ymm1.
+
+vpmaxsb ymm1, ymm2, ymm3
+vpmaxsb ymm1, ymm2, [rax]
+
+; Compare packed signed word integers in ymm3/m256 and ymm2 and store packed maximum values in ymm1.
+
+vpmaxsw ymm1, ymm2, ymm3
+vpmaxsw ymm1, ymm2, [rax]
+
+; Compare packed signed dword integers in ymm2 and ymm3/m256 and store packed maximum values in ymm1.
+
+vpmaxsd ymm1, ymm2, ymm3
+vpmaxsd ymm1, ymm2, [rax]
+
+; Compare packed signed byte integers in ymm2 and ymm3/m256 and store packed minimum values in ymm1.
+
+vpminsb ymm1, ymm2, ymm3
+vpminsb ymm1, ymm2, [rax]
+
+; Compare packed signed word integers in ymm3/m256 and ymm2 and store packed minimum values in ymm1.
+
+vpminsw ymm1, ymm2, ymm3
+vpminsw ymm1, ymm2, [rax]
+
+; Move a byte mask of ymm1 to reg. The upper bits of r32 or r64 are zeroed
+
+; pmovmskb rax, ymm1 ; TODO: WHY DOESNT COMPILE ?
+
+; Multiply the packed unsigned word integers in ymm2 and ymm3/m256, and store the high 16 bits of the results in ymm1.
+
+vpmulhuw ymm1, ymm2, ymm3
+vpmulhuw ymm1, ymm2, [rax]
+
+; Computes the absolute differences of the packed unsigned byte integers from ymm3 /m256 and ymm2; then each consecutive 8 differences are summed separately to produce four unsigned word integer results.
+
+vpsadbw ymm1, ymm2, ymm3
+vpsadbw ymm1, ymm2, [rax]
