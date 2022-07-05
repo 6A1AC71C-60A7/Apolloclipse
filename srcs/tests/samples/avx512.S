@@ -2809,3 +2809,313 @@ vpalignr ymm1 {k1} {z}, ymm2, [rax], 0x69
 
 vpalignr zmm1 {k1} {z}, zmm2, zmm3, 0x69
 vpalignr zmm1 {k1} {z}, zmm2, [rax], 0x69
+
+; Multiply the packed dword signed integers in xmm2 and xmm3/m128/m32bcst and store the low 32 bits of each product in xmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmulld xmm1 {k1} {z}, xmm2, xmm3
+vpmulld xmm1 {k1} {z}, xmm2, [rax]
+
+; Multiply the packed dword signed integers in ymm2 and ymm3/m256/m32bcst and store the low 32 bits of each product in ymm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmulld ymm1 {k1} {z}, ymm2, ymm3
+vpmulld ymm1 {k1} {z}, ymm2, [rax]
+
+; Multiply the packed dword signed integers in zmm2 and zmm3/m512/m32bcst and store the low 32 bits of each product in zmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmulld ymm1 {k1} {z}, ymm2, ymm3
+vpmulld ymm1 {k1} {z}, ymm2, [rax]
+
+; Multiply the packed qword signed integers in xmm2 and xmm3/m128/m64bcst and store the low 64 bits of each product in xmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmullq xmm1 {k1} {z}, xmm2, xmm3
+vpmullq xmm1 {k1} {z}, xmm2, [rax]
+
+; Multiply the packed qword signed integers in ymm2 and ymm3/m256/m64bcst and store the low 64 bits of each product in ymm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmullq ymm1 {k1} {z}, ymm2, ymm3
+vpmullq ymm1 {k1} {z}, ymm2, [rax]
+
+; Multiply the packed qword signed integers in zmm2 and zmm3/m512/m64bcst and store the low 64 bits of each product in zmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmullq zmm1 {k1} {z}, zmm2, zmm3
+vpmullq zmm1 {k1} {z}, zmm2, [rax]
+
+; Multiply packed signed doubleword integers in xmm2 by packed signed doubleword integers in xmm3/m128/m64bcst, and store the quadword results in xmm1 using writemask k1.
+
+vpmuldq xmm1 {k1} {z}, xmm2, xmm3
+vpmuldq xmm1 {k1} {z}, xmm2, [rax]
+
+; Multiply packed signed doubleword integers in ymm2 by packed signed doubleword integers in ymm3/m256/m64bcst, and store the quadword results in ymm1 using writemask k1.
+
+vpmuldq ymm1 {k1} {z}, ymm2, ymm3
+vpmuldq ymm1 {k1} {z}, ymm2, [rax]
+
+; Multiply packed signed doubleword integers in zmm2 by packed signed doubleword integers in zmm3/m512/m64bcst, and store the quadword results in zmm1 using writemask k1.
+
+vpmuldq zmm1 {k1} {z}, zmm2, zmm3
+vpmuldq zmm1 {k1} {z}, zmm2, [rax]
+
+; Move 128-bit data from m128 to xmm using non-temporal hint if WC memory type.
+
+vmovntdqa xmm1, [rax]
+
+; Move 256-bit data from m256 to ymm using non-temporal hint if WC memory type.
+
+vmovntdqa ymm1, [rax]
+
+; Move 512-bit data from m512 to zmm using non-temporal hint if WC memory type.
+
+vmovntdqa zmm1, [rax]
+
+; Compare packed unsigned dword integers in xmm2 and xmm3/m128/m32bcst and store packed minimum values in xmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpminud xmm1 {k1} {z}, xmm2, xmm3
+vpminud xmm1 {k1} {z}, xmm2, [rax]
+
+; Compare packed unsigned dword integers in ymm2 and ymm3/m256/m32bcst and store packed minimum values in ymm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpminud ymm1 {k1} {z}, ymm2, ymm3
+vpminud ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed unsigned dword integers in zmm2 and zmm3/m512/m32bcst and store packed minimum values in zmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpminud zmm1 {k1} {z}, zmm2, zmm3
+vpminud zmm1 {k1} {z}, zmm2, [rax]
+
+; Compare packed unsigned qword integers in xmm2 and xmm3/m128/m64bcst and store packed minimum values in xmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpminuq xmm1 {k1} {z}, xmm2, xmm3
+vpminuq xmm1 {k1} {z}, xmm2, [rax]
+
+
+; Compare packed unsigned qword integers in ymm2 and ymm3/m256/m64bcst and store packed minimum values in ymm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpminuq ymm1 {k1} {z}, ymm2, ymm3
+vpminuq ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed unsigned qword integers in zmm2 and zmm3/m512/m64bcst and store packed minimum values in zmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpminuq zmm1 {k1} {z}, zmm2, zmm3
+vpminuq zmm1 {k1} {z}, zmm2, [rax]
+
+; Compare packed signed dword integers in xmm2 and xmm3/m128 and store packed minimum values in xmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpminsd xmm1 {k1} {z}, xmm2, xmm3
+vpminsd xmm1 {k1} {z}, xmm2, [rax]
+
+; Compare packed signed dword integers in ymm2 and ymm3/m256 and store packed minimum values in ymm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpminsd ymm1 {k1} {z}, ymm2, ymm3
+vpminsd ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed signed dword integers in zmm2 and zmm3/m512/m32bcst and store packed minimum values in zmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpminsd zmm1 {k1} {z}, zmm2, zmm3
+vpminsd zmm1 {k1} {z}, zmm2, [rax]
+
+; Compare packed signed qword integers in xmm2 and xmm3/m128 and store packed minimum values in xmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpminsq xmm1 {k1} {z}, xmm2, xmm3
+vpminsq xmm1 {k1} {z}, xmm2, [rax]
+
+; Compare packed signed qword integers in ymm2 and ymm3/m256 and store packed minimum values in ymm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpminsq ymm1 {k1} {z}, ymm2, ymm3
+vpminsq ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed signed qword integers in zmm2 and zmm3/m512/m64bcst and store packed minimum values in zmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpminsq zmm1 {k1} {z}, zmm2, zmm3
+vpminsq zmm1 {k1} {z}, zmm2, [rax]
+
+
+
+
+
+
+; Compare packed unsigned dword integers in xmm2 and xmm3/m128/m32bcst and store packed maximum values in xmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmaxud xmm1 {k1} {z}, xmm2, xmm3
+vpmaxud xmm1 {k1} {z}, xmm2, [rax]
+
+; Compare packed unsigned dword integers in ymm2 and ymm3/m256/m32bcst and store packed maximum values in ymm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmaxud ymm1 {k1} {z}, ymm2, ymm3
+vpmaxud ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed unsigned dword integers in zmm2 and zmm3/m512/m32bcst and store packed maximum values in zmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmaxud zmm1 {k1} {z}, zmm2, zmm3
+vpmaxud zmm1 {k1} {z}, zmm2, [rax]
+
+; Compare packed unsigned qword integers in xmm2 and xmm3/m128/m64bcst and store packed maximum values in xmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmaxuq xmm1 {k1} {z}, xmm2, xmm3
+vpmaxuq xmm1 {k1} {z}, xmm2, [rax]
+
+
+; Compare packed unsigned qword integers in ymm2 and ymm3/m256/m64bcst and store packed maximum values in ymm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmaxuq ymm1 {k1} {z}, ymm2, ymm3
+vpmaxuq ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed unsigned qword integers in zmm2 and zmm3/m512/m64bcst and store packed maximum values in zmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmaxuq zmm1 {k1} {z}, zmm2, zmm3
+vpmaxuq zmm1 {k1} {z}, zmm2, [rax]
+
+; Compare packed signed dword integers in xmm2 and xmm3/m128 and store packed maximum values in xmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmaxsd xmm1 {k1} {z}, xmm2, xmm3
+vpmaxsd xmm1 {k1} {z}, xmm2, [rax]
+
+; Compare packed signed dword integers in ymm2 and ymm3/m256 and store packed maximum values in ymm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmaxsd ymm1 {k1} {z}, ymm2, ymm3
+vpmaxsd ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed signed dword integers in zmm2 and zmm3/m512/m32bcst and store packed maximum values in zmm1 under writemask k1.
+; TODO: 'm32bcst' possible third argument
+
+vpmaxsd zmm1 {k1} {z}, zmm2, zmm3
+vpmaxsd zmm1 {k1} {z}, zmm2, [rax]
+
+; Compare packed signed qword integers in xmm2 and xmm3/m128 and store packed maximum values in xmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmaxsq xmm1 {k1} {z}, xmm2, xmm3
+vpmaxsq xmm1 {k1} {z}, xmm2, [rax]
+
+; Compare packed signed qword integers in ymm2 and ymm3/m256 and store packed maximum values in ymm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmaxsq ymm1 {k1} {z}, ymm2, ymm3
+vpmaxsq ymm1 {k1} {z}, ymm2, [rax]
+
+; Compare packed signed qword integers in zmm2 and zmm3/m512/m64bcst and store packed maximum values in zmm1 under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpmaxsq zmm1 {k1} {z}, zmm2, zmm3
+vpmaxsq zmm1 {k1} {z}, zmm2, [rax]
+
+; Extract one single-precision floating-point value from xmm1 at the offset specified by imm8 and store the result in reg or m32. Zero extend the results in 64-bit register if applicable.
+
+vextractps eax, xmm1, 0x69
+vextractps DWORD [rax], xmm1, 0x69
+
+; Insert a single-precision floating-point value selected by imm8 from xmm3/m32 and merge with values in xmm2 at the specified destination element specified by imm8 and write out the result and zero out destination elements in xmm1 as indicated in imm8.
+
+vinsertps xmm1, xmm2, xmm3, 0x69
+vinsertps xmm1, xmm2, DWORD [rax], 0x69
+
+; Merge a byte integer value from r32/m8 and rest from xmm2 into xmm1 at the byte offset in imm8.
+
+vpinsrb xmm1, xmm2, eax, 0x69
+vpinsrb xmm1, xmm2, BYTE [rax], 0x69
+
+; Insert a dword integer value from r32/m32 and rest from xmm2 into xmm1 at the dword offset in imm8.
+
+vpinsrd xmm1, xmm2, eax, 0x69
+vpinsrd xmm1, xmm2, DWORD [rax], 0x69
+
+; Insert a qword integer value from r64/m64 and rest from xmm2 into xmm1 at the qword offset in imm8.
+
+vpinsrq xmm1, xmm2, rax, 0x69
+vpinsrq xmm1, xmm2, QWORD [rax], 0x69
+
+; Extract a byte integer value from xmm2 at the source byte offset specified by imm8 into reg or m8. The upper bits of r64/r32 is filled with zeros.
+
+vpextrb eax, xmm2, 0x69
+vpextrb BYTE [rax], xmm2, 0x69
+
+; Extract a dword integer value from xmm2 at the source dword offset specified by imm8 into r32/m32.
+
+vpextrd eax, xmm2, 0x69
+vpextrd DWORD [rax], xmm2, 0x69
+
+; Extract a qword integer value from xmm2 at the source dword offset specified by imm8 into r64/m64.
+
+vpextrq rax, xmm2, 0x69
+vpextrq QWORD [rax], xmm2, 0x69
+
+; Compare Equal between int64 vector xmm2 and int64 vector xmm3/m128/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.
+; TODO: 'm64bcst' possible third argument
+
+vpcmpeqq k1 {k2}, xmm2, xmm3
+vpcmpeqq k1 {k2}, xmm2, [rax]
+
+; Compare Equal between int64 vector ymm2 and int64 vector ymm3/m256/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.
+; TODO: 'm64bcst' possible third argument
+
+vpcmpeqq k1 {k2}, ymm2, ymm3
+vpcmpeqq k1 {k2}, ymm2, [rax]
+
+; Compare Equal between int64 vector zmm2 and int64 vector zmm3/m512/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.
+; TODO: 'm64bcst' possible third argument
+
+vpcmpeqq k1 {k2}, zmm2, zmm3
+vpcmpeqq k1 {k2}, zmm2, [rax]
+
+; Convert packed signed doubleword integers from xmm2 and packed signed doubleword integers from xmm3/m128/m32bcst into packed unsigned word integers in xmm1 using unsigned saturation under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpackusdw xmm1 {k2}, xmm2, xmm3
+vpackusdw xmm1 {k2}, xmm2, [rax]
+
+
+; Convert packed signed doubleword integers from ymm2 and packed signed doubleword integers from ymm3/m256/m32bcst into packed unsigned word integers in ymm1 using unsigned saturation under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpackusdw ymm1 {k2}, ymm2, ymm3
+vpackusdw ymm1 {k2}, ymm2, [rax]
+
+; Convert packed signed doubleword integers from zmm2 and packed signed doubleword integers from zmm3/m512/m32bcst into packed unsigned word integers in zmm1 using unsigned saturation under writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpackusdw zmm1 {k2}, zmm2, zmm3
+vpackusdw zmm1 {k2}, zmm2, [rax]
+
+; Compare Greater between int64 vector xmm2 and int64 vector xmm3/m128/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.
+; TODO: 'm64bcst' possible third argument
+
+vpcmpgtq k1 {k2}, xmm2, xmm3
+vpcmpgtq k1 {k2}, xmm2, [rax]
+
+; Compare Greater between int64 vector ymm2 and int64 vector ymm3/m256/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.
+; TODO: 'm64bcst' possible third argument
+
+vpcmpgtq k1 {k2}, ymm2, ymm3
+vpcmpgtq k1 {k2}, ymm2, [rax]
+
+; Compare Greater between int64 vector zmm2 and int64 vector zmm3/m512/m64bcst, and set vector mask k1 to reflect the zero/nonzero status of each element of the result, under writemask.
+; TODO: 'm64bcst' possible third argument
+
+vpcmpgtq k1 {k2}, zmm2, zmm3
+vpcmpgtq k1 {k2}, zmm2, [rax]
+

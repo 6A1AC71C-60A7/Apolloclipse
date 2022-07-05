@@ -380,3 +380,57 @@ vpsignd ymm1, ymm2, [rax]
 vpalignr ymm1, ymm2, ymm3, 0x69
 vpalignr ymm1, ymm2, [rax], 0x69
 
+; Multiply the packed dword signed integers in ymm2 and ymm3/m256 and store the low 32 bits of each product in ymm1.
+
+vpmulld ymm1, ymm2, ymm3
+vpmulld ymm1, ymm2, [rax]
+
+; Multiply packed signed doubleword integers in ymm2 by packed signed doubleword integers in ymm3/m256, and store the quadword results in ymm1.
+
+vpmuldq ymm1, ymm2, ymm3
+vpmuldq ymm1, ymm2, [rax]
+
+; Move 256-bit data from m256 to ymm using non-temporal hint if WC memory type.
+
+vmovntdqa ymm1, [rax]
+
+; Compare packed unsigned dword integers in ymm2 and ymm3/m256 and store packed minimum values in ymm1.
+
+vpminud ymm1, ymm2, ymm3
+vpminud ymm1, ymm2, [rax]
+
+; Compare packed signed dword integers in ymm2 and ymm3/m128 and store packed minimum values in ymm1.
+
+vpminsd ymm1, ymm2, ymm3
+vpminsd ymm1, ymm2, [rax]
+
+; Compare packed unsigned dword integers in ymm2 and ymm3/m256 and store packed maximum values in ymm1.
+
+vpmaxud ymm1, ymm2, ymm3
+vpmaxud ymm1, ymm2, [rax]
+
+; Compare packed signed dword integers in ymm2 and ymm3/m128 and store packed maximum values in ymm1.
+
+vpmaxsd ymm1, ymm2, ymm3
+vpmaxsd ymm1, ymm2, [rax]
+
+; Sums absolute 8-bit integer difference of adjacent groups of 4 byte integers in xmm2 and ymm3/m128 and writes the results in ymm1. Starting offsets within ymm2 and xmm3/m128 are determined by imm8.
+
+vmpsadbw ymm1, ymm2, ymm3, 0x69
+vmpsadbw ymm1, ymm2, [rax], 0x69
+
+; Compare packed quadwords in ymm3/m256 and ymm2 for equality.
+
+vpcmpeqq ymm1, ymm2, ymm3
+vpcmpeqq ymm1, ymm2, [rax]
+
+; Convert 8 packed signed doubleword integers from ymm2 and 8 packed signed doubleword integers from ymm3/m256 into 16 packed unsigned word integers in ymm1 using unsigned saturation.
+
+vpackusdw ymm1, ymm2, ymm3
+vpackusdw ymm1, ymm2, [rax]
+
+; Compare packed signed qwords in ymm2 and ymm3/m256 for greater than.
+
+vpcmpgtq ymm1, ymm2, ymm3
+vpcmpgtq ymm1, ymm2, [rax]
+

@@ -1338,4 +1338,226 @@ vpsignd xmm1, xmm2, [rax]
 vpalignr xmm1, xmm2, xmm3, 0x69
 vpalignr xmm1, xmm2, [rax], 0x69
 
-; 
+; Multiply packed SP floating point values from xmm1 with packed SP floating point values from xmm2/mem selectively add and store to xmm1.
+
+vdpps xmm1, xmm2, xmm3, 0x69
+vdpps xmm1, xmm2, [rax], 0x69
+
+; Multiply packed single-precision floating-point values from ymm2 with packed SP floating point values from ymm3/mem, selectively add pairs of elements and store to ymm1.
+
+vdpps ymm1, ymm2, ymm3, 0x69
+vdpps ymm1, ymm2, [rax], 0x69
+
+; Selectively multiply packed DP floating-point values from xmm2 with packed DP floating-point values from xmm3, add and selectively store the packed DP floating-point values to xmm1.
+
+vdppd xmm1, xmm2, xmm3, 0x69
+vdppd xmm1, xmm2, [rax], 0x69
+
+; Round packed single precision floating-point values in xmm2/m128 and place the result in xmm1. The rounding mode is determined by imm8.
+
+vroundps xmm1, xmm2, 0x69
+vroundps xmm1, [rax], 0x69
+
+; Round packed single-precision floating-point values in ymm2/m256 and place the result in ymm1. The rounding mode is determined by imm8.
+
+vroundps ymm1, ymm2, 0x69
+vroundps ymm1, [rax], 0x69
+
+; Round packed double precision floating-point values in xmm2/m128 and place the result in xmm1. The rounding mode is determined by imm8.
+
+vroundpd xmm1, xmm2, 0x69
+vroundpd xmm1, [rax], 0x69
+
+; Round packed double-precision floating-point values in ymm2/m256 and place the result in ymm1. The rounding mode is determined by imm8.
+
+vroundpd ymm1, ymm2, 0x69
+vroundpd ymm1, [rax], 0x69
+
+; Round the low packed single precision floating-point value in xmm3/m32 and place the result in xmm1. The rounding mode is determined by imm8. Also, upper packed single precision floating-point values (bits[127:32]) from xmm2 are copied to xmm1[127:32].
+
+vroundss xmm1, xmm2, 0x69
+vroundss xmm1, [rax], 0x69
+
+; Round the low packed double precision floating-point value in xmm3/m32 and place the result in xmm1. The rounding mode is determined by imm8. Also, upper packed single precision floating-point values (bits[127:32]) from xmm2 are copied to xmm1[127:32].
+
+vroundsd xmm1, xmm2, 0x69
+vroundsd xmm1, [rax], 0x69
+
+; Multiply the packed dword signed integers in xmm2 and xmm3/m128 and store the low 32 bits of each product in xmm1.
+
+vpmulld xmm1, xmm2, xmm3
+vpmulld xmm1, xmm2, [rax]
+
+; Multiply packed signed doubleword integers in xmm2 by packed signed doubleword integers in xmm3/m128, and store the quadword results in xmm1.
+
+vpmuldq xmm1, xmm2, xmm3
+vpmuldq xmm1, xmm2, [rax]
+
+; Move double quadword from m128 to xmm using non-temporal hint if WC memory type.
+
+vmovntdqa xmm1, [rax]
+
+; Select packed single-precision floating-point values from xmm2 and xmm3/m128 from mask in imm8 and store the values in xmm1.
+
+vblendps xmm1, xmm2, xmm3, 0x69
+vblendps xmm1, xmm2, [rax], 0x69
+
+; Select packed single-precision floating-point values from ymm2 and ymm3/m256 from mask in imm8 and store the values in ymm1.
+
+vblendps ymm1, ymm2, ymm3, 0x69
+vblendps ymm1, ymm2, [rax], 0x69
+
+; Select packed double-precision floating-point values from xmm2 and xmm3/m128 from mask in imm8 and store the values in xmm1.
+
+vblendpd xmm1, xmm2, xmm3, 0x69
+vblendpd xmm1, xmm2, [rax], 0x69
+
+; Select packed double-precision floating-point values from ymm2 and ymm3/m256 from mask in imm8 and store the values in ymm1.
+
+vblendpd ymm1, ymm2, ymm3, 0x69
+vblendpd ymm1, ymm2, [rax], 0x69
+
+; Conditionally copy single-precision floating-point values from xmm2 or xmm3/m128 to xmm1, based on mask bits in the specified mask operand, xmm4.
+
+vblendvps xmm1, xmm2, xmm3, xmm4
+vblendvps xmm1, xmm2, [rax], xmm4
+
+; Conditionally copy single-precision floating-point values from ymm2 or ymm3/m256 to ymm1, based on mask bits in the specified mask register, ymm4.
+
+vblendvps ymm1, ymm2, ymm3, ymm4
+vblendvps ymm1, ymm2, [rax], ymm4
+
+; Conditionally copy double-precision floating-point values from xmm2 or xmm3/m128 to xmm1, based on mask bits in the specified mask operand, xmm4.
+
+vblendvpd xmm1, xmm2, xmm3, xmm4
+vblendvpd xmm1, xmm2, [rax], xmm4
+
+; Conditionally copy double-precision floating-point values from ymm2 or ymm3/m256 to ymm1, based on mask bits in the specified mask register, ymm4.
+
+vblendvpd ymm1, ymm2, ymm3, ymm4
+vblendvpd ymm1, ymm2, [rax], ymm4
+
+; Select words from xmm2 and xmm3/m128 from mask specified in imm8 and store the values into xmm1.
+
+vpblendw xmm1, xmm2, xmm3, 0x69
+vpblendw xmm1, xmm2, [rax], 0x69
+
+; Select words from ymm2 and ymm3/m256 from mask specified in imm8 and store the values into ymm1.
+
+vpblendw ymm1, ymm2, ymm3, 0x69
+vpblendw ymm1, ymm2, [rax], 0x69
+
+; Compare packed unsigned dword integers in xmm2 and xmm3/m128 and store packed minimum values in xmm1.
+
+vpminud xmm1, xmm2, xmm3
+vpminud xmm1, xmm2, [rax]
+
+; Compare packed signed dword integers in xmm2 and xmm3/m128 and store packed minimum values in xmm1
+
+vpminsd xmm1, xmm2, xmm3
+vpminsd xmm1, xmm2, [rax]
+
+; Compare packed unsigned dword integers in xmm2 and xmm3/m128 and store packed maximum values in xmm1.
+
+vpmaxud xmm1, xmm2, xmm3
+vpmaxud xmm1, xmm2, [rax]
+
+; Compare packed signed dword integers in xmm2 and xmm3/m128 and store packed maximum values in xmm1
+
+vpmaxsd xmm1, xmm2, xmm3
+vpmaxsd xmm1, xmm2, [rax]
+
+; Extract one single-precision floating-point value from xmm1 at the offset specified by imm8 and store the result in reg or m32. Zero extend the results in 64-bit register if applicable.
+
+vextractps eax, xmm1, 0x69
+vextractps DWORD [rax], xmm1, 0x69
+
+; Insert a single-precision floating-point value selected by imm8 from xmm3/m32 and merge with values in xmm2 at the specified destination element specified by imm8 and write out the result and zero out destination elements in xmm1 as indicated in imm8.
+
+vinsertps xmm1, xmm2, xmm3, 0x69
+vinsertps xmm1, xmm2, DWORD [rax], 0x69
+
+; Merge a byte integer value from r32/m8 and rest from xmm2 into xmm1 at the byte offset in imm8.
+
+vpinsrb xmm1, xmm2, eax, 0x69
+vpinsrb xmm1, xmm2, BYTE [rax], 0x69
+
+; Insert a dword integer value from r32/m32 and rest from xmm2 into xmm1 at the dword offset in imm8.
+
+vpinsrd xmm1, xmm2, eax, 0x69
+vpinsrd xmm1, xmm2, DWORD [rax], 0x69
+
+; Insert a qword integer value from r64/m64 and rest from xmm2 into xmm1 at the qword offset in imm8.
+
+vpinsrq xmm1, xmm2, rax, 0x69
+vpinsrq xmm1, xmm2, QWORD [rax], 0x69
+
+; Extract a byte integer value from xmm2 at the source byte offset specified by imm8 into reg or m8. The upper bits of r64/r32 is filled with zeros.
+
+vpextrb eax, xmm2, 0x69
+vpextrb BYTE [rax], xmm2, 0x69
+
+; Extract a dword integer value from xmm2 at the source dword offset specified by imm8 into r32/m32.
+
+vpextrd eax, xmm2, 0x69
+vpextrd DWORD [rax], xmm2, 0x69
+
+; Extract a qword integer value from xmm2 at the source dword offset specified by imm8 into r64/m64.
+
+vpextrq rax, xmm2, 0x69
+vpextrq QWORD [rax], xmm2, 0x69
+
+; Sums absolute 8-bit integer difference of adjacent groups of 4 byte integers in xmm2 and xmm3/m128 and writes the results in xmm1. Starting offsets within xmm2 and xmm3/m128 are determined by imm8.
+
+vmpsadbw xmm1, xmm2, xmm3, 0x69
+vmpsadbw xmm1, xmm2, [rax], 0x69
+
+; Find the minimum unsigned word in xmm2/m128 and place its value in the low word of xmm1 and its index in the second-lowest word of xmm1.
+
+vphminposuw xmm1, xmm2,
+vphminposuw xmm1, [rax]
+
+; Set ZF and CF depending on bitwise AND and ANDN of sources.
+
+vptest xmm1, xmm2,
+vptest xmm1, [rax]
+
+; Set ZF and CF depending on bitwise AND and ANDN of sources.
+
+vptest ymm1, ymm2,
+vptest ymm1, [rax]
+
+; Compare packed quadwords in xmm3/m128 and xmm2 for equality.
+
+vpcmpeqq xmm1, xmm2, xmm3
+vpcmpeqq xmm1, xmm2, [rax]
+
+; Convert 4 packed signed doubleword integers from xmm2 and 4 packed signed doubleword integers from xmm3/m128 into 8 packed unsigned word integers in xmm1 using unsigned saturation.
+
+vpackusdw xmm1, xmm2, xmm3
+vpackusdw xmm1, xmm2, [rax]
+
+; Perform a packed comparison of string data with explicit lengths, generating an index, and storing the result in ECX.
+
+vpcmpestri xmm1, xmm2, 0x69
+vpcmpestri xmm1, [rax], 0x69
+
+; Perform a packed comparison of string data with explicit lengths, generating a mask, and storing the result in XMM0.
+
+vpcmpestrm xmm1, xmm2, 0x69
+vpcmpestrm xmm1, [rax], 0x69
+
+; Perform a packed comparison of string data with implicit lengths, generating an index, and storing the result in ECX.
+
+vpcmpistri xmm1, xmm2, 0x69
+vpcmpistri xmm1, [rax], 0x69
+
+; Perform a packed comparison of string data with implicit lengths, generating a Mask, and storing the result in XMM0.
+
+vpcmpistrm xmm1, xmm2, 0x69
+vpcmpistrm xmm1, [rax], 0x69
+
+; Compare packed signed qwords in xmm2 and xmm3/m128 for greater than.
+
+vpcmpgtq xmm1, xmm2, xmm3
+vpcmpgtq xmm1, xmm2, [rax]
