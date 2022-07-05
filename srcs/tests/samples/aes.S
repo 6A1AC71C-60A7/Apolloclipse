@@ -60,7 +60,19 @@ aeskeygenassist xmm1, xmm2, 0x69
 aeskeygenassist xmm1, [rax], 0x69
 
 ; Assist in AES round key generation using 8 bits Round Constant (RCON) specified in the immediate byte, operating on 128 bits of data specified in xmm2/m128 and stores the result in xmm1.
+; NOTE: Also require AVX
 
 vaeskeygenassist xmm1, xmm2, 0x69
 vaeskeygenassist xmm1, [rax], 0x69
 
+; Carry-less multiplication of one quadword of xmm1 by one quadword of xmm2/m128, stores the 128-bit result in xmm1. The immediate is used to determine which quadwords of xmm1 and xmm2/m128 should be used.
+; NOTE: Require PCLMULQDQ not AES
+
+pclmulqdq xmm1, xmm2, 0x69
+pclmulqdq xmm1, [rax], 0x69
+
+; Carry-less multiplication of one quadword of xmm2 by one quadword of xmm3/m128, stores the 128-bit result in xmm1. The immediate is used to determine which quadwords of xmm2 and xmm3/m128 should be used.
+; NOTE: Require PCLMULQDQ and AVX not AES
+
+vpclmulqdq xmm1, xmm2, 0x69
+vpclmulqdq xmm1, [rax], 0x69
