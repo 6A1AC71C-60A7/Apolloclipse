@@ -2644,3 +2644,168 @@ vmovntpd [rax], ymm1
 ; Move packed double-precision values in zmm1 to m512 using non-temporal hint.
 
 vmovntpd [rax], zmm1
+
+; Move odd index single-precision floating-point values from xmm2/m128 and duplicate each element into xmm1 under writemask.
+
+vmovshdup xmm1 {k1} {z}, xmm2
+vmovshdup xmm1 {k1} {z}, [rax]
+
+; Move odd index single-precision floating-point values from ymm2/m256 and duplicate each element into ymm1 under writemask.
+
+vmovshdup ymm1 {k1} {z}, ymm2
+vmovshdup ymm1 {k1} {z}, [rax]
+
+; Move odd index single-precision floating-point values from zmm2/m512 and duplicate each element into zmm1 under writemask.
+
+vmovshdup zmm1 {k1} {z}, zmm2
+vmovshdup zmm1 {k1} {z}, [rax]
+
+; Move even index single-precision floating-point values from xmm2/m128 and duplicate each element into xmm1 under writemask.
+
+vmovsldup xmm1 {k1} {z}, xmm2
+vmovsldup xmm1 {k1} {z}, [rax]
+
+; Move even index single-precision floating-point values from ymm2/m256 and duplicate each element into ymm1 under writemask.
+
+vmovsldup ymm1 {k1} {z}, ymm2
+vmovsldup ymm1 {k1} {z}, [rax]
+
+; Move even index single-precision floating-point values from zmm2/m512 and duplicate each element into zmm1 under writemask.
+
+vmovsldup zmm1 {k1} {z}, zmm2
+vmovsldup zmm1 {k1} {z}, [rax]
+
+; Move double-precision floating-point value from xmm2/m64 and duplicate each element into xmm1 subject to writemask k1.
+
+vmovddup xmm1 {k1} {z}, xmm2
+vmovddup xmm1 {k1} {z}, [rax]
+
+; Move even index double-precision floating-point values from ymm2/m256 and duplicate each element into ymm1 subject to writemask k1.
+
+vmovddup ymm1 {k1} {z}, ymm2
+vmovddup ymm1 {k1} {z}, [rax]
+
+; Move even index double-precision floating-point values from zmm2/m512 and duplicate each element into zmm1 subject to writemask k1.
+
+vmovddup zmm1 {k1} {z}, zmm2
+vmovddup zmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of bytes in xmm2/m128 and store UNSIGNED result in xmm1 using writemask k1.
+
+vpabsb xmm1 {k1} {z}, xmm2
+vpabsb xmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of bytes in ymm2/m256 and store UNSIGNED result in ymm1 using writemask k1.
+
+vpabsb ymm1 {k1} {z}, ymm2
+vpabsb ymm1 {k1} {z}, [rax]
+
+; Compute the absolute value of bytes in zmm2/m512 and store UNSIGNED result in zmm1 using writemask k1.
+
+vpabsb zmm1 {k1} {z}, zmm2
+vpabsb zmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 16-bit integers in xmm2/m128 and store UNSIGNED result in xmm1 using writemask k1.
+
+vpabsw xmm1 {k1} {z}, xmm2
+vpabsw xmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 16-bit integers in ymm2/m256 and store UNSIGNED result in ymm1 using writemask k1.
+
+vpabsw ymm1 {k1} {z}, ymm2
+vpabsw ymm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 16-bit integers in zmm2/m512 and store UNSIGNED result in zmm1 using writemask k1.
+
+vpabsw zmm1 {k1} {z}, zmm2
+vpabsw zmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 32-bit integers in xmm2/m128/m32bcst and store UNSIGNED result in xmm1 using writemask k1.
+
+vpabsd xmm1 {k1} {z}, xmm2
+vpabsd xmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 32-bit integers in ymm2/m256/m32bcst and store UNSIGNED result in ymm1 using writemask k1.
+
+vpabsd ymm1 {k1} {z}, ymm2
+vpabsd ymm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 32-bit integers in zmm2/m512/m32bcst and store UNSIGNED result in zmm1 using writemask k1.
+
+vpabsd zmm1 {k1} {z}, zmm2
+vpabsd zmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 64-bit integers in xmm2/m128/m64bcst and store UNSIGNED result in xmm1 using writemask k1.
+
+vpabsq xmm1 {k1} {z}, xmm2
+vpabsq xmm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 64-bit integers in ymm2/m256/m64bcst and store UNSIGNED result in ymm1 using writemask k1.
+
+vpabsq ymm1 {k1} {z}, ymm2
+vpabsq ymm1 {k1} {z}, [rax]
+
+; Compute the absolute value of 64-bit integers in zmm2/m512/m64bcst and store UNSIGNED result in zmm1 using writemask k1.
+
+vpabsq zmm1 {k1} {z}, zmm2
+vpabsq zmm1 {k1} {z}, [rax]
+
+; Multiply signed and unsigned bytes, add horizontal pair of signed words, pack saturated signed-words to xmm1 under writemask k1.
+
+vpmaddubsw xmm1 {k1} {z}, xmm2, xmm3
+vpmaddubsw xmm1 {k1} {z}, xmm2, [rax]
+
+; Multiply signed and unsigned bytes, add horizontal pair of signed words, pack saturated signed-words to ymm1 under writemask k1.
+
+vpmaddubsw ymm1 {k1} {z}, ymm2, ymm3
+vpmaddubsw ymm1 {k1} {z}, ymm2, [rax]
+
+; Multiply signed and unsigned bytes, add horizontal pair of signed words, pack saturated signed-words to zmm1 under writemask k1.
+
+vpmaddubsw zmm1 {k1} {z}, zmm2, zmm3
+vpmaddubsw zmm1 {k1} {z}, zmm2, [rax]
+
+; Multiply 16-bit signed words, scale and round signed doublewords, pack high 16 bits to xmm1 under writemask k1.
+
+vpmulhrsw xmm1 {k1} {z}, xmm2, xmm3
+vpmulhrsw xmm1 {k1} {z}, xmm2, [rax]
+
+; Multiply 16-bit signed words, scale and round signed doublewords, pack high 16 bits to ymm1 under writemask k1.
+
+vpmulhrsw ymm1 {k1} {z}, ymm2, ymm3
+vpmulhrsw ymm1 {k1} {z}, ymm2, [rax]
+
+; Multiply 16-bit signed words, scale and round signed doublewords, pack high 16 bits to zmm1 under writemask k1.
+
+vpmulhrsw zmm1 {k1} {z}, zmm2, zmm3
+vpmulhrsw zmm1 {k1} {z}, zmm2, [rax]
+
+; Shuffle bytes in xmm2 according to contents of xmm3/m128 under write mask k1.
+
+vpshufb xmm1 {k1} {z}, xmm2, xmm3
+vpshufb xmm1 {k1} {z}, xmm2, [rax]
+
+; Shuffle bytes in ymm2 according to contents of ymm3/m256 under write mask k1.
+
+vpshufb ymm1 {k1} {z}, ymm2, ymm3
+vpshufb ymm1 {k1} {z}, ymm2, [rax]
+
+; Shuffle bytes in zmm2 according to contents of zmm3/m512 under write mask k1.
+
+vpshufb zmm1 {k1} {z}, zmm2, zmm3
+vpshufb zmm1 {k1} {z}, zmm2, [rax]
+
+; Concatenate xmm2 and xmm3/m128 into a 32-byte intermediate result, extract byte aligned result shifted to the right by constant value in imm8 and result is stored in xmm1.
+
+vpalignr xmm1 {k1} {z}, xmm2, xmm3, 0x69
+vpalignr xmm1 {k1} {z}, xmm2, [rax], 0x69
+
+; Concatenate pairs of 16 bytes in ymm2 and ymm3/m256 into 32-byte intermediate result, extract byte-aligned, 16-byte result shifted to the right by constant values in imm8 from each intermediate result, and two 16-byte results are stored in ymm1.
+
+vpalignr ymm1 {k1} {z}, ymm2, ymm3, 0x69
+vpalignr ymm1 {k1} {z}, ymm2, [rax], 0x69
+
+; Concatenate pairs of 16 bytes in zmm2 and zmm3/m512 into 32-byte intermediate result, extract byte-aligned, 16-byte result shifted to the right by constant values in imm8 from each intermediate result, and four 16-byte results are stored in zmm1.
+
+vpalignr zmm1 {k1} {z}, zmm2, zmm3, 0x69
+vpalignr zmm1 {k1} {z}, zmm2, [rax], 0x69

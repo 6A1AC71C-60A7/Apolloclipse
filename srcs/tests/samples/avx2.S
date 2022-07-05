@@ -330,3 +330,53 @@ vpslldq ymm1, ymm2, 0x69
 
 vpsrldq ymm1, ymm2, 0x69
 
+; Compute the absolute value of bytes in ymm2/m128 and store UNSIGNED result in ymm1.
+
+vpabsb ymm1, ymm3
+vpabsb ymm1, [rax]
+
+; Compute the absolute value of 16- bit integers in ymm2/m128 and store UNSIGNED result in ymm1.
+
+vpabsw ymm1, ymm3
+vpabsw ymm1, [rax]
+
+; Compute the absolute value of 32- bit integers in ymm2/m128 and store UNSIGNED result in ymm1.
+
+vpabsd ymm1, ymm3
+vpabsd ymm1, [rax]
+
+; Multiply signed and unsigned bytes, add horizontal pair of signed words, pack saturated signed-words to ymm1.
+
+vpmaddubsw ymm1, ymm2, ymm3
+vpmaddubsw ymm1, ymm2, [rax]
+
+; Multiply 16-bit signed words, scale and round signed doublewords, pack high 16 bits to ymm1.
+
+vpmulhrsw ymm1, ymm2, ymm3
+vpmulhrsw ymm1, ymm2, [rax]
+
+; Shuffle bytes in ymm2 according to contents of ymm3/m256.
+
+vpshufb ymm1, ymm2, ymm3
+vpshufb ymm1, ymm2, [rax]
+
+; Negate/zero/preserve packed byte integers in ymm2 depending on the corresponding sign in ymm3/m128.
+
+vpsignb ymm1, ymm2, ymm3
+vpsignb ymm1, ymm2, [rax]
+
+; Negate/zero/preserve packed word integers in ymm2 depending on the corresponding sign in ymm3/m128.
+
+vpsignw ymm1, ymm2, ymm3
+vpsignw ymm1, ymm2, [rax]
+
+; Negate/zero/preserve packed doubleword integers in ymm2 depending on the corresponding sign in ymm3/m128.
+
+vpsignd ymm1, ymm2, ymm3
+vpsignd ymm1, ymm2, [rax]
+
+; Concatenate pairs of 16 bytes in ymm2 and ymm3/m256 into 32-byte intermediate result, extract byte-aligned, 16-byte result shifted to the right by constant values in imm8 from each intermediate result, and two 16-byte results are stored in ymm1.
+
+vpalignr ymm1, ymm2, ymm3, 0x69
+vpalignr ymm1, ymm2, [rax], 0x69
+

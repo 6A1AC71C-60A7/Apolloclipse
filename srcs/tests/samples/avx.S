@@ -1129,3 +1129,213 @@ vmaskmovdqu xmm1, xmm2
 
 pause
 
+; Load unaligned packed integer values from mem to xmm1.
+
+vlddqu xmm1, [rax]
+
+; Load unaligned packed integer values from mem to ymm1.
+
+vlddqu ymm1, [rax]
+
+; Move odd index single-precision floating-point values from xmm2/mem and duplicate each element into xmm1.
+
+vmovshdup xmm1, xmm2
+vmovshdup xmm1, [rax]
+
+; Move odd index single-precision floating-point values from ymm2/mem and duplicate each element into ymm1.
+
+vmovshdup ymm1, ymm2
+vmovshdup ymm1, [rax]
+
+; Move even index single-precision floating-point values from xmm2/mem and duplicate each element into xmm1.
+
+vmovsldup xmm1, xmm2
+vmovsldup xmm1, [rax]
+
+; Move even index single-precision floating-point values from ymm2/mem and duplicate each element into ymm1.
+
+vmovsldup ymm1, ymm2
+vmovsldup ymm1, [rax]
+
+; Move double-precision floating-point value from xmm2/m64 and duplicate into xmm1.
+
+vmovddup xmm1, xmm2
+vmovddup xmm1, [rax]
+
+; Move even index double-precision floating-point values from ymm2/mem and duplicate each element into ymm1.
+
+vmovddup ymm1, ymm2
+vmovddup ymm1, [rax]
+
+; Add/subtract single-precision floating-point values from xmm3/mem to xmm2 and stores result in xmm1.
+
+vaddsubps xmm1, xmm2
+vaddsubps xmm1, [rax]
+
+; Add / subtract single-precision floating-point values from ymm3/mem to ymm2 and stores result in ymm1.
+
+vaddsubps ymm1, ymm2
+vaddsubps ymm1, [rax]
+
+; Add/subtract double-precision floating-point values from xmm3/mem to xmm2 and stores result in xmm1.
+
+vaddsubpd xmm1, xmm2
+vaddsubpd xmm1, [rax]
+
+; Add / subtract double-precision floating-point values from ymm3/mem to ymm2 and stores result in ymm1.
+
+vaddsubpd ymm1, ymm2
+vaddsubpd ymm1, [rax]
+
+; Horizontal add packed single-precision floating-point values from xmm2 and xmm3/mem.
+
+vhaddps xmm1, xmm2, xmm3
+vhaddps xmm1, xmm2, [rax]
+
+; Horizontal add packed single-precision floating-point values from ymm2 and ymm3/mem.
+
+vhaddps ymm1, ymm2, ymm3
+vhaddps ymm1, ymm2, [rax]
+
+; Horizontal subtract packed single-precision floating-point values from xmm2 and xmm3/mem.
+
+vhsubps xmm1, xmm2, xmm3
+vhsubps xmm1, xmm2, [rax]
+
+; Horizontal subtract packed single-precision floating-point values from ymm2 and ymm3/mem.
+
+vhsubps ymm1, ymm2, ymm3
+vhsubps ymm1, ymm2, [rax]
+
+
+; Horizontal add packed double-precision floating-point values from xmm2 and xmm3/mem.
+
+vhaddpd xmm1, xmm2, xmm3
+vhaddpd xmm1, xmm2, [rax]
+
+; Horizontal add packed double-precision floating-point values from ymm2 and ymm3/mem.
+
+vhaddpd ymm1, ymm2, ymm3
+vhaddpd ymm1, ymm2, [rax]
+
+; Horizontal subtract packed double-precision floating-point values from xmm2 and xmm3/mem.
+
+vhsubpd xmm1, xmm2, xmm3
+vhsubpd xmm1, xmm2, [rax]
+
+; Horizontal subtract packed double-precision floating-point values from ymm2 and ymm3/mem.
+
+vhsubpd ymm1, ymm2, ymm3
+vhsubpd ymm1, ymm2, [rax]
+
+; Add 16-bit integers horizontally, pack to xmm1.
+
+vphaddw xmm1, xmm2, xmm3
+vphaddw xmm1, xmm2, [rax]
+
+; Add 16-bit signed integers horizontally, pack to ymm1.
+
+vphaddw ymm1, ymm2, ymm3
+vphaddw ymm1, ymm2, [rax]
+
+; Add 32-bit integers horizontally, pack to xmm1.
+
+vphaddd xmm1, xmm2, xmm3
+vphaddd xmm1, xmm2, [rax]
+
+; Add 32-bit signed integers horizontally, pack to ymm1.
+
+vphaddd ymm1, ymm2, ymm3
+vphaddd ymm1, ymm2, [rax]
+
+; Add 16-bit signed integers horizontally, pack saturated integers to xmm1.
+
+vphaddsw xmm1, xmm2, xmm3
+vphaddsw xmm1, xmm2, [rax]
+
+; Add 16-bit signed integers horizontally, pack saturated integers to ymm1.
+
+vphaddsw ymm1, ymm2, ymm3
+vphaddsw ymm1, ymm2, [rax]
+
+; Subtract 16-bit integers horizontally, pack to xmm1.
+
+vphsubw xmm1, xmm2, xmm3
+vphsubw xmm1, xmm2, [rax]
+
+; Subtract 16-bit signed integers horizontally, pack to ymm1.
+
+vphsubw ymm1, ymm2, ymm3
+vphsubw ymm1, ymm2, [rax]
+
+; Subtract 32-bit integers horizontally, pack to xmm1.
+
+vphsubd xmm1, xmm2, xmm3
+vphsubd xmm1, xmm2, [rax]
+
+; Subtract 32-bit signed integers horizontally, pack to ymm1.
+
+vphsubd ymm1, ymm2, ymm3
+vphsubd ymm1, ymm2, [rax]
+
+; Subtract 16-bit signed integers horizontally, pack saturated integers to xmm1.
+
+vphsubsw xmm1, xmm2, xmm3
+vphsubsw xmm1, xmm2, [rax]
+
+; Subtract 16-bit signed integers horizontally, pack saturated integers to ymm1.
+
+vphsubsw ymm1, ymm2, ymm3
+vphsubsw ymm1, ymm2, [rax]
+
+; Compute the absolute value of bytes in xmm2/m128 and store UNSIGNED result in xmm1.
+
+vpabsb xmm1, xmm3
+vpabsb xmm1, [rax]
+
+; Compute the absolute value of 16- bit integers in xmm2/m128 and store UNSIGNED result in xmm1.
+
+vpabsw xmm1, xmm3
+vpabsw xmm1, [rax]
+
+; Compute the absolute value of 32- bit integers in xmm2/m128 and store UNSIGNED result in xmm1.
+
+vpabsd xmm1, xmm3
+vpabsd xmm1, [rax]
+
+; Multiply signed and unsigned bytes, add horizontal pair of signed words, pack saturated signed-words to xmm1.
+
+vpmaddubsw xmm1, xmm2, xmm3
+vpmaddubsw xmm1, xmm2, [rax]
+
+; Multiply 16-bit signed words, scale and round signed doublewords, pack high 16 bits to xmm1.
+
+vpmulhrsw xmm1, xmm2, xmm3
+vpmulhrsw xmm1, xmm2, [rax]
+
+; Shuffle bytes in xmm2 according to contents of xmm3/m128.
+
+vpshufb xmm1, xmm2, xmm3
+vpshufb xmm1, xmm2, [rax]
+
+; Negate/zero/preserve packed byte integers in xmm2 depending on the corresponding sign in xmm3/m128.
+
+vpsignb xmm1, xmm2, xmm3
+vpsignb xmm1, xmm2, [rax]
+
+; Negate/zero/preserve packed word integers in xmm2 depending on the corresponding sign in xmm3/m128.
+
+vpsignw xmm1, xmm2, xmm3
+vpsignw xmm1, xmm2, [rax]
+
+; Negate/zero/preserve packed doubleword integers in xmm2 depending on the corresponding sign in xmm3/m128.
+
+vpsignd xmm1, xmm2, xmm3
+vpsignd xmm1, xmm2, [rax]
+
+; Concatenate xmm2 and xmm3/m128, extract byte aligned result shifted to the right by constant value in imm8 and result is stored in xmm1.
+
+vpalignr xmm1, xmm2, xmm3, 0x69
+vpalignr xmm1, xmm2, [rax], 0x69
+
+; 
