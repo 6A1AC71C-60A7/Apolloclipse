@@ -1561,3 +1561,153 @@ vpcmpistrm xmm1, [rax], 0x69
 
 vpcmpgtq xmm1, xmm2, xmm3
 vpcmpgtq xmm1, xmm2, [rax]
+
+; Broadcast single-precision floating-point element in mem to four locations in xmm1.
+
+vbroadcastss xmm1, DWORD [rax]
+
+; Broadcast single-precision floating-point element in mem to eight locations in ymm1.
+
+vbroadcastss ymm1, DWORD [rax]
+
+; Broadcast double-precision floating-point element in mem to four locations in ymm1.
+
+vbroadcastsd ymm1, QWORD [rax]
+
+; Broadcast 128 bits of floating-point data in mem to low and high 128-bits in ymm1.
+
+vbroadcastf128 ymm1, [rax]
+
+; Insert 128 bits of packed floating-point values from xmm3/m128 and the remaining values from ymm2 into ymm1.
+
+vinsertf128 ymm1, ymm2, xmm3, 0x69
+vinsertf128 ymm1, ymm2, [rax], 0x69
+
+; Conditionally load packed single-precision values from m128 using mask in xmm2 and store in xmm1.
+
+vmaskmovps xmm1, xmm2, [rax]
+
+; Conditionally load packed single-precision values from m256 using mask in ymm2 and store in ymm1.
+
+vmaskmovps ymm1, ymm2, [rax]
+
+; Conditionally load packed double-precision values from m128 using mask in xmm2 and store in xmm1.
+
+vmaskmovpd xmm1, xmm2, [rax]
+
+; Conditionally load packed double-precision values from m256 using mask in ymm2 and store in ymm1.
+
+vmaskmovpd ymm1, ymm2, [rax]
+
+; Conditionally store packed single-precision values from xmm2 using mask in xmm1.
+
+vmaskmovps [rax], xmm1, xmm2
+
+; Conditionally store packed single-precision values from ymm2 using mask in ymm1.
+
+vmaskmovps [rax], ymm1, ymm2
+
+; Conditionally store packed double-precision values from xmm2 using mask in xmm1.
+
+vmaskmovpd [rax], xmm1, xmm2
+
+; Conditionally store packed double-precision values from ymm2 using mask in ymm1.
+
+vmaskmovpd [rax], ymm1, ymm2
+
+; Permute single-precision floating-point values in xmm2 using controls from xmm3/m128 and store result in xmm1.
+
+vpermilps xmm1, xmm2, xmm3
+vpermilps xmm1, xmm2, [rax]
+
+; Permute single-precision floating-point values in ymm2 using controls from ymm3/m256 and store result in ymm1.
+
+vpermilps ymm1, ymm2, ymm3
+vpermilps ymm1, ymm2, [rax]
+
+; Permute single-precision floating-point values in xmm2/m128 using controls from imm8.
+
+vpermilps xmm1, xmm3, 0x69
+vpermilps xmm1, [rax], 0x69
+
+; Permute single-precision floating-point values in ymm2/m256 using controls from imm8.
+
+vpermilps ymm1, ymm3, 0x69
+vpermilps ymm1, [rax], 0x69
+
+; Permute double-precision floating-point values in xmm2 using controls from xmm3/m128 and store result in xmm1.
+
+vpermilpd xmm1, xmm2, xmm3
+vpermilpd xmm1, xmm2, [rax]
+
+; Permute double-precision floating-point values in ymm2 using controls from ymm3/m256 and store result in ymm1.
+
+vpermilpd ymm1, ymm2, ymm3
+vpermilpd ymm1, ymm2, [rax]
+
+; Permute double-precision floating-point values in xmm2/m128 using controls from imm8.
+
+vpermilpd xmm1, xmm3, 0x69
+vpermilpd xmm1, [rax], 0x69
+
+; Permute double-precision floating-point values in ymm2/m256 using controls from imm8.
+
+vpermilpd ymm1, ymm3, 0x69
+vpermilpd ymm1, [rax], 0x69
+
+; Permute 128-bit floating-point fields in ymm2 and ymm3/mem using controls from imm8 and store result in ymm1.
+
+vperm2f128 ymm1, ymm2, ymm3, 0x69
+vperm2f128 ymm1, ymm2, [rax], 0x69
+
+; Set ZF and CF depending on sign bit AND and ANDN of packed single-precision floating-point sources.
+
+vtestps xmm1, xmm2
+vtestps xmm1, [rax]
+
+; Set ZF and CF depending on sign bit AND and ANDN of packed single-precision floating-point sources.
+
+vtestps ymm1, ymm2
+vtestps ymm1, [rax]
+
+; Set ZF and CF depending on sign bit AND and ANDN of packed double-precision floating-point sources.
+
+vtestpd xmm1, xmm2
+vtestpd xmm1, [rax]
+
+; Set ZF and CF depending on sign bit AND and ANDN of packed double-precision floating-point sources.
+
+vtestpd ymm1, ymm2
+vtestpd ymm1, [rax]
+
+; Zero all YMM registers.
+
+vzeroall
+
+; Zero upper 128 bits of all YMM registers.
+
+vzeroupper
+
+; Convert four packed half precision (16-bit) floating-point values in xmm2/m64 to packed single-precision floating-point value in xmm1.
+; NOTE: need F16C extension
+
+vcvtph2ps xmm1, xmm2
+vcvtph2ps xmm1, [rax]
+
+; Convert eight packed half precision (16-bit) floating-point values in xmm2/m128 to packed single-precision floating-point value in ymm1.
+; NOTE: need F16C extension
+
+vcvtph2ps ymm1, xmm2
+vcvtph2ps ymm1, [rax]
+
+; Convert four packed single-precision floating-point values in xmm2 to packed half-precision (16-bit) floating-point values in xmm1/m64. Imm8 provides rounding controls.
+; NOTE: need F16C extension
+
+vcvtps2ph xmm1, xmm2, 0x69
+vcvtps2ph [rax], xmm2, 0x69
+
+; Convert eight packed single-precision floating-point values in ymm2 to packed half-precision (16-bit) floating-point values in xmm1/m128. Imm8 provides rounding controls.
+; NOTE: need F16C extension
+
+vcvtps2ph xmm1, ymm2, 0x69
+vcvtps2ph [rax], ymm2, 0x69

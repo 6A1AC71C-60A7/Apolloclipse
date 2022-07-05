@@ -3119,3 +3119,196 @@ vpcmpgtq k1 {k2}, ymm2, [rax]
 vpcmpgtq k1 {k2}, zmm2, zmm3
 vpcmpgtq k1 {k2}, zmm2, [rax]
 
+; Broadcast low double-precision floating-point element in xmm2/m64 to four locations in ymm1 using writemask k1.
+
+vbroadcastsd ymm1 {k1} {z}, xmm2
+vbroadcastsd ymm1 {k1} {z}, [rax]
+
+; Broadcast low double-precision floating-point element in xmm2/m64 to eight locations in zmm1 using writemask k1.
+
+vbroadcastsd zmm1 {k1} {z}, xmm2
+vbroadcastsd zmm1 {k1} {z}, [rax]
+
+; Broadcast two single-precision floating-point elements in xmm2/m64 to locations in ymm1 using writemask k1.
+
+vbroadcastf32x2 ymm1 {k1} {z}, xmm2
+vbroadcastf32x2 ymm1 {k1} {z}, [rax]
+
+; Broadcast two single-precision floating-point elements in xmm2/m64 to locations in zmm1 using writemask k1.
+
+vbroadcastf32x2 zmm1 {k1} {z}, xmm2
+vbroadcastf32x2 zmm1 {k1} {z}, [rax]
+
+; Broadcast low single-precision floating-point element in xmm2/m32 to all locations in xmm1 using writemask k1.
+
+vbroadcastss xmm1 {k1} {z}, xmm2
+vbroadcastss xmm1 {k1} {z}, DWORD [rax]
+
+; Broadcast low single-precision floating-point element in xmm2/m32 to all locations in ymm1 using writemask k1.
+
+vbroadcastss ymm1 {k1} {z}, xmm2
+vbroadcastss ymm1 {k1} {z}, DWORD [rax]
+
+; Broadcast low single-precision floating-point element in xmm2/m32 to all locations in zmm1 using writemask k1.
+
+vbroadcastss zmm1 {k1} {z}, xmm2
+vbroadcastss zmm1 {k1} {z}, DWORD [rax]
+
+; Broadcast 128 bits of 4 single-precision floating-point data in mem to locations in ymm1 using writemask k1.
+
+vbroadcastf32x4 ymm1 {k1} {z}, [rax]
+
+; Broadcast 128 bits of 4 single-precision floating-point data in mem to locations in zmm1 using writemask k1.
+
+vbroadcastf32x4 zmm1 {k1} {z}, [rax]
+
+; Broadcast 128 bits of 2 double-precision floating-point data in mem to locations in ymm1 using writemask k1.
+
+vbroadcastf64x2 ymm1 {k1} {z}, [rax]
+
+; Broadcast 128 bits of 2 double-precision floating-point data in mem to locations in zmm1 using writemask k1.
+
+vbroadcastf64x2 zmm1 {k1} {z}, [rax]
+
+; Broadcast 256 bits of 8 single-precision floating-point data in mem to locations in zmm1 using writemask k1.
+
+vbroadcastf32x8 zmm1 {k1} {z}, [rax]
+
+; Broadcast 256 bits of 4 double-precision floating-point data in mem to locations in zmm1 using writemask k1.
+
+vbroadcastf64x4 zmm1 {k1} {z}, [rax]
+
+; Insert 128 bits of packed single-precision floating-point values from xmm3/m128 and the remaining values from ymm2 into ymm1 under writemask k1.
+
+vinsertf32x4 ymm1 {k1} {z}, ymm2, xmm3, 0x69
+vinsertf32x4 ymm1 {k1} {z}, ymm2, [rax], 0x69
+
+; Insert 128 bits of packed single-precision floating-point values from xmm3/m128 and the remaining values from zmm2 into zmm1 under writemask k1.
+
+vinsertf32x4 zmm1 {k1} {z}, zmm2, xmm3, 0x69
+vinsertf32x4 zmm1 {k1} {z}, zmm2, [rax], 0x69
+
+; Insert 128 bits of packed double-precision floating-point values from xmm3/m128 and the remaining values from ymm2 into ymm1 under writemask k1.
+
+vinsertf64x2 ymm1 {k1} {z}, ymm2, xmm3, 0x69
+vinsertf64x2 ymm1 {k1} {z}, ymm2, [rax], 0x69
+
+; Insert 128 bits of packed double-precision floating-point values from xmm3/m128 and the remaining values from zmm2 into zmm1 under writemask k1.
+
+vinsertf64x2 zmm1 {k1} {z}, zmm2, xmm3, 0x69
+vinsertf64x2 zmm1 {k1} {z}, zmm2, [rax], 0x69
+
+; Insert 256 bits of packed single-precision floating-point values from ymm3/m256 and the remaining values from zmm2 into zmm1 under writemask k1.
+
+vinsertf32x8 zmm1 {k1} {z}, zmm2, ymm3, 0x69
+vinsertf32x8 zmm1 {k1} {z}, zmm2, [rax], 0x69
+
+; Insert 256 bits of packed double-precision floating-point values from ymm3/m256 and the remaining values from zmm2 into zmm1 under writemask k1.
+
+vinsertf64x4 zmm1 {k1} {z}, zmm2, ymm3, 0x69
+vinsertf64x4 zmm1 {k1} {z}, zmm2, [rax], 0x69
+
+
+; Permute single-precision floating-point values in xmm2 using control from xmm3/m128/m64bcst and store the result in xmm1 using writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpermilps xmm1 {k1} {z}, xmm2, xmm3
+vpermilps xmm1 {k1} {z}, xmm2, [rax]
+
+; Permute single-precision floating-point values in ymm2 using control from ymm3/m256/m64bcst and store the result in ymm1 using writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpermilps ymm1 {k1} {z}, ymm2, ymm3
+vpermilps ymm1 {k1} {z}, ymm2, [rax]
+
+; Permute single-precision floating-point values in zmm2 using control from zmm3/m512/m64bcst and store the result in zmm1 using writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpermilps zmm1 {k1} {z}, zmm2, zmm3
+vpermilps zmm1 {k1} {z}, zmm2, [rax]
+
+; Permute single-precision floating-point values in xmm2/m128/m64bcst using controls from imm8 and store the result in xmm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpermilps xmm1 {k1} {z}, xmm3, 0x69
+vpermilps xmm1 {k1} {z}, [rax], 0x69
+
+; Permute single-precision floating-point values in ymm2/m256/m64bcst using controls from imm8 and store the result in ymm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpermilps ymm1 {k1} {z}, ymm3, 0x69
+vpermilps ymm1 {k1} {z}, [rax], 0x69
+
+; Permute single-precision floating-point values in zmm2/m512/m64bcst using controls from imm8 and store the result in zmm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpermilps zmm1 {k1} {z}, zmm3, 0x69
+vpermilps zmm1 {k1} {z}, [rax], 0x69
+
+; Permute double-precision floating-point values in xmm2 using control from xmm3/m128/m64bcst and store the result in xmm1 using writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpermilpd xmm1 {k1} {z}, xmm2, xmm3
+vpermilpd xmm1 {k1} {z}, xmm2, [rax]
+
+; Permute double-precision floating-point values in ymm2 using control from ymm3/m256/m64bcst and store the result in ymm1 using writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpermilpd ymm1 {k1} {z}, ymm2, ymm3
+vpermilpd ymm1 {k1} {z}, ymm2, [rax]
+
+; Permute double-precision floating-point values in zmm2 using control from zmm3/m512/m64bcst and store the result in zmm1 using writemask k1.
+; TODO: 'm64bcst' possible third argument
+
+vpermilpd zmm1 {k1} {z}, zmm2, zmm3
+vpermilpd zmm1 {k1} {z}, zmm2, [rax]
+
+; Permute double-precision floating-point values in xmm2/m128/m64bcst using controls from imm8 and store the result in xmm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpermilpd xmm1 {k1} {z}, xmm3, 0x69
+vpermilpd xmm1 {k1} {z}, [rax], 0x69
+
+; Permute double-precision floating-point values in ymm2/m256/m64bcst using controls from imm8 and store the result in ymm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpermilpd ymm1 {k1} {z}, ymm3, 0x69
+vpermilpd ymm1 {k1} {z}, [rax], 0x69
+
+; Permute double-precision floating-point values in zmm2/m512/m64bcst using controls from imm8 and store the result in zmm1 using writemask k1.
+; TODO: 'm64bcst' possible second argument
+
+vpermilpd zmm1 {k1} {z}, zmm3, 0x69
+vpermilpd zmm1 {k1} {z}, [rax], 0x69
+
+; Convert four packed half precision (16-bit) floating-point values in xmm2/m64 to packed single-precision floating-point values in xmm1.
+
+vcvtph2ps xmm1 {k1} {z}, xmm2
+vcvtph2ps xmm1 {k1} {z}, [rax]
+
+; Convert eight packed half precision (16-bit) floating-point values in xmm2/m128 to packed single-precision floating-point values in ymm1.
+
+vcvtph2ps ymm1 {k1} {z}, xmm2
+vcvtph2ps ymm1 {k1} {z}, [rax]
+
+; Convert sixteen packed half precision (16-bit) floating-point values in ymm2/m256 to packed single-precision floating-point values in zmm1.
+
+vcvtph2ps zmm1 {k1} {z}, ymm2
+vcvtph2ps zmm1 {k1} {z}, [rax]
+
+; Convert four packed single-precision floating-point values in xmm2 to packed half-precision (16-bit) floating-point values in xmm1/m64. Imm8 provides rounding controls.
+
+vcvtps2ph xmm1 {k1} {z}, xmm2, 0x69
+vcvtps2ph [rax], xmm2, 0x69
+
+; Convert eight packed single-precision floating-point values in ymm2 to packed half-precision (16-bit) floating-point values in xmm1/m128. Imm8 provides rounding controls.
+
+vcvtps2ph xmm1 {k1} {z}, ymm2, 0x69
+vcvtps2ph [rax], ymm2, 0x69
+
+; Convert sixteen packed single-precision floating-point values in zmm2 to packed half-precision (16-bit) floating-point values in ymm1/m256. Imm8 provides rounding controls.
+
+vcvtps2ph ymm1 {k1} {z}, zmm2, 0x69
+vcvtps2ph [rax], zmm2, 0x69
+
+

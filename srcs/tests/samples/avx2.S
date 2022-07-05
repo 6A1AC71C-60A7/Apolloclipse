@@ -434,3 +434,14 @@ vpackusdw ymm1, ymm2, [rax]
 vpcmpgtq ymm1, ymm2, ymm3
 vpcmpgtq ymm1, ymm2, [rax]
 
+; Broadcast the low single-precision floating-point element in the source operand to four locations in xmm1.
+
+vbroadcastss xmm1, xmm2
+
+; Broadcast low single-precision floating-point element in the source operand to eight locations in ymm1.
+
+vbroadcastss ymm1, xmm2
+
+; Broadcast low double-precision floating-point element in the source operand to four locations in ymm1.
+
+vbroadcastsd ymm1, xmm2
