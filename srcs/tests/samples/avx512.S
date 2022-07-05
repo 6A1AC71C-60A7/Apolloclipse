@@ -3311,4 +3311,220 @@ vcvtps2ph [rax], ymm2, 0x69
 vcvtps2ph ymm1 {k1} {z}, zmm2, 0x69
 vcvtps2ph [rax], zmm2, 0x69
 
+; Permute doublewords in ymm3/m256/m32bcst using indexes in ymm2 and store the result in ymm1 using writemask k1.
+; TODO: 'm64bcst' third argument
 
+vpermd ymm1 {k1} {z}, ymm2, ymm3
+vpermd ymm1 {k1} {z}, ymm2, [rax]
+
+; Permute doublewords in zmm3/m512/m32bcst using indices in zmm2 and store the result in zmm1 using writemask k1.
+; TODO: 'm64bcst' third argument
+
+vpermd zmm1 {k1} {z}, zmm2, zmm3
+vpermd zmm1 {k1} {z}, zmm2, [rax]
+
+; Permute word integers in xmm3/m128 using indexes in xmm2 and store the result in xmm1 using writemask k1.
+
+vpermw xmm1 {k1} {z}, xmm2, xmm3
+vpermw xmm1 {k1} {z}, xmm2, [rax]
+
+; Permute word integers in ymm3/m256 using indexes in ymm2 and store the result in ymm1 using writemask k1.
+
+vpermw ymm1 {k1} {z}, ymm2, ymm3
+vpermw ymm1 {k1} {z}, ymm2, [rax]
+
+; Permute word integers in zmm3/m512 using indexes in zmm2 and store the result in zmm1 using writemask k1.
+
+vpermw zmm1 {k1} {z}, zmm2, zmm3
+vpermw zmm1 {k1} {z}, zmm2, [rax]
+
+; Permute single-precision floating-point elements in ymm3/m256/m64bcst using indexes in ymm2 and store the result in ymm1 subject to writemask k1.
+; TODO: 'm64bcst' third argument
+
+vpermps ymm1 {k1} {z}, ymm2, ymm3
+vpermps ymm1 {k1} {z}, ymm2, [rax]
+
+; Permute single-precision floating-point elements in zmm3/m512/m64bcst using indices in zmm2 and store the result in zmm1 subject to writemask k1.
+; TODO: 'm64bcst' third argument
+
+vpermps zmm1 {k1} {z}, zmm2, zmm3
+vpermps zmm1 {k1} {z}, zmm2, [rax]
+
+; Permute double-precision floating-point elements in ymm2/m256/m64bcst using indexes in imm8 and store the result in ymm1 subject to writemask k1.
+; TODO: 'm64bcst' second argument
+
+vpermpd ymm1 {k1} {z}, ymm2, 0x69
+vpermpd ymm1 {k1} {z}, [rax], 0x69
+
+; Permute double-precision floating-point elements in zmm2/m512/m64bcst using indices in imm8 and store the result in zmm1 subject to writemask k1.
+; TODO: 'm64bcst' second argument
+
+vpermpd zmm1 {k1} {z}, zmm2, 0x69
+vpermpd zmm1 {k1} {z}, [rax], 0x69
+
+; Permute double-precision floating-point elements in ymm3/m256/m64bcst using indexes in ymm2 and store the result in ymm1 subject to writemask k1.
+; TODO: 'm64bcst' third argument
+
+vpermpd ymm1 {k1} {z}, ymm2, ymm3
+vpermpd ymm1 {k1} {z}, ymm2, [rax]
+
+; Permute double-precision floating-point elements in zmm3/m512/m64bcst using indices in zmm2 and store the result in zmm1 subject to writemask k1.
+; TODO: 'm64bcst' third argument
+
+vpermpd zmm1 {k1} {z}, zmm2, zmm3
+vpermpd zmm1 {k1} {z}, zmm2, [rax]
+
+; Permute qwords in ymm2/m256/m64bcst using indexes in imm8 and store the result in ymm1.
+
+vpermq ymm1 {k1} {z}, ymm2, 0x69
+vpermq ymm1 {k1} {z}, [rax], 0x69
+
+; Permute qwords in zmm2/m512/m64bcst using indices in imm8 and store the result in zmm1.
+
+vpermq zmm1 {k1} {z}, zmm2, 0x69
+vpermq zmm1 {k1} {z}, [rax], 0x69
+
+; Permute qwords in ymm3/m256/m64bcst using indexes in ymm2 and store the result in ymm1.
+
+vpermq ymm1 {k1} {z}, ymm2, ymm3
+vpermq ymm1 {k1} {z}, ymm2, [rax]
+
+; Permute qwords in zmm3/m512/m64bcst using indices in zmm2 and store the result in zmm1.
+
+vpermq zmm1 {k1} {z}, zmm2, zmm3
+vpermq zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift words in xmm2 left by amount specified in the corresponding element of xmm3/m128 while shifting in 0s using writemask k1.
+
+vpsllvw xmm1 {k1} {z}, xmm2, xmm3
+vpsllvw xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift words in ymm2 left by amount specified in the corresponding element of ymm3/m256 while shifting in 0s using writemask k1.
+
+vpsllvw ymm1 {k1} {z}, ymm2, ymm3
+vpsllvw ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift words in zmm2 left by amount specified in the corresponding element of zmm3/m512 while shifting in 0s using writemask k1.
+
+vpsllvw zmm1 {k1} {z}, zmm2, zmm3
+vpsllvw zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift doublewords in xmm2 left by amount specified in the corresponding element of xmm3/m128/m32bcst while shifting in 0s using writemask k1.
+
+vpsllvd xmm1 {k1} {z}, xmm2, xmm3
+vpsllvd xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift doublewords in ymm2 left by amount specified in the corresponding element of ymm3/m256/m32bcst while shifting in 0s using writemask k1.
+
+vpsllvd ymm1 {k1} {z}, ymm2, ymm3
+vpsllvd ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift doublewords in zmm2 left by amount specified in the corresponding element of zmm3/m512/m32bcst while shifting in 0s using writemask k1.
+
+vpsllvd zmm1 {k1} {z}, zmm2, zmm3
+vpsllvd zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift quadwords in xmm2 left by amount specified in the corresponding element of xmm3/m128/m64bcst while shifting in 0s using writemask k1.
+
+vpsllvq xmm1 {k1} {z}, xmm2, xmm3
+vpsllvq xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift quadwords in ymm2 left by amount specified in the corresponding element of ymm3/m256/m64bcst while shifting in 0s using writemask k1.
+
+vpsllvq ymm1 {k1} {z}, ymm2, ymm3
+vpsllvq ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift quadwords in zmm2 left by amount specified in the corresponding element of zmm3/m512/m64bcst while shifting in 0s using writemask k1.
+
+vpsllvq zmm1 {k1} {z}, zmm2, zmm3
+vpsllvq zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift words in xmm2 right by amount specified in the corresponding element of xmm3/m128 while shifting in sign bits using writemask k1.
+
+vpsravw xmm1 {k1} {z}, xmm2, xmm3
+vpsravw xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift words in ymm2 right by amount specified in the corresponding element of ymm3/m256 while shifting in sign bits using writemask k1.
+
+vpsravw ymm1 {k1} {z}, ymm2, ymm3
+vpsravw ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift words in zmm2 right by amount specified in the corresponding element of zmm3/m512 while shifting in sign bits using writemask k1.
+
+vpsravw zmm1 {k1} {z}, zmm2, zmm3
+vpsravw zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift doublewords in xmm2 right by amount specified in the corresponding element of xmm3/m128/m32bcst while shifting in sign bits using writemask k1.
+
+vpsravd xmm1 {k1} {z}, xmm2, xmm3
+vpsravd xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift doublewords in ymm2 right by amount specified in the corresponding element of ymm3/m256/m32bcst while shifting in sign bits using writemask k1.
+
+vpsravd ymm1 {k1} {z}, ymm2, ymm3
+vpsravd ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift doublewords in zmm2 right by amount specified in the corresponding element of zmm3/m512/m32bcst while shifting in sign bits using writemask k1.
+
+vpsravd zmm1 {k1} {z}, zmm2, zmm3
+vpsravd zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift quadwords in xmm2 right by amount specified in the corresponding element of xmm3/m128/m64bcst while shifting in sign bits using writemask k1.
+
+vpsravq xmm1 {k1} {z}, xmm2, xmm3
+vpsravq xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift quadwords in ymm2 right by amount specified in the corresponding element of ymm3/m256/m64bcst while shifting in sign bits using writemask k1.
+
+vpsravq ymm1 {k1} {z}, ymm2, ymm3
+vpsravq ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift quadwords in zmm2 right by amount specified in the corresponding element of zmm3/m512/m64bcst while shifting in sign bits using writemask k1.
+
+vpsravq zmm1 {k1} {z}, zmm2, zmm3
+vpsravq zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift words in xmm2 right by amount specified in the corresponding element of xmm3/m128 while shifting in 0s using writemask k1.
+
+vpsrlvw xmm1 {k1} {z}, xmm2, xmm3
+vpsrlvw xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift words in ymm2 right by amount specified in the corresponding element of ymm3/m256 while shifting in 0s using writemask k1.
+
+vpsrlvw ymm1 {k1} {z}, ymm2, ymm3
+vpsrlvw ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift words in zmm2 right by amount specified in the corresponding element of zmm3/m512 while shifting in 0s using writemask k1.
+
+vpsrlvw zmm1 {k1} {z}, zmm2, zmm3
+vpsrlvw zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift doublewords in xmm2 right by amount specified in the corresponding element of xmm3/m128/m32bcst while shifting in 0s using writemask k1.
+
+vpsrlvd xmm1 {k1} {z}, xmm2, xmm3
+vpsrlvd xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift doublewords in ymm2 right by amount specified in the corresponding element of ymm3/m256/m32bcst while shifting in 0s using writemask k1.
+
+vpsrlvd ymm1 {k1} {z}, ymm2, ymm3
+vpsrlvd ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift doublewords in zmm2 right by amount specified in the corresponding element of zmm3/m512/m32bcst while shifting in 0s using writemask k1.
+
+vpsrlvd zmm1 {k1} {z}, zmm2, zmm3
+vpsrlvd zmm1 {k1} {z}, zmm2, [rax]
+
+; Shift quadwords in xmm2 right by amount specified in the corresponding element of xmm3/m128/m64bcst while shifting in 0s using writemask k1.
+
+vpsrlvq xmm1 {k1} {z}, xmm2, xmm3
+vpsrlvq xmm1 {k1} {z}, xmm2, [rax]
+
+; Shift quadwords in ymm2 right by amount specified in the corresponding element of ymm3/m256/m64bcst while shifting in 0s using writemask k1.
+
+vpsrlvq ymm1 {k1} {z}, ymm2, ymm3
+vpsrlvq ymm1 {k1} {z}, ymm2, [rax]
+
+; Shift quadwords in zmm2 right by amount specified in the corresponding element of zmm3/m512/m64bcst while shifting in 0s using writemask k1.
+
+vpsrlvq zmm1 {k1} {z}, zmm2, zmm3
+vpsrlvq zmm1 {k1} {z}, zmm2, [rax]

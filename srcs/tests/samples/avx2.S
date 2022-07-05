@@ -445,3 +445,112 @@ vbroadcastss ymm1, xmm2
 ; Broadcast low double-precision floating-point element in the source operand to four locations in ymm1.
 
 vbroadcastsd ymm1, xmm2
+
+; Permute doublewords in ymm3/m256 using indices in ymm2 and store the result in ymm1.
+
+vpermd ymm1, ymm2, ymm3
+vpermd ymm1, ymm2, [rax]
+
+; Permute single-precision floating-point elements in ymm3/m256 using indices in ymm2 and store the result in ymm1.
+
+vpermps ymm1, ymm2, ymm3
+vpermps ymm1, ymm2, [rax]
+
+; Permute double-precision floating-point elements in ymm2/m256 using indices in imm8 and store the result in ymm1.
+
+vpermpd ymm1, ymm2, 0x69
+vpermpd ymm1, [rax], 0x69
+
+; Permute qwords in ymm2/m256 using indices in imm8 and store the result in ymm1.
+
+vpermq ymm1, ymm2, 0x69
+vpermq ymm1, [rax], 0x69
+
+; Shift doublewords in xmm2 left by amount specified in the corresponding element of xmm3/m128 while shifting in 0s.
+
+vpsllvd xmm1, xmm2, xmm3
+vpsllvd xmm1, xmm2, [rax]
+
+; Shift quadwords in xmm2 left by amount specified in the corresponding element of xmm3/m128 while shifting in 0s.
+
+vpsllvq xmm1, xmm2, xmm3
+vpsllvq xmm1, xmm2, [rax]
+
+; Shift doublewords in ymm2 left by amount specified in the corresponding element of ymm3/m256 while shifting in 0s.
+
+vpsllvd ymm1, ymm2, ymm3
+vpsllvd ymm1, ymm2, [rax]
+
+; Shift quadwords in ymm2 left by amount specified in the corresponding element of ymm3/m256 while shifting in 0s.
+
+vpsllvq ymm1, ymm2, ymm3
+vpsllvq ymm1, ymm2, [rax]
+
+; Shift doublewords in xmm2 right by amount specified in the corresponding element of xmm3/m128 while shifting in sign bits.
+
+vpsravd xmm1, xmm2, xmm3
+vpsravd xmm1, xmm2, [rax]
+
+; Shift doublewords in ymm2 right by amount specified in the corresponding element of ymm3/m256 while shifting in sign bits.
+
+vpsravd ymm1, ymm2, ymm3
+vpsravd ymm1, ymm2, [rax]
+
+; Shift doublewords in xmm2 right by amount specified in the corresponding element of xmm3/m128 while shifting in 0s.
+
+vpsrlvd xmm1, xmm2, xmm3
+vpsrlvd xmm1, xmm2, [rax]
+
+; Shift quadwords in xmm2 right by amount specified in the corresponding element of xmm3/m128 while shifting in 0s.
+
+vpsrlvq xmm1, xmm2, xmm3
+vpsrlvq xmm1, xmm2, [rax]
+
+; Shift doublewords in ymm2 right by amount specified in the corresponding element of ymm3/m256 while shifting in 0s.
+
+vpsrlvd ymm1, ymm2, ymm3
+vpsrlvd ymm1, ymm2, [rax]
+
+; Shift quadwords in ymm2 right by amount specified in the corresponding element of ymm3/m256 while shifting in 0s.
+
+vpsrlvq ymm1, ymm2, ymm3
+vpsrlvq ymm1, ymm2, [rax]
+
+; Using dword indices specified in vm(32/64)x, gather single-precision FP values from memory conditioned on mask specified by xmm2. Conditionally gathered elements are merged into xmm1.
+
+vgatherdps xmm1, [xmm1], xmm2
+
+; Using dword indices specified in vm(32/64)x, gather single-precision FP values from memory conditioned on mask specified by ymm2. Conditionally gathered elements are merged into ymm1.
+
+vgatherdps ymm1, [ymm1], ymm2
+
+; Using dword indices specified in vm(32/64)x, gather double-precision FP values from memory conditioned on mask specified by xmm2. Conditionally gathered elements are merged into xmm1.
+
+vgatherdpd xmm1, [xmm1], xmm2
+
+; Using dword indices specified in vm(32/64)x, gather double-precision FP values from memory conditioned on mask specified by ymm2. Conditionally gathered elements are merged into ymm1.
+
+vgatherdpd ymm1, [xmm1], ymm2
+
+; Using dword indices specified in vm(32/64)x, gather dword values from memory conditioned on mask specified by xmm2. Conditionally gathered elements are merged into xmm1.
+
+vpgatherdd xmm1, [xmm1], xmm2
+vpgatherqd xmm1, [xmm1], xmm2
+
+; Using dword indices specified in vm(32/64)y, gather dword from memory conditioned on mask specified by ymm2. Conditionally gathered elements are merged into ymm1.
+
+vpgatherdd ymm1, [ymm1], ymm2
+vpgatherqd xmm1, [ymm1], xmm2
+
+; Using dword indices specified in vm(32/64)x, gather qword values from memory conditioned on mask specified by xmm2.
+
+; TODO: DOES NOT COMPILE
+; vgatherdq xmm1, [xmm1], xmm2
+; vgatherqq xmm1, [xmm1], xmm2
+
+; Using dword indices specified in vm(32x/64y), gather qword values from memory conditioned on mask specified by ymm2. Conditionally gathered elements are merged into ymm1
+
+; TODO: DOES NOT COMPILE
+; vgatherdq ymm1, [xmm1], ymm2
+; vgatherqq ymm1, [ymm1], ymm2
+
