@@ -74,29 +74,29 @@
 */
 
 /// Prefix: 0xC4 (3 bytes VEX) | 0xC5 (2 byte VEX) | 0x8F (3 byte XOP)
-#define VEXXOP_PREFIX_GET(x) (ubyte)(*(ubyte*)&(x))
+#define VEXXOP_PREFIX_GET(x) (ubyte)(*(ubyte*)(x))
 /// This 1-bit value is an 'inverted' extension to the MODRM.reg field (the inverse of REX.R)
-#define VEXXOP_R_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte)) & 0b00000001)
+#define VEXXOP_R_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x7) & 0x1)
 /// This 1-bit value is an 'inverted' extension to the SIB.index field (the inverse of REX.X)
-#define VEXXOP_X_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) + 0x1) & 0b00000010)
+#define VEXXOP_X_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x6) & 0x1)
 /// This 1-bit value is an 'inverted' extension to the MODRM.rm field or the SIB.base field (the inverse of REX.B)
-#define VEXXOP_B_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) + 0x3) & 0b00000100)
+#define VEXXOP_B_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x5) & 0x1)
 /// Specifies the opcode map to use
-#define VEXXOP_MAP_SELECT_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte)) >> 0x3) & 0b00011111)
+#define VEXXOP_MAP_SELECT_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0b00011111)
 /// For integer instructions: when 1, a 64-bit operand size is used; otherwise, when 0, the default operand size is used (equivalent with REX.W)
 /// For non-integer instructions, this bit is a general opcode extension bit
-#define VEXXOP_WE_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) * 2) & 0b00000001)
+#define VEXXOP_WE_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x8) & 0x1)
 /// An additional operand for the instruction, the value of the XMM or YMM register is 'inverted'
-#define VEXXOP_VVVV_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2) >> 0x1) & 0b00001111)
-#define VEXXOP2_VVVV_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte)) >> 0x1) & 0b00001111)
+#define VEXXOP_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x3) & 0xF)
+#define VEXXOP2_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x3) & 0xF)
 
 /// When 0, a 128-bit vector lengh is used. Otherwise, when 1, a 256-bit vector length is used
-#define VEXXOP_L_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) * 2 + 0x5) & 0b00100000)
-#define VEXXOP2_L_GET(x) (ubyte)(*(ubyte*)(&(x) + sizeof(ubyte) + 0x5) & 0b00100000)
+#define VEXXOP_L_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 2) & 0x1)
+#define VEXXOP2_L_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 2) & 0x1)
 /// Specifies an implied mandatory prefix for the opcode:
 /// 00 (none) | 01 (0x66) | 10 (0xF3) | 11 (0xF2)
-#define VEXXOP_PP_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte) * 2) >> 0x6) & 0b00000011)
-#define VEXXOP2_PP_GET(x) (ubyte)((*(ubyte*)(&(x) + sizeof(ubyte)) >> 0x6) & 0b00000011)
+#define VEXXOP_PP_GET(x) (ubyte)(*(ubyte*)((x) + 2) & 0b00000011)
+#define VEXXOP2_PP_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0b00000011)
 
 /*
 ** ModR/M member values
@@ -110,15 +110,12 @@
 ///		otherwise register-indirect addressing mode is used. 
 #define MODRM_MOD_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
-
-#define IS_RM_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
 #define MODRM_RM_EXTENDED_GET(inst) (	\
-	(IS_RM_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK,  inst->vexxop) << 0x3) | MODRM_RM_GET(inst->mod_rm) \
+	((*(udword*)(inst)->prefix & RP_REXB_MASK) != 0) << 3 | MODRM_RM_GET((inst)->mod_rm) \
 )
 
-#define IS_REG_EXTENDED(rex_r, vexxop) ((rex_r) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_R_GET(vexxop)))
 #define MODRM_REG_EXTENDED_GET(inst) (	\
-	(IS_REG_EXTENDED(*(udword*)inst->prefix & RP_REXR_MASK,  inst->vexxop) << 0x3) | MODRM_REG_GET(inst->mod_rm) \
+	((*(udword*)(inst)->prefix & RP_REXR_MASK) != 0) << 3 | MODRM_RM_GET((inst)->mod_rm) \
 )
 
 /*
@@ -132,14 +129,12 @@
 /// The base register to use. Can be extented by 1 bit.
 # define SIB_SCALE_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
-#define IS_SBASE_EXTENDED(rex_b, vexxop) (IS_RM_EXTENDED(rex_b, vexxop))
 #define SIB_BASE_EXTENDED_GET(inst) (	\
-	(IS_SBASE_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | SIB_BASE_GET(inst->sib) \
+	((*(udword*)(inst)->prefix & RP_REXB_MASK) != 0) << 3 | SIB_BASE_GET((inst)->sib) \
 )
 
-#define IS_SINDEX_EXTENDED(rex_x, vexxop) ((rex_x) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_X_GET(vexxop)))
 #define SIB_INDEX_EXTENDED_GET(inst) (	\
-	(IS_SINDEX_EXTENDED(*(udword*)inst->prefix & RP_REXX_MASK, inst->vexxop) << 0x3) | SIB_INDEX_GET(inst->sib) \
+	((*(udword*)(inst)->prefix & RP_REXX_MASK) != 0) << 3 | SIB_INDEX_GET((inst)->sib) \
 )
 
 typedef struct

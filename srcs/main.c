@@ -6,12 +6,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 202
+#define INST_NB 1
 #define BUFFSIZE 0x2000
 #define FILENAME "srcs/tests/samples/x87.txt"
 
 #define TEST_FILE
-//#undef TEST_FILE
+#undef TEST_FILE
 
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
@@ -54,6 +54,11 @@
 /// or just an addon (i don't know whether or not)
 /// After all the user can resolve the operand size looking at prefixes ...
 
+///SAMPLES: MISSING: PMULL, PMULH, PMADD, PCMPGTPB,
+/// SSE4: PMOVSXBW, PMOVZXBW, PMOVSXBD, PMOVZXBD, PMOVSXWD, PMOVZXWD, PMOVSXBQ, PMOVZXBQ, PMOVSXWQ, PMOVZXWQ, PMOVSXDQ, PMOVZXDQ
+
+////WHERE I AM : 11.4.2 -> SSE2 64-Bit and 128-Bit SIMD Integer Instructions
+
 int main(int ac, const char* av[])
 {
     err_t st = SUCCESS;
@@ -69,7 +74,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x0F\xC7\x28\x48\x0F\xC7\x28\x0F\xC7\x20\x48\x0F\xC7\x20\x0F\xC7\x18\x48\x0F\xC7\x18";
+    const ubyte iraw[] = "\xC4\xC1\x6D\xFC\xFF";
 #endif
 
     const ubyte* prt = iraw;

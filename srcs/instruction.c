@@ -150,6 +150,58 @@ end:
 	return err;
 }
 
+#define TEST_VEX_REX(rex, vexxop) ( \
+	VEXXOP_##rex##_GET(vexxop) \
+)
+
+__always_inline
+static void get_vex_prefixes(instruction_t* const inst, const ubyte** iraw)
+{
+	ubyte opp;
+
+	udword* prefix = (udword*)inst->prefix;
+
+	*(uword*)inst->vexxop = *((*(uword**)iraw)++);
+
+	if (inst->vexxop[0] != 0xC5)
+	{
+		inst->vexxop[2] = *((*iraw)++);
+		*prefix |= !TEST_VEX_REX(R, inst->vexxop) ? RP_REXR_MASK : 0x0;
+		*prefix |= !TEST_VEX_REX(X, inst->vexxop) ? RP_REXX_MASK : 0x0;
+		*prefix |= !TEST_VEX_REX(B, inst->vexxop) ? RP_REXB_MASK : 0x0;
+		*prefix |= TEST_VEX_REX(WE, inst->vexxop) ? RP_REXW_MASK : 0x0;
+		opp = VEXXOP_PP_GET(inst->vexxop);
+	}
+	else
+	{
+		*prefix |= TEST_VEX_REX(R, inst->vexxop) ? RP_REXR_MASK : 0x0;
+		opp = VEXXOP_PP_GET(inst->vexxop);
+	}
+
+	switch (opp)
+	{
+		case 0x1:
+			*prefix |= MP_0x66_MASK;
+			break ;
+		case 0x2:
+			*prefix |= MP_0xF3_MASK;
+			break ;
+		case 0x3:
+			*prefix |= MP_0xF2_MASK;
+			break ;
+	}
+
+		/// debug
+	if (*prefix & RP_REXR_MASK)
+		DEBUG("-> VEX: HAS REX.R\n");
+	if (*prefix & RP_REXB_MASK)
+		DEBUG("-> VEX: HAS REX.B\n");
+	if (*prefix & RP_REXX_MASK)
+		DEBUG("-> VEX: HAS REX.X\n");
+	if (*prefix & RP_REXW_MASK)
+		DEBUG("-> VEX: HAS REX.W\n");
+}
+
 __always_inline
 static const opfield_t* get_map_vex(ubyte* const vex)
 {
@@ -161,17 +213,22 @@ static const opfield_t* get_map_vex(ubyte* const vex)
 	const ubyte mmmmm = VEXXOP_MAP_SELECT_GET(vex);
 	const opfield_t* map;
 
+	DEBUG("VEX MAP SELECT FIELD IS: %d\n", mmmmm);
+
 	switch (mmmmm)
 	{
 		case 0b01:
+			DEBUG("VEX: MAP 2BYTE\n");
 			map = lt_two_byte_opmap;
 			break ;
 
 		case 0b10:
+			DEBUG("VEX: MAP 3BYTE (8)\n");
 			map = lt_three_byte_0x38_opmap;
 			break ;
 
 		case 0b11:
+			DEBUG("VEX: MAP 3BYTE (A)\n");
 			map = lt_three_byte_0x3A_opmap;
 			break ;
 	}
@@ -338,6 +395,8 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	{
 		const ubyte line = (opcode & 0xF0) >> 4;
 
+		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, prefix & MP_0x66_MASK);
+
 		if (prefix & MP_0x66_MASK && !(line >= 0x9 && line <= 0xC))
 			scale = 1;
 		if (prefix & MP_0xF3_MASK)
@@ -494,6 +553,14 @@ static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 __always_inline
 static void		get_operand_size(instruction_t* const dest, opfield_t found)
 {
+	if (dest->vexxop[0])
+	{
+		*(udword*)dest->prefix |= VEXXOP_L_GET(dest->vexxop) ? OS_QQWORD_MASK : OS_DQWORD_MASK;
+		return ;
+
+		///TODO: For the future: if is EVEX the size also could be 512bits
+	}
+
 	/* Operand size of first operand dictates the operand size of
 		the whole instruction */
 
@@ -511,8 +578,10 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 			*prefix |= OS_BYTE_MASK;
 		else if (found.ot1 == DRS_16 || found.ot1 == OR_16)
 			*prefix |= OS_WORD_MASK;
+		///TODO: SEEMS NEXT ONE NEVER HAPPENS
 		else if (found.ot1 == DRS_128 || found.ot1 == OR_128)
 			*prefix |= OS_DQWORD_MASK;
+		///TODO: SEEMS NEXT ONE NEVER HAPPENS
 		else if (found.ot1 == DRS_256 || found.ot1 == OR_256)
 			*prefix |= OS_QQWORD_MASK;
 		else
@@ -741,14 +810,12 @@ opcode_check:
 	if (skip_pref)
 		goto skip_prefix_check;
 
-
-
 	if ((isescape & isrex) == 0x0)
 	{
 		if ((isvex = IS_VEX_PREFIX(**iraw)))
 		{
-			///TODO:
-			// get vex prefix
+			get_vex_prefixes(dest, iraw);
+			DEBUG("DEBUG: VEX: [%X][%X][%X]\n", dest->vexxop[0], dest->vexxop[1], dest->vexxop[2]);
 		}
 		else if (*(uword*)dest->opcode == 0x0)
 		{

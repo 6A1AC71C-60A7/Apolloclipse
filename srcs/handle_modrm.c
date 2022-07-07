@@ -3,7 +3,7 @@
 #include <d_lookup_tables.h>
 #include <d_utils.h>
 
-#define IS_RM_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
+#define IS_RM_EXTENDED_XZCCXCXCXZXCXXC(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
 
 __always_inline
 static ubyte	parse_modRM(instruction_t* const inst, const ubyte** instruction_raw)
@@ -20,7 +20,7 @@ static ubyte	parse_modRM(instruction_t* const inst, const ubyte** instruction_ra
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
 		(RM[3] is extended from REX.B/VEX.~B/XOP.~B */
-	const ubyte rm = (IS_RM_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | MODRM_RM_GET(inst->mod_rm);
+	const ubyte rm = (IS_RM_EXTENDED_XZCCXCXCXZXCXXC(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | MODRM_RM_GET(inst->mod_rm);
 	const ubyte index = (MODRM_MOD_GET(inst->mod_rm) << 0x4) | rm;
 
 	return lt_modrm_encoded[index];
@@ -31,9 +31,9 @@ static ubyte	parse_sib(instruction_t* const inst, const ubyte** instruction_raw)
 {
 	inst->sib = *((*instruction_raw)++);
 
-	const ubyte mod = MODRM_MOD_GET(inst->mod_rm);
-	const ubyte index = (IS_SINDEX_EXTENDED(*(udword*)inst->prefix & RP_REXX_MASK, inst->vexxop) << 0x3) | SIB_INDEX_GET(inst->sib);
-	const ubyte base = (IS_SBASE_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | SIB_BASE_GET(inst->sib);
+	const ubyte mod = 0;// MODRM_MOD_GET(inst->mod_rm);
+	const ubyte index = 0; // (IS_SINDEX_EXTENDED(*(udword*)inst->prefix & RP_REXX_MASK, inst->vexxop) << 0x3) | SIB_INDEX_GET(inst->sib);
+	const ubyte base = 0; //(IS_SBASE_EXTENDED(*(udword*)inst->prefix & RP_REXB_MASK, inst->vexxop) << 0x3) | SIB_BASE_GET(inst->sib);
 
 	/* WORD: bits: { 0, 0, 0, 0, 0, 0, MOD[1], MOD[0], INDEX[3], INDEX[2], INDEX[1], INDEX[0], BASE[3], BASE[2], BASE[1], BASE[0] }
 		(INDEX[4] is extended from REX.X/VEX.~X/XOP.~X

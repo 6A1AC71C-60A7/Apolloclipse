@@ -116,8 +116,13 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
     ubyte modrm_rm = MODRM_RM_EXTENDED_GET(inst);
 
     ///TODO:
-    const ubyte vex_vvvv = 0 /* Is 2 byte vex */ ? ~VEXXOP2_VVVV_GET(inst->vexxop) : ~VEXXOP_VVVV_GET(inst->vexxop);
+    const ubyte vex_vvvv = (inst->vexxop[2] == 0 ? ~VEXXOP2_VVVV_GET(inst->vexxop) : ~VEXXOP_VVVV_GET(inst->vexxop)) & 0xF;
 
+    // DEBUG("MODRM REG: %d\n", modrm_reg);
+    // DEBUG("MODRM RM: %d\n", modrm_rm);
+    // DEBUG("VEX VVVV is: %d\n", vex_vvvv);
+
+    /// ABOVE SEEMS HANDLED IN 'MODRM_REG_EXTENDED_GET'
     // if (0 /* 3 bytes VEX opcode */)
     //     modrm_rm |= (((*(udword*)inst->prefix & RP_REXB_MASK)) << 3) | (~VEXXOP_B_GET(inst->vexxop) << 3);
 
