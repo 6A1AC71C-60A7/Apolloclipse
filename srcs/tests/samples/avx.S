@@ -16,8 +16,8 @@ vpaddd xmm7, xmm2, [rbp]
 
 ; Add packed quadword integers from xmm2, xmm3/m128 and store in xmm1.
 
-vpaddd xmm7, xmm2, xmm15
-vpaddd xmm7, xmm2, [rbp]
+vpaddq xmm7, xmm2, xmm15
+vpaddq xmm7, xmm2, [rbp]
 
 ; Subtract packed byte integers in xmm3/m128 from xmm2.
 
