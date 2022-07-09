@@ -115,7 +115,7 @@
 )
 
 #define MODRM_REG_EXTENDED_GET(inst) (	\
-	((*(udword*)(inst)->prefix & RP_REXR_MASK) != 0) << 3 | MODRM_RM_GET((inst)->mod_rm) \
+	((*(udword*)(inst)->prefix & RP_REXR_MASK) != 0) << 3 | MODRM_REG_GET((inst)->mod_rm) \
 )
 
 /*

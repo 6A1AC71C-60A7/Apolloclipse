@@ -1970,6 +1970,73 @@ static const char* const mnemonics[] = {
 
 	"savec",
 	"saves",
+
+	"vpaddusb",
+	"vpaddusw",
+
+	"vpunpcklbw",
+	"vpunpcklwd",
+	"vpunpckldq",
+
+	"vpunpckhbw",
+	"vpunpckhwd",
+	"vpunpckhdq",
+	"vpunpcklqdq",
+	"vpunpckhqdq",
+	"vmovdqa",
+
+	"vpor",
+	"vpxor",
+
+	"vucomiss",
+	"vcomiss",
+	"vandps",
+	"vandnps",
+	"vaddps",
+
+	"vrsqrtss",
+	"vrcpss",
+	"vaddss",
+	"vdivss",
+	"vcmpss",
+	"vaddsd",
+	"vcmpsd",
+	"vaddsubps",
+
+	"vcmpps",
+	"vucomisd",
+	"vcomisd",
+	"vsqrtpd",
+	"vandpd",
+	"vandnpd",
+	"vaddpd",
+	"vcmppd",
+	"vaddsubpd",
+
+	"vpsignb",
+	"vpsignw",
+	"vpsignd",
+	"vptest",
+	"vpmovsxbw",
+	"vpmovsxbd",
+	"vpmovsxbq",
+	"vpmovsxwd",
+	"vpmovsxwq",
+	"vpmovsxdq",
+	"vphminposuw",
+	"vaesimc",
+	"vaesenc",
+	"vaesenclast",
+	"vaesdec",
+	"vaesdeclast",
+	"vroundpd",
+	"vblendps",
+	"vblendpd",
+	"vpblendw",
+	"vpblendvps",
+	"vpblendvpd",
+	"vblendvb",
+	"vaeskeygen",
 };
 
 __always_inline
@@ -1985,7 +2052,7 @@ static ubyte print_register(FILE* where, reg_t reg, udword prefix)
 {
 	ubyte l = 0;
 
-	if (!(prefix & OS_QWORD_MASK) && reg >= D_REG_RAX && reg <= D_REG_R15)
+	if (!(prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK)) && reg >= D_REG_RAX && reg <= D_REG_R15)
 	{
 		if (prefix & OS_BYTE_MASK)
 			l = fprintf(where, "%s", gp_regs_8[reg - 2]);
@@ -2154,7 +2221,6 @@ static void print_address(FILE* where, instruction_t* const inst, ubyte isfirst)
 		else
 		{
 			/* [R/M + DISP8] */
-
 			fprintf(where, "[");
 			print_register(where, rm + 2, *(udword*)inst->prefix);
 			fprintf(where, " %s %"PRIdd"]", direction, inst->displacement);
@@ -2228,7 +2294,7 @@ void    fprint_instruction(FILE* where, instruction_t* const target)
     print_immediate(where, target, has_operands);
 
 
-	if (*(word*)target->opcode == 0x0)
+	if (*(word*)target->opcode == 0x0 && target->vexxop[0] == 0)
 	{
 		if (target->opcode[2] == 0xD0 || target->opcode[2] == 0xD1)
 			fprintf(where, ", 1");

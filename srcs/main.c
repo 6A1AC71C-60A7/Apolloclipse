@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 1
+#define INST_NB 1//650//2000
 #define BUFFSIZE 0x2000
-#define FILENAME "srcs/tests/samples/x87.txt"
+#define FILENAME "srcs/tests/samples/avx.txt"
 
 #define TEST_FILE
 #undef TEST_FILE
@@ -40,7 +40,9 @@
 
 ///TODO: Handle registers pairs as operands: INS, OUTS, MOVS, SCAS, STOS,  ...
 
-///TODO: AMBIGIOUS: xchg r8, rax and be NOP and also be pause ... WTF
+///TODO: AMBIGIOUS: xchg r8, rax and be NOP and also be pause ...
+/// ok is pause if is prefixed with 0xf3: "\xF3\x90"
+/// for the nop or xchg i have to reverse
 
 ///TODO: UMONITOR takes a register which is used as an address (but type is reg), default operand type
 ///         is currently dword but this is 32 bits addressing (0x67), need to make it qword by default.
@@ -57,7 +59,21 @@
 ///SAMPLES: MISSING: PMULL, PMULH, PMADD, PCMPGTPB,
 /// SSE4: PMOVSXBW, PMOVZXBW, PMOVSXBD, PMOVZXBD, PMOVSXWD, PMOVZXWD, PMOVSXBQ, PMOVZXBQ, PMOVSXWQ, PMOVZXWQ, PMOVSXDQ, PMOVZXDQ
 
-////WHERE I AM : 11.4.2 -> SSE2 64-Bit and 128-Bit SIMD Integer Instructions
+////TODO: THERE IS SOMETHING STRANGE WITH 'AM_H', for SEE encodings this operand
+/// do not exist. The instruction is changed to destructive form.
+/// I have problems with vmovss (which seems to have 2 args in objdump but 3 args in a the opcode table ...)
+
+///TODO: AMBIGIOUS SHIT IS RESOLVED BY MODRM.MOD
+/// OP2B[16] CAN BE EITHER VMOVHPS (MOD != 0B11) OR VMOVLHPS (MOD == 0B11)
+/// OP2B[12] CAN BE EITHER VMOVLPS (MOD != 0B11) OR VMOVHLPS (MOD == 0B11)
+/// OP2B[c4] : PINSRW AND VPINSRW CAN HAVE EITHER MEMORY OR REGISTER IN SECOND ARGUMENT (DEPENDS OF MOD)
+/// A LOT MORE IN OP3B3A
+/// WHY INTEL HAS DONE THIS SHIT ?
+
+///TODO: emms, zeroupper and zeroall are the same opcode but called diferently
+/// it seems zeroall must have a VEX prefix per exemple (OPCODE IS 0X77)
+/// VXEROALL: "\XC5\XFC\X77"
+/// VZEROUPPER: "\XC5\XF8\X77"
 
 int main(int ac, const char* av[])
 {
@@ -74,7 +90,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xC4\xC1\x6D\xFC\xFF";
+    const ubyte iraw[] = "\xC4\xE2\x79\x13\xCA" "\x66\x67";
 #endif
 
     const ubyte* prt = iraw;

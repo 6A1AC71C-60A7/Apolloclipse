@@ -174,8 +174,8 @@ static void get_vex_prefixes(instruction_t* const inst, const ubyte** iraw)
 	}
 	else
 	{
-		*prefix |= TEST_VEX_REX(R, inst->vexxop) ? RP_REXR_MASK : 0x0;
-		opp = VEXXOP_PP_GET(inst->vexxop);
+		*prefix |= !TEST_VEX_REX(R, inst->vexxop) ? RP_REXR_MASK : 0x0;
+		opp = VEXXOP2_PP_GET(inst->vexxop);
 	}
 
 	switch (opp)
@@ -192,6 +192,7 @@ static void get_vex_prefixes(instruction_t* const inst, const ubyte** iraw)
 	}
 
 		/// debug
+	DEBUG("OPP IS: %d\n", opp);
 	if (*prefix & RP_REXR_MASK)
 		DEBUG("-> VEX: HAS REX.R\n");
 	if (*prefix & RP_REXB_MASK)
@@ -208,7 +209,10 @@ static const opfield_t* get_map_vex(ubyte* const vex)
 	/* If instruction is 2 bytes vec prefix, the map is always
 		as it was prefixed with 0x0F */
 	if (vex[2] == 0)
+	{
+		DEBUG("VEX: MAP 2BYTE\n");
 		return lt_two_byte_opmap;
+	}
 
 	const ubyte mmmmm = VEXXOP_MAP_SELECT_GET(vex);
 	const opfield_t* map;
@@ -397,7 +401,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, prefix & MP_0x66_MASK);
 
-		if (prefix & MP_0x66_MASK && !(line >= 0x9 && line <= 0xC))
+		if (prefix & MP_0x66_MASK && !(line >= 0x9 && line <= 0xB))
 			scale = 1;
 		if (prefix & MP_0xF3_MASK)
 			scale = 2;
@@ -411,7 +415,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	{
 		if (prefix & (MP_0xF2_MASK | MP_0xF3_MASK))
 		{
-			if (opcode >= 0xF0 && opcode < 0xf8)
+			if (opcode >= 0xF0 && opcode < 0xF8)
 				handle_rare_prefixes_0x38_opmap(found, opcode, prefix);
 		}
 		else
@@ -423,7 +427,12 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
 	{
-		///TODO: All the cases are not handled yet too
+		///TODO: Most of these instructions have prefixes,
+		/// Most of them are not checked because there's only
+		/// one ambigious instruction. I have to check them validation.
+
+		if (opcode == 0x0F && prefix & MP_0x66_MASK)
+			found->mnemonic = AMB_VPALIGNR_INDEX;
 		*found = lt_tree_byte_0x3A_ambigious_opmap[found->mnemonic];
 	}
 	else
@@ -492,7 +501,7 @@ __always_inline
 static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 {
 	/* If is x87 instruction, the modR/M is already parsed */
-	if (!IS_ESCAPE_FX87(inst->opcode[2]))
+	if (inst->vexxop[0] || !IS_ESCAPE_FX87(inst->opcode[2]))
 		inst->mod_rm = *((*iraw)++);
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
@@ -555,8 +564,12 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 {
 	if (dest->vexxop[0])
 	{
-		*(udword*)dest->prefix |= VEXXOP_L_GET(dest->vexxop) ? OS_QQWORD_MASK : OS_DQWORD_MASK;
+		const ubyte is256os = dest->vexxop[2] ? VEXXOP_L_GET(dest->vexxop) : VEXXOP2_L_GET(dest->vexxop);
+		*(udword*)dest->prefix |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
 		return ;
+
+		///TODO: SOME VEX TAKE GP REGISTERS AS ARGUMENTS,
+		/// SIZE RESOLUTION FOR THESE MUST BE PERFORMED OTHERWAY
 
 		///TODO: For the future: if is EVEX the size also could be 512bits
 	}
@@ -839,7 +852,7 @@ skip_prefix_check:
 
 	opfield_t found;
 
-	if (IS_ESCAPE_FX87(dest->opcode[2]))
+	if (dest->vexxop[0] == 0 && IS_ESCAPE_FX87(dest->opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
 	else
 	{		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
