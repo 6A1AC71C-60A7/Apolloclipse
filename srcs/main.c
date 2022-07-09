@@ -6,12 +6,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 1//650//2000
+#define INST_NB 650//2000
 #define BUFFSIZE 0x2000
-#define FILENAME "srcs/tests/samples/avx.txt"
+#define FILENAME "srcs/tests/samples/mmx.txt"
 
 #define TEST_FILE
-#undef TEST_FILE
+//#undef TEST_FILE
 
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
@@ -90,7 +90,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xC4\xE2\x79\x13\xCA" "\x66\x67";
+    const ubyte iraw[] = "\x0F\x73\xF7\x69";
 #endif
 
     const ubyte* prt = iraw;

@@ -407,7 +407,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 			scale = 2;
 		if (prefix & MP_0xF2_MASK)
 			scale = 3;
-		DEBUG("--> INDEX IS %ld\n", found->mnemonic + (0x74 * scale));
+		DEBUG("--> INDEX IS %"PRId64"\n", found->mnemonic + (0x74 * scale));
 		/* Prefix dependent instructions are aligned by 0x74 bytes */
 		*found = lt_two_byte_ambigious_opmap[found->mnemonic + (0x74 * scale)];
 	}
@@ -501,7 +501,7 @@ __always_inline
 static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 {
 	/* If is x87 instruction, the modR/M is already parsed */
-	if (inst->vexxop[0] || !IS_ESCAPE_FX87(inst->opcode[2]))
+	if (inst->vexxop[0] || inst->opcode[0] || !IS_ESCAPE_FX87(inst->opcode[2]))
 		inst->mod_rm = *((*iraw)++);
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
@@ -852,7 +852,7 @@ skip_prefix_check:
 
 	opfield_t found;
 
-	if (dest->vexxop[0] == 0 && IS_ESCAPE_FX87(dest->opcode[2]))
+	if (dest->vexxop[0] == 0 && dest->opcode[0] == 0 && IS_ESCAPE_FX87(dest->opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
 	else
 	{		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
