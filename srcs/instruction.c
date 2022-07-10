@@ -558,6 +558,7 @@ static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 #define IS_WORD_OVERWRITABLE_TWOBYTES_OPMAP(x) (((x) >= 0x9 && (x) <= 0xC) || (x) == 0x0 || (x) == 0x4)
 #define OS_RESET(x) ((x) &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK))
 #define IS_DEFAULT_REGISTER(x) ((x) >= 32)
+#define IS_TWO_BYTE_NONVEX_SIMD(x) (((x) >= 0x1 && (x) <= 0x2) || ((x) >= 0x5 && (x) <= 0x7) || (x) >= 0xC)
 
 __always_inline
 static void		get_operand_size(instruction_t* const dest, opfield_t found)
@@ -572,6 +573,11 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		/// SIZE RESOLUTION FOR THESE MUST BE PERFORMED OTHERWAY
 
 		///TODO: For the future: if is EVEX the size also could be 512bits
+	}
+	else if ((dest->opcode[0] && IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) || dest->opcode[1])
+	{
+		*(udword*)dest->prefix |= OS_DQWORD_MASK;
+		return ;
 	}
 
 	/* Operand size of first operand dictates the operand size of
@@ -801,7 +807,7 @@ opcode_check:
 
 	DEBUG("::::: AFTER: %02X\n", **iraw);
 
-	if ((isescape = IS_GPM_ESCAPE(**iraw)))
+	if (dest->opcode[0] == 0 && (isescape = IS_GPM_ESCAPE(**iraw)))
 	{
 		dest->opcode[0] = **iraw;
 		(*iraw)++;
@@ -823,7 +829,7 @@ opcode_check:
 	if (skip_pref)
 		goto skip_prefix_check;
 
-	if ((isescape & isrex) == 0x0)
+	if ((isescape & isrex) == 0x0 && !dest->opcode[0])
 	{
 		if ((isvex = IS_VEX_PREFIX(**iraw)))
 		{

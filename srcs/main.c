@@ -8,7 +8,7 @@
 
 #define INST_NB 650//2000
 #define BUFFSIZE 0x2000
-#define FILENAME "srcs/tests/samples/mmx.txt"
+#define FILENAME "srcs/tests/samples/avx2.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -75,6 +75,21 @@
 /// VXEROALL: "\XC5\XFC\X77"
 /// VZEROUPPER: "\XC5\XF8\X77"
 
+///TODO: mxx instructions which are the same overload than their VEX implementation are only present with a 'v' as first character
+/// MATBE should add them to the mnemonic or a flag in instruction_t
+
+///TODO: vgatherdps xmm1, [xmm1], xmm2 (DEREFERENCE TO XMM NOT HANDLED YET)
+
+///TESTED:
+/// - BASIC
+/// - x87
+/// - MMX
+/// - SSE
+/// - SSE2
+/// - SSE3
+/// - AVX
+/// - AVX2
+
 int main(int ac, const char* av[])
 {
     err_t st = SUCCESS;
@@ -90,7 +105,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x0F\x73\xF7\x69";
+    const ubyte iraw[] = "\x0F\x3A\x0F\xCA\x69\x0F\x3A\x0F\x08\x69";
 #endif
 
     const ubyte* prt = iraw;
