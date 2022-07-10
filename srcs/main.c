@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 650//2000
+#define INST_NB 15//2000
 #define BUFFSIZE 0x2000
-#define FILENAME "srcs/tests/samples/avx2.txt"
+#define FILENAME "srcs/tests/samples/vmx.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -80,6 +80,12 @@
 
 ///TODO: vgatherdps xmm1, [xmm1], xmm2 (DEREFERENCE TO XMM NOT HANDLED YET)
 
+///TODO: pinsrq pextrq missing
+
+///TODO: FOR FMA: If VEX.W size is 64 bits, which means double are used and mnemonic must end by 'd' instead of 's'
+///ALSO: VEX.W is not handled yet in operand size resolution
+
+
 ///TESTED:
 /// - BASIC
 /// - x87
@@ -87,8 +93,12 @@
 /// - SSE
 /// - SSE2
 /// - SSE3
+/// - SSE4
 /// - AVX
 /// - AVX2
+/// - FMA
+/// - AES
+/// - VMX
 
 int main(int ac, const char* av[])
 {
@@ -105,7 +115,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x0F\x3A\x0F\xCA\x69\x0F\x3A\x0F\x08\x69";
+    const ubyte iraw[] = "\x66\x0F\x3A\xDF\xCA\x69\x66\x0F\x3A\xDF\x08\x69";
 #endif
 
     const ubyte* prt = iraw;
