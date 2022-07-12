@@ -47,7 +47,11 @@ static reg_t get_xmm_register(uqword index)
         D_REG_XMM0, D_REG_XMM1, D_REG_XMM2, D_REG_XMM3,
         D_REG_XMM4, D_REG_XMM5, D_REG_XMM6, D_REG_XMM7,
         D_REG_XMM8, D_REG_XMM9, D_REG_XMM10, D_REG_XMM11,
-        D_REG_XMM12, D_REG_XMM13, D_REG_XMM14, D_REG_XMM15
+        D_REG_XMM12, D_REG_XMM13, D_REG_XMM14, D_REG_XMM15,
+        D_REG_XMM16, D_REG_XMM17, D_REG_XMM18, D_REG_XMM19,
+        D_REG_XMM20, D_REG_XMM21, D_REG_XMM22, D_REG_XMM23,
+        D_REG_XMM24, D_REG_XMM25, D_REG_XMM26, D_REG_XMM27,
+        D_REG_XMM28, D_REG_XMM29, D_REG_XMM30, D_REG_XMM31
     };
 
     return regs[index];
@@ -59,7 +63,27 @@ static reg_t get_ymm_register(uqword index)
         D_REG_YMM0, D_REG_YMM1, D_REG_YMM2, D_REG_YMM3,
         D_REG_YMM4, D_REG_YMM5, D_REG_YMM6, D_REG_YMM7,
         D_REG_YMM8, D_REG_YMM9, D_REG_YMM10, D_REG_YMM11,
-        D_REG_YMM12, D_REG_YMM13, D_REG_YMM14, D_REG_YMM15
+        D_REG_YMM12, D_REG_YMM13, D_REG_YMM14, D_REG_YMM15,
+        D_REG_YMM16, D_REG_YMM17, D_REG_YMM18, D_REG_YMM19,
+        D_REG_YMM20, D_REG_YMM21, D_REG_YMM22, D_REG_YMM23,
+        D_REG_YMM24, D_REG_YMM25, D_REG_YMM26, D_REG_YMM27,
+        D_REG_YMM28, D_REG_YMM29, D_REG_YMM30, D_REG_YMM31
+    };
+
+    return regs[index];
+}
+
+static reg_t get_zmm_register(uqword index)
+{
+    static const reg_t regs[] = {
+        D_REG_ZMM0, D_REG_ZMM1, D_REG_ZMM2, D_REG_ZMM3,
+        D_REG_ZMM4, D_REG_ZMM5, D_REG_ZMM6, D_REG_ZMM7,
+        D_REG_ZMM8, D_REG_ZMM9, D_REG_ZMM10, D_REG_ZMM11,
+        D_REG_ZMM12, D_REG_ZMM13, D_REG_ZMM14, D_REG_ZMM15,
+        D_REG_ZMM16, D_REG_ZMM17, D_REG_ZMM18, D_REG_ZMM19,
+        D_REG_ZMM20, D_REG_ZMM21, D_REG_ZMM22, D_REG_ZMM23,
+        D_REG_ZMM24, D_REG_ZMM25, D_REG_ZMM26, D_REG_ZMM27,
+        D_REG_ZMM28, D_REG_ZMM29, D_REG_ZMM30, D_REG_ZMM31
     };
 
     return regs[index];
@@ -115,8 +139,12 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
     const ubyte modrm_reg = MODRM_REG_EXTENDED_GET(inst);
     ubyte modrm_rm = MODRM_RM_EXTENDED_GET(inst);
 
-    ///TODO:
-    const ubyte vex_vvvv = (inst->vexxop[2] == 0 ? ~VEXXOP2_VVVV_GET(inst->vexxop) : ~VEXXOP_VVVV_GET(inst->vexxop)) & 0xF;
+    ubyte vex_vvvv;
+
+    if (*(udword*)inst->prefix & OP_EVEX_MASK)
+        vex_vvvv = EVEX_VVVVV_EXTENDTED_GET(inst->vexxop);
+    else
+        vex_vvvv = (inst->vexxop[2] == 0 ? ~VEXXOP2_VVVV_GET(inst->vexxop) : ~VEXXOP_VVVV_GET(inst->vexxop)) & 0xF;
 
     DEBUG("MODRM BYTE: 0x%02X\n", inst->mod_rm);
     DEBUG("MODRM REG: %d\n", modrm_reg);
@@ -142,7 +170,7 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
             case AM_D:
                 *dest = get_debug_register(modrm_reg);
                 break ;
-            
+
             case AM_E:
                 *dest = modrm_mod == 0b11 ? get_general_purpose_register(modrm_rm) : D_REG_ADDR;
                 break ;
@@ -160,6 +188,8 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                     *dest = get_xmm_register(vex_vvvv);
                 else if (*(udword*)inst->prefix & OS_QQWORD_MASK)
                     *dest = get_ymm_register(vex_vvvv);
+                else if (*(udword*)inst->prefix & OS_DQQWORD_MASK)
+                    *dest = get_zmm_register(vex_vvvv);
                 break ;
 
             case AM_L:
@@ -167,6 +197,8 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                     *dest = get_xmm_register(inst->immediate & 0xF);
                 else if (*(udword*)inst->prefix & OS_QQWORD_MASK)
                     *dest = get_ymm_register(inst->immediate & 0xF);
+                else if (*(udword*)inst->prefix & OS_DQQWORD_MASK)
+                    *dest = get_zmm_register(inst->immediate & 0xF);
                 break ;
 
             case AM_M:
@@ -203,6 +235,8 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                     *dest = get_xmm_register(modrm_rm);
                 else if (*(udword*)inst->prefix & OS_QQWORD_MASK)
                     *dest = get_ymm_register(modrm_rm);
+                else if (*(udword*)inst->prefix & OS_DQQWORD_MASK)
+                    *dest = get_zmm_register(modrm_rm);
                 break ;
 
             case AM_V:
@@ -210,6 +244,8 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                     *dest = get_xmm_register(modrm_reg);
                 else if (*(udword*)inst->prefix & OS_QQWORD_MASK)
                     *dest = get_ymm_register(modrm_reg);
+                else if (*(udword*)inst->prefix & OS_DQQWORD_MASK)
+                    *dest = get_zmm_register(modrm_reg);
                 break ;
 
             case AM_W:
@@ -221,6 +257,8 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                         *dest = get_xmm_register(modrm_rm);
                     else if (*(udword*)inst->prefix & OS_QQWORD_MASK)
                         *dest = get_ymm_register(modrm_rm);
+                    else if (*(udword*)inst->prefix & OS_DQQWORD_MASK)
+                        *dest = get_zmm_register(modrm_rm);
                 }
                 else
                     *dest = D_REG_ADDR;

@@ -3,7 +3,7 @@
 
 ; Add packed byte integers from xmm2, and xmm3/m128 and store in xmm1 using writemask k1.
 
-vpaddb xmm4 {k1}, xmm14, xmm1
+vpaddb xmm31 {k1}, xmm30, xmm29
 vpaddb xmm4 {k1} {z}, xmm14, xmm1
 vpaddb xmm4 {k1}, xmm14, [r12]
 vpaddb xmm4 {k1} {z}, xmm14, [r12]
@@ -61,7 +61,7 @@ vpaddq ymm4 {k1} {z}, ymm14, [r12]
 
 vpaddb zmm4 {k1}, zmm14, zmm1
 vpaddb zmm4 {k1} {z}, zmm14, zmm1
-vpaddb zmm4 {k1}, zmm14, [r12]
+vpaddb zmm4 {k1}, zmm31, [r12]
 vpaddb zmm4 {k1} {z}, zmm14, [r12]
 
 ; Add packed word integers from zmm2, and zmm3/m512 and store in zmm1 using writemask k1.

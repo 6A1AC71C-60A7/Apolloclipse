@@ -66,8 +66,10 @@
 ///TODO: These ones are not parse yet 
 #define OS_DQWORD_MASK (udword)(OS_QWORD_MASK << 1)
 #define OS_QQWORD_MASK (udword)(OS_DQWORD_MASK << 1)
+#define OS_DQQWORD_MASK (udword)(OS_QQWORD_MASK << 1)
 
-#define OP_IMMEDIATE_MASK (udword)(OS_QQWORD_MASK << 1)
+#define OP_IMMEDIATE_MASK (udword)(OS_DQQWORD_MASK << 1)
+#define OP_EVEX_MASK (udword)(OP_IMMEDIATE_MASK << 1)
 
 /*
 ** VEX/XOP members values 
@@ -98,6 +100,33 @@
 #define VEXXOP_PP_GET(x) (ubyte)(*(ubyte*)((x) + 2) & 0b00000011)
 #define VEXXOP2_PP_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0b00000011)
 
+
+/*
+** EVEX
+*/
+
+///TODO: Document this
+///TODO: Invert all here or nothing but not both
+
+#define EVEX_R_GET(x) (ubyte)((*(ubyte*)(x) >> 0x7) & 0x1)
+#define EVEX_X_GET(x) (ubyte)((*(ubyte*)(x) >> 0x6) & 0x1)
+#define EVEX_B_GET(x) (ubyte)((*(ubyte*)(x) >> 0x5) & 0x1)
+#define EVEX_R2_GET(x) (ubyte)((*(ubyte*)(x) >> 0x4) & 0x1)
+#define EVEX_MAP_GET(x) (ubyte)(*(ubyte*)(x) & 0x3)
+#define EVEX_W_GET(x) (ubyte)((*(ubyte*)((x) + 0x1) >> 0x7) & 0x1)
+#define EVEX_VVVV_GET(x) (ubyte)(~(*(ubyte*)((x) + 0x1) >> 0x3) & 0xF)
+#define EVEX_P_GET(x) (ubyte)((*(ubyte*)((x) + 0x1)) & 0x3)
+#define EVEX_Z_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x7) & 0x1)
+#define EVEX_L2_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x6) & 0x1)
+#define EVEX_L_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x5) & 0x1)
+#define EVEX_BROADCAST_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x4) & 0x1)
+#define EVEX_V2_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x3) & 0x1)
+#define EVEX_K_GET(x) (ubyte)((*(ubyte*)((x) + 0x2)) & 0x7)
+
+///HERE: SEGFAULT
+#define EVEX_VVVVV_EXTENDTED_GET(x) ((!EVEX_V2_GET(x) << 0x4) | EVEX_VVVV_GET(x))
+#define EVEX_L_EXTENDED_GET(x) ((EVEX_L2_GET(x) << 1) | EVEX_L_GET(x))
+
 /*
 ** ModR/M member values
 */
@@ -111,11 +140,11 @@
 #define MODRM_MOD_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
 #define MODRM_RM_EXTENDED_GET(inst) (	\
-	((*(udword*)(inst)->prefix & RP_REXB_MASK) != 0) << 3 | MODRM_RM_GET((inst)->mod_rm) \
+	(((*(udword*)(inst)->prefix & RP_REXB_MASK) != 0) << 3) | (((*(udword*)(inst)->prefix & OP_EVEX_MASK) && MODRM_MOD_GET((inst)->mod_rm) == 0b11 && !EVEX_X_GET((inst)->vexxop)) << 4) | MODRM_RM_GET((inst)->mod_rm) \
 )
 
 #define MODRM_REG_EXTENDED_GET(inst) (	\
-	((*(udword*)(inst)->prefix & RP_REXR_MASK) != 0) << 3 | MODRM_REG_GET((inst)->mod_rm) \
+	(((*(udword*)(inst)->prefix & RP_REXR_MASK) != 0) << 3) | (((*(udword*)(inst)->prefix & OP_EVEX_MASK) && !EVEX_R2_GET((inst)->vexxop)) << 4) | MODRM_REG_GET((inst)->mod_rm) \
 )
 
 /*

@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 15//2000
+#define INST_NB 100//2000
 #define BUFFSIZE 0x2000
-#define FILENAME "srcs/tests/samples/vmx.txt"
+#define FILENAME "srcs/tests/samples/avx512.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -99,6 +99,10 @@
 /// - FMA
 /// - AES
 /// - VMX
+
+///TODO: EVEX HAS DIFERENT DISPLACEMENT TO PARSE
+
+///TODO: EXTEND VIDX with EVEX.V2 (check in wikipedia EVEX)
 
 int main(int ac, const char* av[])
 {

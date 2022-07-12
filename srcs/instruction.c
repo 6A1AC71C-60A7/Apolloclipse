@@ -42,6 +42,8 @@
 #define VEX2BYTES_PREFIX 0xC5
 #define VEX3BYTES_PREFIX 0xC4
 #define IS_VEX_PREFIX(x) ((x) == VEX2BYTES_PREFIX || (x) == VEX3BYTES_PREFIX)
+#define EVEXBYTES_PREFIX 0x62
+#define IS_EVEX_PREFIX(x) ((x) == EVEXBYTES_PREFIX)
 #define GET_MAP_INDEX(x) (((x) & 0x0F) + ((((x) & 0xF0) >> 0x4) * 0x10))
 #define IS_OPMAP_INDEXING(x) ((x) == AMB)
 #define IS_ESCAPE_FX87(x) ((x) >= 0xD8 && (x) <= 0xDF)
@@ -204,17 +206,57 @@ static void get_vex_prefixes(instruction_t* const inst, const ubyte** iraw)
 }
 
 __always_inline
-static const opfield_t* get_map_vex(ubyte* const vex)
+static void get_evex_prefixes(instruction_t* const inst, const ubyte** iraw)
+{
+	udword* prefix = (udword*)inst->prefix;
+
+	(*iraw)++;
+	*prefix |= OP_EVEX_MASK;
+
+	*(uword*)inst->vexxop = *((*(uword**)iraw)++);
+	inst->vexxop[2] = *((*iraw)++);
+
+	*prefix |= !EVEX_R_GET(inst->vexxop) || !EVEX_R2_GET(inst->vexxop) ? RP_REXR_MASK : 0x0;
+	*prefix |= !EVEX_X_GET(inst->vexxop) ? RP_REXX_MASK : 0x0;
+	*prefix |= !EVEX_B_GET(inst->vexxop) ? RP_REXB_MASK : 0x0;
+	*prefix |= EVEX_W_GET(inst->vexxop) ? RP_REXW_MASK : 0x0;
+
+	switch (EVEX_P_GET(inst->vexxop))
+	{
+		case 0x1:
+			*prefix |= MP_0x66_MASK;
+			break ;
+		case 0x2:
+			*prefix |= MP_0xF3_MASK;
+			break ;
+		case 0x3:
+			*prefix |= MP_0xF2_MASK;
+			break ;
+	}
+
+	if (*prefix & RP_REXR_MASK)
+		DEBUG("-> VEX: HAS REX.R\n");
+	if (*prefix & RP_REXB_MASK)
+		DEBUG("-> VEX: HAS REX.B\n");
+	if (*prefix & RP_REXX_MASK)
+		DEBUG("-> VEX: HAS REX.X\n");
+	if (*prefix & RP_REXW_MASK)
+		DEBUG("-> VEX: HAS REX.W\n");
+}
+
+__always_inline
+static const opfield_t* get_map_vex(ubyte* const vex, ubyte isevex)
 {
 	/* If instruction is 2 bytes vec prefix, the map is always
 		as it was prefixed with 0x0F */
-	if (vex[2] == 0)
+
+	if (isevex == 0 && vex[2] == 0)
 	{
 		DEBUG("VEX: MAP 2BYTE\n");
 		return lt_two_byte_opmap;
 	}
 
-	const ubyte mmmmm = VEXXOP_MAP_SELECT_GET(vex);
+	const ubyte mmmmm = isevex ? EVEX_MAP_GET(vex) : VEXXOP_MAP_SELECT_GET(vex);
 	const opfield_t* map;
 
 	DEBUG("VEX MAP SELECT FIELD IS: %d\n", mmmmm);
@@ -500,6 +542,7 @@ static ubyte	get_opcode_attributes(mnemonic_t* const mnemonic, opfield_t opfield
 __always_inline
 static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 {
+	///TODO: Redo define 'IS_ESCAPE_FX87'
 	/* If is x87 instruction, the modR/M is already parsed */
 	if (inst->vexxop[0] || inst->opcode[0] || !IS_ESCAPE_FX87(inst->opcode[2]))
 		inst->mod_rm = *((*iraw)++);
@@ -563,7 +606,29 @@ static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 __always_inline
 static void		get_operand_size(instruction_t* const dest, opfield_t found)
 {
-	if (dest->vexxop[0])
+	///TODO: REDO THIS WITHOUT TRIPLE RETURN 
+
+	if (*(udword*)dest->vexxop & OP_EVEX_MASK)
+	{
+		switch (EVEX_L_EXTENDED_GET(dest->vexxop))
+		{
+			case 0x0:
+				*(udword*)dest->prefix |= OS_DQWORD_MASK;
+				break ;
+
+			case 0x1:
+				*(udword*)dest->prefix |= OS_QQWORD_MASK;
+				break ;
+
+			case 0x2:
+				*(udword*)dest->prefix |= OS_DQQWORD_MASK;
+				break ;
+			// default:
+			// 	///TODO: ERROR
+		}
+		return ;
+	}
+	else if (dest->vexxop[0])
 	{
 		const ubyte is256os = dest->vexxop[2] ? VEXXOP_L_GET(dest->vexxop) : VEXXOP2_L_GET(dest->vexxop);
 		*(udword*)dest->prefix |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
@@ -831,10 +896,15 @@ opcode_check:
 
 	if ((isescape & isrex) == 0x0 && !dest->opcode[0])
 	{
-		if ((isvex = IS_VEX_PREFIX(**iraw)))
+		if ((isvex = IS_EVEX_PREFIX(**iraw)))
+		{
+			get_evex_prefixes(dest, iraw);
+			DEBUG("DEBUG: EVEX: [62][%02X][%02X][%02X]\n", dest->vexxop[0], dest->vexxop[1], dest->vexxop[2]);
+		}
+		else if ((isvex = IS_VEX_PREFIX(**iraw)))
 		{
 			get_vex_prefixes(dest, iraw);
-			DEBUG("DEBUG: VEX: [%X][%X][%X]\n", dest->vexxop[0], dest->vexxop[1], dest->vexxop[2]);
+			DEBUG("DEBUG: VEX: [%02X][%02X][%02X]\n", dest->vexxop[0], dest->vexxop[1], dest->vexxop[2]);
 		}
 		else if (*(uword*)dest->opcode == 0x0)
 		{
@@ -861,9 +931,8 @@ skip_prefix_check:
 	if (dest->vexxop[0] == 0 && dest->opcode[0] == 0 && IS_ESCAPE_FX87(dest->opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
 	else
-	{		///TODO: MAYBE THE PREFIX IS NOT ALWAYS IN THE opcode[0] index
-
-		const opfield_t*	map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop);
+	{
+		const opfield_t*	map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop, (*(udword*)dest->prefix & OP_EVEX_MASK) != 0);
 
 		found = map[GET_MAP_INDEX(dest->opcode[2])];
 
