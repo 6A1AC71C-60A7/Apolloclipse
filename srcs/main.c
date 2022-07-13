@@ -6,8 +6,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 100//2000
-#define BUFFSIZE 0x2000
+#define INST_NB 4000//2000
+#define BUFFSIZE 0x6000
 #define FILENAME "srcs/tests/samples/avx512.txt"
 
 #define TEST_FILE
@@ -104,6 +104,64 @@
 
 ///TODO: EXTEND VIDX with EVEX.V2 (check in wikipedia EVEX)
 
+///ERRORS: AVX512:
+/// - vpand* is all vpand mnemonic
+/// - vpor* is all vpor mnemonic
+/// - vpxor* is all vpxor mnemonic
+///ERROR: vpsllw/d/q / vpsrlw/d/q / vpsraw/d/q
+/// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic)
+/// - vmovdqa* is all vmovdqa
+/// - vmovdqu* is all vmovdqu
+///ERROR: vpslldq, vpsrldq
+///ERROR: vpabsd
+/// - vpmulld == vpmullq
+/// - vpminud == vpminuq
+/// - vpminsd == vpminsq
+/// - vpmaxud == vpmaxuq
+/// - vpmaxsd == vpmaxsq
+/// - vpinsrd == vpinsrq
+/// - vpextrd == vpextrq
+/// - vbroadcastsd == vbroadcastf32x2
+/// - vbroadcastf32x4 and vbroadcastf64x2 are resolved as 'vbroadcastf128'
+/// SAME for vinsertf32x4 / vinsertf64x2 / vinsertf32x8 / vinsertf64x4
+/// ERROR: vpermw
+/// vpermpd == vpermps
+/// ERROR: vpermq
+/// vpsllvd == vpsllvq
+/// ERROR: vpsravw
+/// vpsravd == vpsravq
+/// 100% SURE BAD MNEMONIC: vpsrlvw is pblendvb
+/// vpsrlvd == vpsrlvq
+///INSTRUCTIONS: WITH K* AVX512 are not handled yet (UNTIL K INSTRUCTIONS ALL SEEM +|- OK)
+
+///MISSING INSTRUCTIONS IN AVX512 ARE IN OPCODE MAP 2 BYTES
+/// IF PREFIX IS VEX IS ONE INSTRUCTION (WHICH IS MISSING)
+/// ELSE IS THE CURRENT INSTRUCTION (LINE 3, 4, 9)
+/// - KADDB/W/D/Q : 0F 4A
+/// - KANDB/W/D/Q : 0F 41
+/// - KANDNB/W/D/Q : 0F 42
+/// - KMOVB/W/D/Q : 0F 90
+/// - KMOVB/W/D/Q : 0F 91 (DIFF ARGS THAN PREVIOUS)
+/// - KMOVB/W/D/Q : 0F 92 (SAME)
+/// - KMOWB/W/D/Q : 0F 93 (SAME)
+/// - KNOTB/W/D/Q : 0F 44
+/// - KORB/W/D/Q : 0F 45
+/// - KORTESTB/W/D/Q : 0F 98
+/// - KSHIFTLB/W/D/Q : 0F 32/33
+/// - KSHITFRB/W/D/Q : 0F 30/31
+/// - KTESTB/W/D/Q : 0F 99
+/// - KUNPCKBW/WD/DQ : 0F 4B
+/// - KXNORB/W/D/Q : 0F 46
+/// - KXORB/W/D/Q : OF 47
+
+///SEEMS THAT THE SAME PATTERN IS USED FOR INSTRUCTIONS THAT ARE EVEX AND NOT VEX 
+/// FOR ALL THE INSTRUCTIONS THAT ARE EXCLUSIVELLY FOR AVX512 (IN TEST AFTER THE K* INCIDENT)
+
+/// TODO: Instructions having k registers as argument are not handled yet (AVX512)
+/// Seems than opcode map's instruction (field) stills the same ?!?!
+
+
+
 int main(int ac, const char* av[])
 {
     err_t st = SUCCESS;
@@ -119,7 +177,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x66\x0F\x3A\xDF\xCA\x69\x66\x0F\x3A\xDF\x08\x69";
+    const ubyte iraw[] = "\x62\xD1\x0D\x49\xE9\x24\x24";
 #endif
 
     const ubyte* prt = iraw;

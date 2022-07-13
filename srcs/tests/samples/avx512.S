@@ -1595,8 +1595,8 @@ vpavgw zmm1 {k3} {z}, zmm2, [rax]
 
 ; Extract a word integer value from xmm2 at the source word offset specified by imm8 into reg or m16. The upper bits of r64/r32 is filled with zeros.
 
-pextrw rax, xmm2, 0x69
-pextrw WORD [rax], xmm2, 0x69
+vpextrw rax, xmm2, 0x69
+vpextrw WORD [rax], xmm2, 0x69
 
 ; Insert a word integer value from r32/m16 and rest from xmm2 into xmm1 at the word offset in imm8.
 
@@ -2947,10 +2947,6 @@ vpminsq ymm1 {k1} {z}, ymm2, [rax]
 
 vpminsq zmm1 {k1} {z}, zmm2, zmm3
 vpminsq zmm1 {k1} {z}, zmm2, [rax]
-
-
-
-
 
 
 ; Compare packed unsigned dword integers in xmm2 and xmm3/m128/m32bcst and store packed maximum values in xmm1 under writemask k1.

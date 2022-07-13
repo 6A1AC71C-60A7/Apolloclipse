@@ -607,25 +607,36 @@ __always_inline
 static void		get_operand_size(instruction_t* const dest, opfield_t found)
 {
 	///TODO: REDO THIS WITHOUT TRIPLE RETURN 
-
-	if (*(udword*)dest->vexxop & OP_EVEX_MASK)
+	if (*(udword*)dest->prefix & OP_EVEX_MASK)
 	{
-		switch (EVEX_L_EXTENDED_GET(dest->vexxop))
+		if (EVEX_L2_GET(dest->vexxop))
 		{
-			case 0x0:
-				*(udword*)dest->prefix |= OS_DQWORD_MASK;
-				break ;
-
-			case 0x1:
-				*(udword*)dest->prefix |= OS_QQWORD_MASK;
-				break ;
-
-			case 0x2:
-				*(udword*)dest->prefix |= OS_DQQWORD_MASK;
-				break ;
-			// default:
-			// 	///TODO: ERROR
+			*(udword*)dest->prefix |= OS_DQQWORD_MASK;
 		}
+		else if (EVEX_L_GET(dest->vexxop))
+		{
+			*(udword*)dest->prefix |= OS_QQWORD_MASK;
+		}
+		else
+		{
+			*(udword*)dest->prefix |= OS_DQWORD_MASK;
+		}
+		// switch (EVEX_L_EXTENDED_GET(dest->vexxop))
+		// {
+		// 	case 0x0:
+		// 		*(udword*)dest->prefix |= OS_DQWORD_MASK;
+		// 		break ;
+
+		// 	case 0x1:
+		// 		*(udword*)dest->prefix |= OS_QQWORD_MASK;
+		// 		break ;
+
+		// 	case 0x2:
+		// 		*(udword*)dest->prefix |= OS_DQQWORD_MASK;
+		// 		break ;
+		// 	// default:
+		// 	// 	///TODO: ERROR
+		// }
 		return ;
 	}
 	else if (dest->vexxop[0])
