@@ -104,6 +104,8 @@
 
 ///TODO: EXTEND VIDX with EVEX.V2 (check in wikipedia EVEX)
 
+///TODO: ONLY WHEN EVEX PREFIX IS USED: SOME INSTRUCTIONS TAKE K REGISTERS (vpcmpeqb/w/d/q, ...)
+
 ///ERRORS: AVX512:
 /// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic) [ FIXED AND TRUE ]
 /// - vpmulld == vpmullq [ FIXED AND TRUE ]
@@ -119,36 +121,116 @@
 /// vpermpd == vpermps [ TRUE float:W0 ; double:W1 ]
 /// vpsllvd == vpsllvq [ TRUE d:W0 ; q:W1 ]
 /// vpsravd == vpsravq [ TRUE d:W0 ; q:W1 ]
-/// 100% SURE BAD MNEMONIC: vpsrlvw is pblendvb
 /// vpsrlvd == vpsrlvq [ TRUE d:W0 ; q:W1 ]
 
-///MISSING INSTRUCTIONS IN AVX512 ARE IN OPCODE MAP 2 BYTES
-/// IF PREFIX IS VEX IS ONE INSTRUCTION (WHICH IS MISSING)
-/// ELSE IS THE CURRENT INSTRUCTION (LINE 3, 4, 9)
-/// - KADDB/W/D/Q : 0F 4A
-/// - KANDB/W/D/Q : 0F 41
-/// - KANDNB/W/D/Q : 0F 42
-/// - KMOVB/W/D/Q : 0F 90
-/// - KMOVB/W/D/Q : 0F 91 (DIFF ARGS THAN PREVIOUS)
-/// - KMOVB/W/D/Q : 0F 92 (SAME)
-/// - KMOWB/W/D/Q : 0F 93 (SAME)
-/// - KNOTB/W/D/Q : 0F 44
-/// - KORB/W/D/Q : 0F 45
-/// - KORTESTB/W/D/Q : 0F 98
-/// - KSHIFTLB/W/D/Q : 0F 32/33
-/// - KSHITFRB/W/D/Q : 0F 30/31
-/// - KTESTB/W/D/Q : 0F 99
-/// - KUNPCKBW/WD/DQ : 0F 4B
-/// - KXNORB/W/D/Q : 0F 46
-/// - KXORB/W/D/Q : OF 47
-
-///SEEMS THAT THE SAME PATTERN IS USED FOR INSTRUCTIONS THAT ARE EVEX AND NOT VEX 
-/// FOR ALL THE INSTRUCTIONS THAT ARE EXCLUSIVELLY FOR AVX512 (IN TEST AFTER THE K* INCIDENT)
-
-/// TODO: Instructions having k registers as argument are not handled yet (AVX512)
-/// Seems than opcode map's instruction (field) stills the same ?!?!
-
-
+///TODO: AVX512 (EVEX): MISSING:
+/// valignd/q : 0x66 -> 0F 3A 03
+/// vblendmpd/s : 0x66 -> 0F 38 65
+/// vcompresspd : 0x66 -> 0F 38 8A
+/// vcvtpd2qq : 0x66 -> 0F 7B
+/// vcvtpd2udq : 0F 79
+/// vcvtpd2uqq : 0x66 -> 0F 79
+/// vcvtqq2pd : 0xF3 -> 0F E6
+/// vcvtqq2ps : 0F 5B
+/// vcvtsd2usi : 0xF2 -> 0F 79
+/// vcvtss2usi : 0xF3 -> 0F 79
+/// vcvttpd2qq : 0x66 -> 0F 7A
+/// vcvttpd2udq : 0F 78
+/// vcvttpd2uqq : 0x66 -> 0F 78
+/// vcvtudq2pd : 0xF3 -> 0F 7A
+/// vcvtudq2ps : 0xf2 -> 0F 7A
+/// vcvtusi2sd : 0F 7B
+/// vcvtusi2ss : 0xF3 -> 0F 7B
+/// vdbpsadbw : 0x66 -> 0F 3A 42
+/// vexpandpd : 0x66 -> 0F 38 88
+/// vfixupimmpd : 0x66 -> 0F 3A 54
+/// vfixupimmsd : 0x66 -> 0F 3A 55
+/// vfpclasspd : 0x66 -> 0F 3A 66
+/// vfpclasssd : 0x66 -> 0F 3A 67
+/// vgatherdps : 0x66 -> 0F 38 92
+/// vgatherqps : 0x66 -> 0F 38 93
+/// vgetexppd : 0x66 -> 0F 38 42
+/// vgetexpsd : 0x66 -> 0F 38 43
+/// vgetmantpd : 0x66 -> 0F 3A 26
+/// vgetmantsd : 0x66 -> 0F 3A 27
+/// vpblendmb/w : 0x66 -> 0f 38 66
+/// vpblendmd/q : 0x66 -> 0f 38 64
+/// vpbroadcastb : 0x66 -> 0f 38 7A
+/// vpbroadcastw : 0x66 -> 0f 38 7B
+/// vpbroadcastd/q : 0x66 -> of 38 7C
+///MISSING: vpbroadcastmb2q
+///MISSING: vpbroadcastmw2d
+/// vpcmpb : 0x66 -> 0f 3a 3f
+/// vpcmpub : 0x66 -> 0f 3a 3e
+/// vpcmpd/w/q : 0x66 -> 0f 3a 1f
+/// vpcmpud/w/q : 0x66 -> 0f 3a 1e
+/// vpcompressd/q : 0x66 0f 38 8b
+/// vpconflictd/q : 0x66 -> 0f 38 c4
+/// vpermb : 0x66 -> 0f 38 8d
+/// vpermi2b/w : 0x66 -> 0f 38 75
+/// vpermi2/q : 0x66 -> 0f 38 76
+/// vpermi2ps/pd : 0x66 -> 0f 38 77
+/// vpermt2b/w : 0x66 -> 0f 38 7d
+/// vpermt2d/q : 0x66 -> 0f 38 7e
+/// vpermt2ps/pd : 0x66 -> 0f 38 7f
+/// vpexpandd/q : 0x66 -> 0f 38 89
+/// vpgatherdd/q : 0x66 -> 0f 38 90
+/// vpgatherqd/q : 0x66 -> 0f 38 91
+/// vplzcntd/q : 0x66 -> 0f 38 44
+/// vpmadd52huq : 0x66 -> 0f 38 b5
+/// vpmadd52luq : 0x66 -> 0f 38 b4
+/// vpmovb/w2m : 0xf3 -> 0f 38 29
+/// vpmovd/q2m : 0xf3 -> 0f 38 39
+/// vpmovdb : 0xf3 -> 0f 38 31
+/// vpmovsdb : 0xf3 -> 0f 38 21
+/// vpmovusdb : 0xf3 -> 0f 38 11
+/// vpmovdw : 0xf3 -> 0f 38 33
+/// vpmovsdw : 0xf3 -> 0f 38 23
+/// vpmovusdw : 0xf3 -> 0f 38 13
+/// vpmovm2b/w : 0xf3 -> of 38 28
+/// vpmovm2d/q : 0xf3 -> of 38 38
+/// vpmovqb : 0xf3 -> 0f 38 32
+/// vpmovsqb : 0xf3 -> 0f 38 22
+/// vpmovusqb : 0xf3 -> 0f 38 12
+/// vpmovqd : 0xf3 -> 0f 38 35
+/// vpmovsqd : 0xf3 -> 0f 38 25
+/// vpmovusqd : 0cf3 -> 0f 38 15
+/// vpmovqw : 0xf3 -> 0f 38 34
+/// vpmovsqw : 0xf3 -> 0f 38 24
+/// vpmovusqw : 0xf3 -> 0f 38 14
+/// vpmovwb : 0xf3 -> 0f 38 30
+/// vpmovswb : 0cf3 -> 0f 38 20
+/// vpmovuswb : 0xf3 -> 0f 38 10
+/// vpmultishiftqb : 0x66 -> 0f 38 83
+/// vprolvd/q : 0x66 -> 0f 38 15
+/// vprold/q : 0x66 -> 0f 72
+/// vprorvd/q : 0x66 -> 0f 38 14
+/// vprord/q : 0x66 -> 0f 72
+/// vpscatterdd : 0x66 0f 38 a0
+/// vpscatterqd : 0x66 -> 0f 38 a1
+/// vpternlogd/q : 0x66 -> 0f 3a 25
+/// vptestmb/w : 0x66 -> 0f 38 26
+/// vptestmd/q : 0x66 -> 0f 38 27
+/// vptestnmb/w : 0xf3 -> 0f 38 26
+/// vptestnmd/q : 0xf3 -> 0f 38 27
+/// vrangepd/ps : 0x66 -> of 3a 50
+/// vrangesd/ss : 0x66 -> 0f 3a 51
+/// vrcp14pd/ps : 0x66 -> 0f 38 4c
+/// vrcp14sd/ss : 0x66 -> 0f 38 4d
+/// vreducepd/ps : 0x66 -> 0f 3a 56
+/// vreducesd/ss : 0x66 -> 0f 3a 57
+/// vrndscalepd : 0x66 -> 0f 3a 09
+/// vrndscaleps : 0x66 -> 0f 3a 08
+/// vrndscalesd : 0x66 -> 0f 3a 0B
+/// vrndscaless : 0x66 -> 0f 3a 0A
+/// vrsqrt14pd/ps : 0x66 -> 0f 38 4e
+/// vrsqrt14sd/ss : 0x66 -> 0f 38 4f
+/// vscalefpd/ps : 0x66 -> 0f 38 2c
+/// vscalefsd/ss : 0x66 -> 0f 38 2d
+/// vscatterdps/pd : 0x66 -> 0f 38 a2
+/// vscatterqps/pd : 0x66 -> 0f 38 a3
+/// vshuff32x4/64x2 : 0x66 -> 0f 3a 23
+/// vshufi32x4/64x2 : 0x66 -> 0f 3a 43
 
 int main(int ac, const char* av[])
 {
