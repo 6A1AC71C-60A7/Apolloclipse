@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 4000//2000
+#define INST_NB 4000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/avx512.txt"
+#define FILENAME "srcs/tests/samples/avx.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -105,34 +105,22 @@
 ///TODO: EXTEND VIDX with EVEX.V2 (check in wikipedia EVEX)
 
 ///ERRORS: AVX512:
-/// - vpand* is all vpand mnemonic
-/// - vpor* is all vpor mnemonic
-/// - vpxor* is all vpxor mnemonic
-///ERROR: vpsllw/d/q / vpsrlw/d/q / vpsraw/d/q
-/// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic)
-/// - vmovdqa* is all vmovdqa
-/// - vmovdqu* is all vmovdqu
-///ERROR: vpslldq, vpsrldq
-///ERROR: vpabsd
-/// - vpmulld == vpmullq
-/// - vpminud == vpminuq
-/// - vpminsd == vpminsq
-/// - vpmaxud == vpmaxuq
-/// - vpmaxsd == vpmaxsq
-/// - vpinsrd == vpinsrq
-/// - vpextrd == vpextrq
-/// - vbroadcastsd == vbroadcastf32x2
-/// - vbroadcastf32x4 and vbroadcastf64x2 are resolved as 'vbroadcastf128'
-/// SAME for vinsertf32x4 / vinsertf64x2 / vinsertf32x8 / vinsertf64x4
-/// ERROR: vpermw
-/// vpermpd == vpermps
-/// ERROR: vpermq
-/// vpsllvd == vpsllvq
-/// ERROR: vpsravw
-/// vpsravd == vpsravq
+/// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic) [ FIXED AND TRUE ]
+/// - vpmulld == vpmullq [ FIXED AND TRUE ]
+/// - vpminud == vpminuq [ FIXED AND TRUE ]
+/// - vpminsd == vpminsq [ FIXED AND TRUE ]
+/// - vpmaxud == vpmaxuq [ FIXED AND TRUE ]
+/// - vpmaxsd == vpmaxsq [ FIXED AND TRUE ]
+/// - vpinsrd == vpinsrq [ FIXED AND TRUE ]
+/// - vpextrd == vpextrq [ FIXED AND TRUE ]
+/// - vbroadcastsd == vbroadcastf32x2 [ FIXED AND TRUE BUT DEPENDS ON VEX OR EVEX ]
+/// - vbroadcastf32x4 and vbroadcastf64x2 are resolved as 'vbroadcastf128' [ SAME AS BEFORE ]
+/// SAME for vinsertf32x4 / vinsertf64x2 / vinsertf32x8 / vinsertf64x4 [ SAB ]
+/// vpermpd == vpermps [ TRUE float:W0 ; double:W1 ]
+/// vpsllvd == vpsllvq [ TRUE d:W0 ; q:W1 ]
+/// vpsravd == vpsravq [ TRUE d:W0 ; q:W1 ]
 /// 100% SURE BAD MNEMONIC: vpsrlvw is pblendvb
-/// vpsrlvd == vpsrlvq
-///INSTRUCTIONS: WITH K* AVX512 are not handled yet (UNTIL K INSTRUCTIONS ALL SEEM +|- OK)
+/// vpsrlvd == vpsrlvq [ TRUE d:W0 ; q:W1 ]
 
 ///MISSING INSTRUCTIONS IN AVX512 ARE IN OPCODE MAP 2 BYTES
 /// IF PREFIX IS VEX IS ONE INSTRUCTION (WHICH IS MISSING)
@@ -177,7 +165,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x62\xD1\x0D\x49\xE9\x24\x24";
+    const ubyte iraw[] = "\x62\xF2\xED\x89\x10\xCB\x62\xF2\xED\x89\x10\x08";
 #endif
 
     const ubyte* prt = iraw;

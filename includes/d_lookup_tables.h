@@ -7,6 +7,8 @@ static const ubyte lt_legacy_prefixes[] = {
     0xF0, 0xF2, 0xF3, 0x64, 0x65, 0x2E, 0x3E, 0x66, 0x67
 };
 
+///ENHANCEMENT: OT_DQQ DOES NOT EXIST AND MAY BE NEEDED (VBROADCASTF32X8, ...)
+
 ///TODO: Redefined in instruction.c : HAS_ATTR_MODRM, ...
 #define DREF_RM (0) /// <----- TODO CANNOT BE 0
 #define DREF_SIB (2) /// <----- TODO CANNOT BE 0
@@ -1699,8 +1701,8 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = VTESTPD,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 
 	{ .mnemonic = PBLENDVB,		.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_W,	.ot2 = OT_DQ,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,			.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,			.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = VPSRAVW,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = VPSLLVW,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VCVTPH2PS,	.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = 0,		.am3 = 0,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = BLENDVPS,		.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_W,	.ot2 = OT_DQ,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = BLENDVPD,		.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_W,	.ot2 = OT_DQ,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -1710,11 +1712,11 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = VBROADCASTSS,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_D,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = VBROADCASTSD,		.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_W,	.ot2 = OT_Q,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = VBROADCASTF128,	.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_M,	.ot2 = OT_DQ,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_V },
-	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = VBROADCASTF32X8,	.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_M,	.ot2 = OT_DQ,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPABSB,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPABSW,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPABSD,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = VPABSQ,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	///TODO: NEXT 6 HAS AMBIGIOUS ATTRIBUTES
 	{ .mnemonic = VPMOVSXBW,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_U,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -1858,7 +1860,7 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPMASKMOVD,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_M,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
-	{ .mnemonic = 0,			.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = VPERMW,			.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_H,	.ot2 = OT_QQ,	.am3 = AM_W,	.ot3 = OT_QQ,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPMASKMOVD,		.am1 = AM_M,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = AM_H,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = 0,			.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
@@ -2015,7 +2017,6 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 };
-
 ///TODO: SOME STRUCTIONS ARE PREFIX-DEPENTENT AND IS NOT HANDLED YET
 static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 
@@ -2070,6 +2071,10 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 
 	{ .mnemonic = VAESKEYGEN,		.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_W,	.ot2 = OT_DQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = RORX,				.am1 = AM_G,	.ot1 = OT_Y,	.am2 = AM_E,	.ot2 = OT_Y,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
+	{ .mnemonic = KSHIFTR,			.am1 = AM_KR,	.ot1 = OT_C,	.am2 = AM_KRM,	.ot2 = OT_C,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = KSHIFTR,			.am1 = AM_KR,	.ot1 = OT_Y,	.am2 = AM_KRM,	.ot2 = OT_Y,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = KSHIFTL,			.am1 = AM_KR,	.ot1 = OT_C,	.am2 = AM_KRM,	.ot2 = OT_C,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = KSHIFTL,			.am1 = AM_KR,	.ot1 = OT_Y,	.am2 = AM_KRM,	.ot2 = OT_Y,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 };
 
 #define AMB_VPERMQ_INDEX 0x0
@@ -2114,6 +2119,12 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 #define AMB_SHA1RNDS4_INDEX 0x27
 #define AMB_VAESKEYGEN_INDEX 0x28
 #define AMB_RORX_INDEX 0x29
+
+///TODO: SORT THESE ?!
+#define AMB_KSHIFTR_INDEX 0x2A
+#define AMB_KSHIFTR2_INDEX 0x2B
+#define AMB_KSHIFTL_INDEX 0x2C
+#define AMB_KSHIFTL2_INDEX 0x2D
 
 static const opfield_t lt_three_byte_0x3A_opmap[] = {
 	{ .mnemonic = AMB_VPERMQ_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -2171,10 +2182,10 @@ static const opfield_t lt_three_byte_0x3A_opmap[] = {
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
-	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = AMB_KSHIFTR_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = AMB_KSHIFTR2_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = AMB_KSHIFTL_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = AMB_KSHIFTL2_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },

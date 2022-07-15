@@ -125,6 +125,16 @@ static reg_t get_debug_register(uqword index)
     return regs[index];
 }
 
+static reg_t get_k_register(uqword index)
+{
+    static const reg_t regs[] = {
+        D_REG_K0, D_REG_K1, D_REG_K2, D_REG_K3,
+        D_REG_K4, D_REG_K5, D_REG_K6, D_REG_K7
+    };
+
+    return regs[index];
+}
+
 static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte am, ubyte ot, ubyte* const skip)
 {
 	DEBUG("[DEBUG] RESOLVE OPERAND: AM: %d OT: %d\n", am, ot);
@@ -154,6 +164,8 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
     /// ABOVE SEEMS HANDLED IN 'MODRM_REG_EXTENDED_GET'
     // if (0 /* 3 bytes VEX opcode */)
     //     modrm_rm |= (((*(udword*)inst->prefix & RP_REXB_MASK)) << 3) | (~VEXXOP_B_GET(inst->vexxop) << 3);
+
+    ///TODO: Maybe is more cleaver to test if mod != 0b11 here !
 
     if (am < DR_RAX)
     {
@@ -231,12 +243,17 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                 break ;
 
             case AM_U:
-                if (*(udword*)inst->prefix & OS_DQWORD_MASK)
-                    *dest = get_xmm_register(modrm_rm);
-                else if (*(udword*)inst->prefix & OS_QQWORD_MASK)
-                    *dest = get_ymm_register(modrm_rm);
-                else if (*(udword*)inst->prefix & OS_DQQWORD_MASK)
-                    *dest = get_zmm_register(modrm_rm);
+                if (modrm_mod == 0b11)
+                {
+                    if (*(udword*)inst->prefix & OS_DQWORD_MASK)
+                        *dest = get_xmm_register(modrm_rm);
+                    else if (*(udword*)inst->prefix & OS_QQWORD_MASK)
+                        *dest = get_ymm_register(modrm_rm);
+                    else if (*(udword*)inst->prefix & OS_DQQWORD_MASK)
+                        *dest = get_zmm_register(modrm_rm);
+                }
+                else
+                    *dest = D_REG_ADDR;
                 break ;
 
             case AM_V:
@@ -270,6 +287,22 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
 
             case AM_Y:
                 ///TODO: Memory addressed by ES:RDI register pairs
+                break ;
+
+            case AM_KR:
+                *dest = get_k_register(modrm_reg & 0x7);
+                break ;
+
+            case AM_KRM:
+                *dest = get_k_register(modrm_rm & 0x7);
+                break ;
+
+            case AM_KV:
+                *dest = get_k_register(vex_vvvv & 0x7);
+                break ;
+
+            case AM_KM:
+                *dest = modrm_mod == 0b11 ? get_k_register(modrm_rm) : D_REG_ADDR;
                 break ;
         }
     }

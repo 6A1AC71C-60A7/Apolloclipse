@@ -192,3 +192,11 @@ typedef ubyte reg_t;
 #define D_REG_ZMM29 0xB8
 #define D_REG_ZMM30 0xB9
 #define D_REG_ZMM31 0xBA
+#define D_REG_K0 0xBB
+#define D_REG_K1 0xBC
+#define D_REG_K2 0xBD
+#define D_REG_K3 0xBE
+#define D_REG_K4 0xBF
+#define D_REG_K5 0xC0
+#define D_REG_K6 0xC1
+#define D_REG_K7 0xC2

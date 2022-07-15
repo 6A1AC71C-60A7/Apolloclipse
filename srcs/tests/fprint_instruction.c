@@ -191,6 +191,14 @@ static const char* const regs[] = {
 	"zmm29",
 	"zmm30",
 	"zmm31",
+	"k0",
+	"k1",
+	"k2",
+	"k3",
+	"k4",
+	"k5",
+	"k6",
+	"k7",
 };
 
 static const char* const gp_regs_32[] = {
@@ -2101,6 +2109,8 @@ static const char* const mnemonics[] = {
 	"vpblendvpd",
 	"vblendvb",
 	"vaeskeygen",
+
+	"vpabsq"
 };
 
 __always_inline

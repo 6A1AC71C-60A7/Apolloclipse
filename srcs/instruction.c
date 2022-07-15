@@ -383,12 +383,8 @@ static void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode
 
 	if (index == 4)
 		goto ret;
-	if (index == 3)
-	{	
+	else if (index == 3)
 		*found = (opfield_t){ .mnemonic = MODRM_EXT_GRP_17,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1A };
-		goto ret;
-	}
-
 	else if (prefix & MP_0x66_MASK && prefix & MP_0xF2_MASK)
 	{
 		if (index == 0)
@@ -433,6 +429,84 @@ ret:
 }
 
 __always_inline
+static void handle_ambigious_instructions_0x0F_opmap(opfield_t* const found, ubyte opcode)
+{
+	switch (opcode)
+	{
+		case 0x41:
+			// kand {k1: MODRM.REG, k2: VEX.VVVV, k3: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 320x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KAND, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x42:
+			// kandn {k1: MODRM.REG, k2: VEX.VVVV, k3: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 320x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KANDN, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x44:
+			// knot {k1: MODRM.REG, k2: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 320x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KNOT, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KRM, .ot2 = OT_ALL, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x45:
+			// kor {k1: MODRM.REG, k2: VEX.VVVV, k3: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 320x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KOR, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x46:
+			// kxnor {k1: MODRM.REG, k2: VEX.VVVV, k3: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 32:0x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KXNOR, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x47:
+			// kxor {k1: MODRM.REG, k2: VEX.VVVV, k3: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 32:0x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KXOR, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x4A:
+			// kadd {k1: MODRM.REG, k2: VEX.VVVV, k3: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 32:0x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KADD, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x4B:
+			// kunpck {k1: MODRM.REG, k2: VEX.VVVV, k3: MODRM.RM}{OP= 16:0x66,W0 ; 32:0x66:W1 ; 64:W1}
+			///TODO: This operand size resolution is very UNIQUE
+			*found = (opfield_t){ .mnemonic = KUNPCK, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x90:
+			// kmov {k1: MODRM.REG, k2: if(MODRM.MOD==0b11)MODRM.RM else ADDR}{OP= 8:0x66,W0 ; 16:W0 ; 32:0x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KMOV, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KM, .ot2 = OT_ALL, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x91:
+			// kmov {k1: ADDR, k2: MODRM.REG}{OP= 8:0x66,W0 ; 16:W0 ; 32:0x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KMOV, .am1 = AM_M, .ot1 = OT_ALL, .am2 = AM_KR, .ot2 = OT_ALL, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x92:
+			// kmov {k1: MODRM.REG, k2: ADDR}{OP= 8:0x66,W0 ; 16:W0 ; 32:0x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KMOV, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_R, .ot2 = OT_Y, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x93:
+			// kmov {k1: ADDR, k2: MODRM.REG}{OP= 8:0x66,W0 ; 16:W0 ; 32:0x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KMOV, .am1 = AM_G, .ot1 = OT_Y, .am2 = AM_KRM, .ot2 = OT_ALL, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x98:	
+			// kortest {k1: MODRM.REG, k2: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 320x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KORTEST, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KRM, .ot2 = OT_ALL, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+
+		case 0x99:
+			// ktest {k1: MODRM.REG, k2: MODRM.RM}{OP= 8:0x66,W0 ; 16:W0 ; 320x66:W1 ; 64:W1}
+			*found = (opfield_t){ .mnemonic = KTEST, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KRM, .ot2 = OT_ALL, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+			break ;
+	}
+}
+
+__always_inline
 static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, udword prefix, ubyte opcode)
 {
 	uqword scale = 0;
@@ -440,7 +514,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	if (map == lt_two_byte_opmap)
 	{
 		const ubyte line = (opcode & 0xF0) >> 4;
-
+	
 		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, prefix & MP_0x66_MASK);
 
 		if (prefix & MP_0x66_MASK && !(line >= 0x9 && line <= 0xB))
@@ -449,6 +523,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 			scale = 2;
 		if (prefix & MP_0xF2_MASK)
 			scale = 3;
+
 		DEBUG("--> INDEX IS %"PRId64"\n", found->mnemonic + (0x74 * scale));
 		/* Prefix dependent instructions are aligned by 0x74 bytes */
 		*found = lt_two_byte_ambigious_opmap[found->mnemonic + (0x74 * scale)];
@@ -465,6 +540,12 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 			if (prefix & MP_0x66_MASK)
 				scale = 1;
 			*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * scale)];
+
+			///TODO: Handle ambigiousness otherway (create a single function)
+			/// Temporary solution (cause i doesn't know the amount and all  kinds of ambigiousness)
+
+			if (opcode == 0x10 && prefix & OP_EVEX_MASK)
+				*found = (opfield_t){ .mnemonic = VPSRLVW, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = S_V };
 		}
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
@@ -515,6 +596,9 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		|| (x) == AM_U \
 		|| (x) == AM_V \
 		|| (x) == AM_W \
+		|| (x) == AM_KR \
+		|| (x) == AM_KRM \
+		|| (x) == AM_KM \
 	) \
 )
 
@@ -644,6 +728,8 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		const ubyte is256os = dest->vexxop[2] ? VEXXOP_L_GET(dest->vexxop) : VEXXOP2_L_GET(dest->vexxop);
 		*(udword*)dest->prefix |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
 		return ;
+
+		///TODO: if (IS_K*()) { handle k mnemonics operand size }
 
 		///TODO: SOME VEX TAKE GP REGISTERS AS ARGUMENTS,
 		/// SIZE RESOLUTION FOR THESE MUST BE PERFORMED OTHERWAY
@@ -937,7 +1023,7 @@ skip_prefix_check:
 
 	DEBUG("DEBUG: OPCODE IS [%02X][%02X][%02X]\n", dest->opcode[0], dest->opcode[1], dest->opcode[2]);
 
-	opfield_t found;
+	opfield_t found = {};
 
 	if (dest->vexxop[0] == 0 && dest->opcode[0] == 0 && IS_ESCAPE_FX87(dest->opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
@@ -945,7 +1031,16 @@ skip_prefix_check:
 	{
 		const opfield_t*	map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop, (*(udword*)dest->prefix & OP_EVEX_MASK) != 0);
 
-		found = map[GET_MAP_INDEX(dest->opcode[2])];
+		///TODO: Improve syntax using more defines for conditions
+
+		const ubyte line = (dest->opcode[2] & 0xF0) >> 4;
+	
+		/* This is because AVX-512 K instructions use the same opcode than other
+			opcodes (within 0x0F opcode map) but a diferent prefix (VEX) */
+		if (map == lt_two_byte_opmap && (line == 0x4 || line == 0x9) && dest->vexxop[0])
+			handle_ambigious_instructions_0x0F_opmap(&found, dest->opcode[2]);
+		else if (found.mnemonic == 0)
+			found = map[GET_MAP_INDEX(dest->opcode[2])];
 
 		DEBUG("DEBUG: MAP INDEX: %d\n", GET_MAP_INDEX(dest->opcode[2]));
 		//DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);

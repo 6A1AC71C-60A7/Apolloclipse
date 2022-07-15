@@ -41,8 +41,13 @@ typedef enum
 				//			register, a scaling factor, and a displacement.
 	AM_X,		// Memory addressed by the DS:rSI register pair (for example, MOVS, CMPS, OUTS, or LODS).
 	AM_Y,		// Memory addressed by the ES:rDI register pair (for example, MOVS, CMPS, INS, STOS, or SCAS).
-	AMB,			// The opcode held by this field is prefix-dependent. The mnemonic field holds the index to another
+	AMB,		// The opcode held by this field is prefix-dependent. The mnemonic field holds the index to another
 				// 			look up table in which the prefix resolution should be performed.
+
+	AM_KR,		// The reg field of the ModR/M byte refers to a AVX-512 K register.
+	AM_KRM,		// The rm field of the ModR/M byte refers to a AVX-512 K register.
+	AM_KV,		// The VEX.VVVV field of the VEX prefix refeers to a AVX-512 K register.
+	AM_KM,		// The rm field of the ModR/M byte may selects a AVX-512 K register or a memory address.
 
 } op_addressing_method_t;
 
@@ -75,7 +80,9 @@ typedef enum
 	OT_DSS,		// 98/108 bytes pointer, depending on operand-size-attribute.
 	OT_EXT,		// Reference to a 80-bit Double-Extented floating point data.
 	///TODO: 'EXT' CAN ALSO BE 'P'
-	OT_BCD,		// Reference to a 4-bit packed-BCD data.	
+	OT_BCD,		// Reference to a 4-bit packed-BCD data.
+
+	OT_ALL,		// Byte, word, doubleword or quadword, depending on operand size.
 } op_operand_type_t;
 
 typedef enum

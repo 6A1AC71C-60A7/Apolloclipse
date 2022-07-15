@@ -323,7 +323,8 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x12:
-			if (mod == 0b11 && reg < 0b111)
+			DEBUG("HERE * * * * %d\n", mod);
+			if (/*mod == 0b11 && */reg < 0b111)
 			{
 				if (HAS_NOT_MANDATORY_PREFIX(prefix))
 				{
@@ -355,7 +356,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x13:
-			if (mod == 0b11 && reg < 0b111)
+			if (/*mod == 0b11 && */reg < 0b111)
 			{
 				if (HAS_NOT_MANDATORY_PREFIX(prefix))
 				{
@@ -387,7 +388,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			break ;
 
 		case 0x14:
-			if (mod == 0b11)
+			/* if (mod == 0b11) */
 			{
 				if (HAS_NOT_MANDATORY_PREFIX(prefix) && reg < 0b111)
 				{
