@@ -2112,6 +2112,7 @@ static const char* const mnemonics[] = {
 
 	"vpabsq",
 	"vcvttpd2qq",
+	"vmovhlps",
 
 };
 

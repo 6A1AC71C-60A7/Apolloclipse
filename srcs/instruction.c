@@ -813,6 +813,156 @@ static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbi
 		*dest = *((*(udword**)iraw)++);
 }
 
+__always_inline
+static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t* map, instruction_t* const inst)
+{
+	const ubyte opcode = inst->opcode[2];
+	const ubyte prefix = *(udword*)inst->prefix;
+
+	///TODO: Preform (move) the ambigiousness handling in group extensions here ?
+	/// MMM parse is a lot more complex, i don't think so (seems not worth)
+
+	if (map == lt_three_byte_0x38_opmap)
+	{
+		if (prefix & MP_0x66_MASK && MODRM_MOD_GET(inst->mod_rm) != 0b11)
+		{
+			switch (opcode)
+			{
+				case 0x20:
+					found->am2 = AM_M;
+					found->ot2 = OT_Q;
+					break ;
+
+				case 0x21:
+					found->am2 = AM_M;
+					found->ot2 = OT_D;
+					break ;
+
+				case 0x22:
+					found->am2 = AM_M;
+					found->ot2 = OT_W;
+					break ;
+
+				case 0x23:
+					found->am2 = AM_M;
+					found->ot2 = OT_Q;
+					break ;
+
+				case 0x24:
+					found->am2 = AM_M;
+					found->ot2 = OT_D;
+					break ;
+
+				case 0x25:
+					found->am2 = AM_M;
+					found->ot2 = OT_Q;
+					break ;
+
+				case 0x30:
+					found->am2 = AM_M;
+					found->ot2 = OT_Q;
+					break ;
+
+				case 0x31:
+					found->am2 = AM_M;
+					found->ot2 = OT_D;
+					break ;
+
+				case 0x32:
+					found->am2 = AM_M;
+					found->ot2 = OT_W;
+					break ;
+
+				case 0x33:
+					found->am2 = AM_M;
+					found->ot2 = OT_Q;
+					break ;
+
+				case 0x34:
+					found->am2 = AM_M;
+					found->ot2 = OT_D;
+					break ;
+
+				case 0x35:
+					found->am2 = AM_M;
+					found->ot2 = OT_Q;
+					break ;
+			}
+		}
+	}
+	else if (map == lt_three_byte_0x3A_opmap)
+	{
+		if (prefix & MP_0x66_MASK && MODRM_MOD_GET(inst->mod_rm) != 0b11)
+		{
+			switch (opcode)
+			{
+				case 0x14:
+					found->am1 = AM_M;
+					found->ot1 = OT_B;
+					break ;
+
+				case 0x15:
+					found->am1 = AM_M;
+					found->ot1 = OT_W;
+					break ;
+
+				case 0x20:
+					found->am3 = AM_M;
+					found->ot3 = OT_B;
+					break ;
+
+				case 0x21:
+					found->am3 = AM_M;
+					found->ot2 = OT_D;
+					break ;
+			}
+		}
+	}
+	else if (map == lt_two_byte_opmap)
+	{
+		if (MODRM_MOD_GET(inst->mod_rm) != 0b11)
+		{
+			if (prefix & MP_0x66_MASK)
+			{
+				if (opcode == 0xC4)
+				{
+					found->am2 = AM_M;
+					found->ot2 = OT_W;
+				}
+			}
+			else if ((prefix & (MP_0x66_MASK | MP_0xF3_MASK | MP_0xF2_MASK)) == 0)
+			{
+				switch (opcode)
+				{
+					case 0x12:
+						found->mnemonic = VMOVHLPS;
+						found->am3 = AM_U;
+						break ;
+
+					case 0x16:
+						found->mnemonic = VMOVLHPS;
+						found->am3 = AM_U;
+						break ;
+
+					case 0xC4:
+						found->am3 = AM_M;
+						found->ot3 = OT_W;
+						break ;
+
+					case 0x77:
+						if (inst->vexxop[0])
+						{
+							if (MODRM_RM_EXTENDED_GET(inst) == 0)
+								found->mnemonic = VZEROUPPER;
+							else
+								found->mnemonic = VZEROALL;
+						}
+				}
+			}
+		}
+	}
+}
+
 static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 {
 	///TODO: Only CALL near JMP near and RET near ?!?!
@@ -1145,13 +1295,14 @@ skip_prefix_check:
 
 	DEBUG("DEBUG: OPCODE IS [%02X][%02X][%02X]\n", dest->opcode[0], dest->opcode[1], dest->opcode[2]);
 
-	opfield_t found = {};
+	opfield_t 			found = {};
+	const opfield_t*	map = 0;
 
 	if (dest->vexxop[0] == 0 && dest->opcode[0] == 0 && IS_ESCAPE_FX87(dest->opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
 	else
 	{
-		const opfield_t*	map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop, (*(udword*)dest->prefix & OP_EVEX_MASK) != 0);
+		map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop, (*(udword*)dest->prefix & OP_EVEX_MASK) != 0);
 
 		///TODO: Improve syntax using more defines for conditions
 
@@ -1202,6 +1353,7 @@ skip_prefix_check:
 	if (HAS_ATTR_DISP(opattr))
 		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
 
+	handle_ambigious_arguments(&found, map, dest);
 	get_operand_size(dest, found);
 
 	if (has_immediate(found))

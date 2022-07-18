@@ -59,18 +59,6 @@
 ///SAMPLES: MISSING: PMULL, PMULH, PMADD, PCMPGTPB,
 /// SSE4: PMOVSXBW, PMOVZXBW, PMOVSXBD, PMOVZXBD, PMOVSXWD, PMOVZXWD, PMOVSXBQ, PMOVZXBQ, PMOVSXWQ, PMOVZXWQ, PMOVSXDQ, PMOVZXDQ
 
-///TODO: AMBIGIOUS SHIT IS RESOLVED BY MODRM.MOD
-/// OP2B[16] CAN BE EITHER VMOVHPS (MOD != 0B11) OR VMOVLHPS (MOD == 0B11)
-/// OP2B[12] CAN BE EITHER VMOVLPS (MOD != 0B11) OR VMOVHLPS (MOD == 0B11)
-/// OP2B[c4] : PINSRW AND VPINSRW CAN HAVE EITHER MEMORY OR REGISTER IN SECOND ARGUMENT (DEPENDS OF MOD)
-/// A LOT MORE IN OP3B3A
-/// WHY INTEL HAS DONE THIS SHIT ?
-
-///TODO: emms, zeroupper and zeroall are the same opcode but called diferently
-/// it seems zeroall must have a VEX prefix per exemple (OPCODE IS 0X77)
-/// VXEROALL: "\XC5\XFC\X77"
-/// VZEROUPPER: "\XC5\XF8\X77"
-
 ///TODO: mxx instructions which are the same overload than their VEX implementation are only present with a 'v' as first character
 /// MATBE should add them to the mnemonic or a flag in instruction_t
 
@@ -92,6 +80,7 @@
 /// - SSE4
 /// - AVX
 /// - AVX2
+/// - AVX512
 /// - FMA
 /// - AES
 /// - VMX
@@ -99,8 +88,6 @@
 ///TODO: EVEX HAS DIFERENT DISPLACEMENT TO PARSE
 
 ///TODO: EXTEND VIDX with EVEX.V2 (check in wikipedia EVEX)
-
-///TODO: ONLY WHEN EVEX PREFIX IS USED: SOME INSTRUCTIONS TAKE K REGISTERS (vpcmpeqb/w/d/q, ...)
 
 ///TODO: VGATHERDD/QD (avx512) documentation says it has 3 args but test samples have only 2
 

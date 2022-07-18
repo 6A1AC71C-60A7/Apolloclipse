@@ -1867,6 +1867,7 @@ typedef enum
 
 	VPABSQ,
 	VCVTTPD2QQ,
+	VMOVHLPS,
 
 } mnemonic_t;
 

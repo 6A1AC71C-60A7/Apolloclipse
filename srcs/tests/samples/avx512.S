@@ -2899,7 +2899,6 @@ vpminud zmm1 {k1} {z}, zmm2, [rax]
 vpminuq xmm1 {k1} {z}, xmm2, xmm3
 vpminuq xmm1 {k1} {z}, xmm2, [rax]
 
-
 ; Compare packed unsigned qword integers in ymm2 and ymm3/m256/m64bcst and store packed minimum values in ymm1 under writemask k1.
 ; TODO: 'm64bcst' possible third argument
 
@@ -3210,7 +3209,7 @@ vinsertf64x4 zmm1 {k1} {z}, zmm2, [rax], 0x69
 ; Permute single-precision floating-point values in xmm2 using control from xmm3/m128/m64bcst and store the result in xmm1 using writemask k1.
 ; TODO: 'm64bcst' possible third argument
 
-vpermilps xmm1 {k1} {z}, xmm2, xmm3
+    vpermilps xmm1 {k1} {z}, xmm2, xmm3
 vpermilps xmm1 {k1} {z}, xmm2, [rax]
 
 ; Permute single-precision floating-point values in ymm2 using control from ymm3/m256/m64bcst and store the result in ymm1 using writemask k1.
@@ -4409,9 +4408,6 @@ vgatherdpd ymm1 {k1}, [xmm2]
 
 vgatherdpd zmm1 {k1}, [ymm2]
 
-
-
-
 ; Using signed qword indices, gather single-precision floating-point values from memory using k1 as completion mask.
 
 vgatherqps xmm1 {k1}, [xmm2]
@@ -4610,7 +4606,7 @@ vpbroadcastw ymm1 {k1} {z}, eax
 
 ; Broadcast a 16-bit value from a GPR to all words in the 512-bit destination subject to writemask k1.
 
-vpbroadcastw ymm1 {k1} {z}, eax
+vpbroadcastw zmm1 {k1} {z}, eax
 
 ; Broadcast a 32-bit value from a GPR to all double-words in the 128-bit destination subject to writemask k1.
 
@@ -5370,7 +5366,7 @@ vpmovm2q ymm1, k1
 
 ; Sets each quadword in ZMM1 to all 1’s or all 0’s based on the value of the corresponding bit in k1.
 
-vpmovm2q ymm1, k1
+vpmovm2q zmm1, k1
 
 ; Converts 2 packed quad-word integers from xmm2 into 2 packed byte integers in xmm1/m16 with truncation under writemask k1.
 
