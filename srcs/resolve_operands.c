@@ -230,7 +230,6 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                 break ;
 
             case AM_Q:
-                ///TODO: NOT TESTED YET IF IS MODRM.RM
                 *dest = modrm_mod == 0b11 ? get_mmx_register(modrm_rm) : D_REG_ADDR;
                 break ;
 
@@ -266,7 +265,6 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                 break ;
 
             case AM_W:
-                ///TODO: NOT TESTED YET IF IS MODRM.RM
                 if (modrm_mod == 0b11)
                 {
                     ///TODO: 
@@ -312,8 +310,6 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
 			*dest = am - 14;
 		else if (am < DR_AH)
 		{
-			///TODO: For the moment i only handle general purpose registers but i have to hadle all
-
 			*dest = am - 30;
 			if (IS_AMBIGIOUS(ot))
             {

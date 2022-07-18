@@ -377,6 +377,92 @@ static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte*
 }
 
 __always_inline
+static void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix)
+{
+	if (prefix & MP_0xF3_MASK)
+	{
+		if (opcode == 0x3A)
+			*found = (opfield_t){ .mnemonic = VPBROADCASTMW2D, .am1 = AM_V, .ot1 = AM_X, .am2 = AM_KRM,	.ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+		// else if (opcode == 0x2A)
+		// 	*found = (opfield_t){ .mnemonic = VPBROADCASTMB2Q, .am1 = AM_V,	.ot1 = AM_X, .am2 = AM_KRM, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+		else
+		{
+			static const opfield_t arr[] = {
+				{ .mnemonic = VPMOVUSWB,	.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVUSDB,	.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVUSQB,	.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVUSDW,	.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVUSQW,	.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVUSQD,	.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ /* 16 */ },
+				{ /* 17 */ },
+				{ /* 18 */ },
+				{ /* 19 */ },
+				{ /* 1A */ },
+				{ /* 1B */ },
+				{ /* 1C */ },
+				{ /* 1D */ },
+				{ /* 1E */ },
+				{ /* 1F */ },
+				{ .mnemonic = VPMOVSWB,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVSDB,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVSQB,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVSDW,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVSQW,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVSQD,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPTESTNMB,	.am1 = AM_KR,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPTESTNMD,	.am1 = AM_KR,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVM2B,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_KRM,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVB2M,		.am1 = AM_KR,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPBROADCASTMB2Q, .am1 = AM_V,	.ot1 = AM_X,	.am2 = AM_KRM,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ /* 2B */ },
+				{ /* 2C */ },
+				{ /* 2D */ },
+				{ /* 2E */ },
+				{ /* 2F */ },
+				{ .mnemonic = VPMOVWB,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVDB,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVQB,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVDW,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVQW,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVQD,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ /* 36 */ },
+				{ /* 37 */ },
+				{ .mnemonic = VPMOVM2D,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_KRM,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = VPMOVD2M,		.am1 = AM_KR,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },				
+			};
+
+			if (opcode >= 10 && opcode <= (ARRLEN(arr) + 0x10))
+				*found = arr[opcode - 0x10];
+		}
+	}
+}
+
+__always_inline
+static void handle_evex_addons_0x0F_opmap(opfield_t* const found, ubyte opcode, udword prefix)
+{
+	if (prefix & MP_0x66_MASK)
+	{
+		if (opcode == 0x72)
+			*found = (opfield_t){ .mnemonic = VPROLD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = AM_I, .ot3 = OT_B, .am4 = 0, .ot4 = 0, .symbol = 0 };
+	}
+	else if (prefix & MP_0xF3_MASK)
+	{
+		if (opcode == 0xE6)
+			*found = (opfield_t){ .mnemonic = VCVTQQ2PD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+	}
+	else if (!(prefix & MP_0xF2_MASK))
+	{
+		if (opcode == 0x79)
+			*found = (opfield_t){ .mnemonic = VCVTPD2UDQ, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+		else if (opcode == 0x5B)
+			*found = (opfield_t){ .mnemonic = VCVTQQ2PS, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+		else if (opcode == 0x78)
+			*found = (opfield_t){ .mnemonic = VCVTTPD2UDQ, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
+	}
+}
+
+__always_inline
 static void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix)
 {
 	const ubyte index = opcode & 0x0F;
@@ -506,6 +592,14 @@ static void handle_ambigious_instructions_0x0F_opmap(opfield_t* const found, uby
 	}
 }
 
+#define IS_EVEX_COLISION_0x0F(x, p) ( \
+	(!((p) & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) && (x) == 0x79) \
+	|| ((p) & MP_0xF3_MASK && (x) == 0xE6) \
+	|| (!((p) & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) && (x) == 0x5B) \
+	|| (!((p) & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) && (x) == 0x78) \
+	|| ((p) & MP_0x66_MASK && (x) == 0x72) \
+)
+
 __always_inline
 static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, udword prefix, ubyte opcode)
 {
@@ -524,9 +618,10 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		if (prefix & MP_0xF2_MASK)
 			scale = 3;
 
-		DEBUG("--> INDEX IS %"PRId64"\n", found->mnemonic + (0x74 * scale));
-		/* Prefix dependent instructions are aligned by 0x74 bytes */
-		*found = lt_two_byte_ambigious_opmap[found->mnemonic + (0x74 * scale)];
+		DEBUG("--> INDEX IS %"PRId64"\n", found->mnemonic + (0x76 * scale));
+
+		/* Prefix dependent instructions are aligned by 0x76 bytes */
+		*found = lt_two_byte_ambigious_opmap[found->mnemonic + (0x76 * scale)];
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
@@ -534,18 +629,38 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		{
 			if (opcode >= 0xF0 && opcode < 0xF8)
 				handle_rare_prefixes_0x38_opmap(found, opcode, prefix);
+			else if (prefix & OP_EVEX_MASK)
+				handle_evex_addons_0x38_opmap(found, opcode, prefix);
 		}
 		else
 		{
 			if (prefix & MP_0x66_MASK)
+			{
 				scale = 1;
-			*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * scale)];
+				if (prefix & OP_EVEX_MASK)
+				{
+					switch (opcode)
+					{
+						case 0x14:
+							*found = (opfield_t){ .mnemonic = VPRORVD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
+							break ;
 
-			///TODO: Handle ambigiousness otherway (create a single function)
-			/// Temporary solution (cause i doesn't know the amount and all  kinds of ambigiousness)
+						case 0x15:
+							*found = (opfield_t){ .mnemonic = VPROLVD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
+							break ;
 
-			if (opcode == 0x10 && prefix & OP_EVEX_MASK)
-				*found = (opfield_t){ .mnemonic = VPSRLVW, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = S_V };
+						case 0x2C:
+							*found = (opfield_t){ .mnemonic = VSCALEFPD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
+							break ;
+
+						case 0x2D:
+							*found = (opfield_t){ .mnemonic = VSCALEFSD, .am1 = AM_V, .ot1 = OT_DQ, .am2 = AM_H, .ot2 = OT_DQ, .am3 = AM_W, .ot3 = OT_DQ, .am4 = 0, .ot4 = 0, .symbol = 0 };
+							break ;
+					}
+				}
+			}
+			if (found->am1 == 0 || found->am1 == AMB)
+				*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * scale)];
 		}
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
@@ -557,6 +672,35 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		if (opcode == 0x0F && prefix & MP_0x66_MASK)
 			found->mnemonic = AMB_VPALIGNR_INDEX;
 		*found = lt_tree_byte_0x3A_ambigious_opmap[found->mnemonic];
+
+		///TODO: Handle ambigiousness otherway (create a single function)
+		/// Temporary solution (cause i doesn't know the amount and all  kinds of ambigiousness)
+
+		if (prefix & OP_EVEX_MASK)
+		{
+			switch (opcode)
+			{
+				case 0x8:
+					*found = (opfield_t){ .mnemonic = VRNDSCALEPS, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = AM_I, .ot3 = OT_B, .am4 = 0, .ot4 = 0, .symbol = 0 };
+					break ;
+
+				case 0x9:
+					*found = (opfield_t){ .mnemonic = VRNDSCALEPD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = AM_I, .ot3 = OT_B, .am4 = 0, .ot4 = 0, .symbol = 0 };
+					break ;
+
+				case 0xA:
+					*found = (opfield_t){ .mnemonic = VRNDSCALESS, .am1 = AM_V, .ot1 = OT_DQ, .am2 = AM_W, .ot2 = OT_DQ, .am3 = AM_I, .ot3 = OT_B, .am4 = 0, .ot4 = 0, .symbol = 0 };
+					break ;
+
+				case 0xB:
+					*found = (opfield_t){ .mnemonic = VRNDSCALESD, .am1 = AM_V, .ot1 = OT_DQ, .am2 = AM_W, .ot2 = OT_DQ, .am3 = AM_I, .ot3 = OT_B, .am4 = 0, .ot4 = 0, .symbol = 0 };
+					break ;
+
+				case 0x10:
+					*found = (opfield_t){ .mnemonic = VPSRLVW, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = S_V };
+					break ;
+			}
+		}
 	}
 	else
 	{
@@ -694,33 +838,11 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 	if (*(udword*)dest->prefix & OP_EVEX_MASK)
 	{
 		if (EVEX_L2_GET(dest->vexxop))
-		{
 			*(udword*)dest->prefix |= OS_DQQWORD_MASK;
-		}
 		else if (EVEX_L_GET(dest->vexxop))
-		{
 			*(udword*)dest->prefix |= OS_QQWORD_MASK;
-		}
 		else
-		{
 			*(udword*)dest->prefix |= OS_DQWORD_MASK;
-		}
-		// switch (EVEX_L_EXTENDED_GET(dest->vexxop))
-		// {
-		// 	case 0x0:
-		// 		*(udword*)dest->prefix |= OS_DQWORD_MASK;
-		// 		break ;
-
-		// 	case 0x1:
-		// 		*(udword*)dest->prefix |= OS_QQWORD_MASK;
-		// 		break ;
-
-		// 	case 0x2:
-		// 		*(udword*)dest->prefix |= OS_DQQWORD_MASK;
-		// 		break ;
-		// 	// default:
-		// 	// 	///TODO: ERROR
-		// }
 		return ;
 	}
 	else if (dest->vexxop[0])
@@ -730,9 +852,9 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		return ;
 
 		///TODO: if (IS_K*()) { handle k mnemonics operand size }
+		/// SIZE RESOLUTION FOR THESE MUST BE PERFORMED OTHERWAY
 
 		///TODO: SOME VEX TAKE GP REGISTERS AS ARGUMENTS,
-		/// SIZE RESOLUTION FOR THESE MUST BE PERFORMED OTHERWAY
 
 		///TODO: For the future: if is EVEX the size also could be 512bits
 	}
@@ -1039,6 +1161,10 @@ skip_prefix_check:
 			opcodes (within 0x0F opcode map) but a diferent prefix (VEX) */
 		if (map == lt_two_byte_opmap && (line == 0x4 || line == 0x9) && dest->vexxop[0])
 			handle_ambigious_instructions_0x0F_opmap(&found, dest->opcode[2]);
+		/* This is because AVX-512 EVEX instructions use the same opcode than other
+			opcodes without EVEX prefix (within 0x0F opcode map) */
+		else if (map == lt_two_byte_opmap && *(udword*)dest->prefix & OP_EVEX_MASK && IS_EVEX_COLISION_0x0F(dest->opcode[2], *(udword*)dest->prefix))
+			handle_evex_addons_0x0F_opmap(&found, dest->opcode[2], *(udword*)dest->prefix);
 		else if (found.mnemonic == 0)
 			found = map[GET_MAP_INDEX(dest->opcode[2])];
 

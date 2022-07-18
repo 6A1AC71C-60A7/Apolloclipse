@@ -1866,6 +1866,8 @@ typedef enum
 	VAESKEYGEN,
 
 	VPABSQ,
+	VCVTTPD2QQ,
+
 } mnemonic_t;
 
 #define NM_GENERAL_PURPOSE_MAX TZCNT

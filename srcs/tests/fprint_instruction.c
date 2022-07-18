@@ -2110,7 +2110,9 @@ static const char* const mnemonics[] = {
 	"vblendvb",
 	"vaeskeygen",
 
-	"vpabsq"
+	"vpabsq",
+	"vcvttpd2qq",
+
 };
 
 __always_inline

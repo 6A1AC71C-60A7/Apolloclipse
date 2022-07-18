@@ -6,9 +6,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 4000
+#define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/avx.txt"
+#define FILENAME "srcs/tests/samples/avx512.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -106,6 +106,8 @@
 
 ///TODO: ONLY WHEN EVEX PREFIX IS USED: SOME INSTRUCTIONS TAKE K REGISTERS (vpcmpeqb/w/d/q, ...)
 
+///TODO: VGATHERDD/QD (avx512) documentation says it has 3 args but test samples have only 2
+
 ///ERRORS: AVX512:
 /// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic) [ FIXED AND TRUE ]
 /// - vpmulld == vpmullq [ FIXED AND TRUE ]
@@ -123,114 +125,124 @@
 /// vpsravd == vpsravq [ TRUE d:W0 ; q:W1 ]
 /// vpsrlvd == vpsrlvq [ TRUE d:W0 ; q:W1 ]
 
-///TODO: AVX512 (EVEX): MISSING:
-/// valignd/q : 0x66 -> 0F 3A 03
-/// vblendmpd/s : 0x66 -> 0F 38 65
-/// vcompresspd : 0x66 -> 0F 38 8A
-/// vcvtpd2qq : 0x66 -> 0F 7B
-/// vcvtpd2udq : 0F 79
-/// vcvtpd2uqq : 0x66 -> 0F 79
-/// vcvtqq2pd : 0xF3 -> 0F E6
-/// vcvtqq2ps : 0F 5B
-/// vcvtsd2usi : 0xF2 -> 0F 79
-/// vcvtss2usi : 0xF3 -> 0F 79
-/// vcvttpd2qq : 0x66 -> 0F 7A
-/// vcvttpd2udq : 0F 78
-/// vcvttpd2uqq : 0x66 -> 0F 78
-/// vcvtudq2pd : 0xF3 -> 0F 7A
-/// vcvtudq2ps : 0xf2 -> 0F 7A
-/// vcvtusi2sd : 0F 7B
-/// vcvtusi2ss : 0xF3 -> 0F 7B
-/// vdbpsadbw : 0x66 -> 0F 3A 42
-/// vexpandpd : 0x66 -> 0F 38 88
-/// vfixupimmpd : 0x66 -> 0F 3A 54
-/// vfixupimmsd : 0x66 -> 0F 3A 55
-/// vfpclasspd : 0x66 -> 0F 3A 66
-/// vfpclasssd : 0x66 -> 0F 3A 67
-/// vgatherdps : 0x66 -> 0F 38 92
-/// vgatherqps : 0x66 -> 0F 38 93
-/// vgetexppd : 0x66 -> 0F 38 42
-/// vgetexpsd : 0x66 -> 0F 38 43
-/// vgetmantpd : 0x66 -> 0F 3A 26
-/// vgetmantsd : 0x66 -> 0F 3A 27
-/// vpblendmb/w : 0x66 -> 0f 38 66
-/// vpblendmd/q : 0x66 -> 0f 38 64
-/// vpbroadcastb : 0x66 -> 0f 38 7A
-/// vpbroadcastw : 0x66 -> 0f 38 7B
-/// vpbroadcastd/q : 0x66 -> of 38 7C
-///MISSING: vpbroadcastmb2q
-///MISSING: vpbroadcastmw2d
-/// vpcmpb : 0x66 -> 0f 3a 3f
-/// vpcmpub : 0x66 -> 0f 3a 3e
-/// vpcmpd/w/q : 0x66 -> 0f 3a 1f
-/// vpcmpud/w/q : 0x66 -> 0f 3a 1e
-/// vpcompressd/q : 0x66 0f 38 8b
-/// vpconflictd/q : 0x66 -> 0f 38 c4
-/// vpermb : 0x66 -> 0f 38 8d
-/// vpermi2b/w : 0x66 -> 0f 38 75
-/// vpermi2/q : 0x66 -> 0f 38 76
-/// vpermi2ps/pd : 0x66 -> 0f 38 77
-/// vpermt2b/w : 0x66 -> 0f 38 7d
-/// vpermt2d/q : 0x66 -> 0f 38 7e
-/// vpermt2ps/pd : 0x66 -> 0f 38 7f
-/// vpexpandd/q : 0x66 -> 0f 38 89
-/// vpgatherdd/q : 0x66 -> 0f 38 90
-/// vpgatherqd/q : 0x66 -> 0f 38 91
-/// vplzcntd/q : 0x66 -> 0f 38 44
-/// vpmadd52huq : 0x66 -> 0f 38 b5
-/// vpmadd52luq : 0x66 -> 0f 38 b4
-/// vpmovb/w2m : 0xf3 -> 0f 38 29
-/// vpmovd/q2m : 0xf3 -> 0f 38 39
-/// vpmovdb : 0xf3 -> 0f 38 31
-/// vpmovsdb : 0xf3 -> 0f 38 21
-/// vpmovusdb : 0xf3 -> 0f 38 11
-/// vpmovdw : 0xf3 -> 0f 38 33
-/// vpmovsdw : 0xf3 -> 0f 38 23
-/// vpmovusdw : 0xf3 -> 0f 38 13
-/// vpmovm2b/w : 0xf3 -> of 38 28
-/// vpmovm2d/q : 0xf3 -> of 38 38
-/// vpmovqb : 0xf3 -> 0f 38 32
-/// vpmovsqb : 0xf3 -> 0f 38 22
-/// vpmovusqb : 0xf3 -> 0f 38 12
-/// vpmovqd : 0xf3 -> 0f 38 35
-/// vpmovsqd : 0xf3 -> 0f 38 25
-/// vpmovusqd : 0cf3 -> 0f 38 15
-/// vpmovqw : 0xf3 -> 0f 38 34
-/// vpmovsqw : 0xf3 -> 0f 38 24
-/// vpmovusqw : 0xf3 -> 0f 38 14
-/// vpmovwb : 0xf3 -> 0f 38 30
-/// vpmovswb : 0cf3 -> 0f 38 20
-/// vpmovuswb : 0xf3 -> 0f 38 10
-/// vpmultishiftqb : 0x66 -> 0f 38 83
-/// vprolvd/q : 0x66 -> 0f 38 15
-/// vprold/q : 0x66 -> 0f 72
-/// vprorvd/q : 0x66 -> 0f 38 14
-/// vprord/q : 0x66 -> 0f 72
-/// vpscatterdd : 0x66 0f 38 a0
-/// vpscatterqd : 0x66 -> 0f 38 a1
-/// vpternlogd/q : 0x66 -> 0f 3a 25
-/// vptestmb/w : 0x66 -> 0f 38 26
-/// vptestmd/q : 0x66 -> 0f 38 27
-/// vptestnmb/w : 0xf3 -> 0f 38 26
-/// vptestnmd/q : 0xf3 -> 0f 38 27
-/// vrangepd/ps : 0x66 -> of 3a 50
-/// vrangesd/ss : 0x66 -> 0f 3a 51
-/// vrcp14pd/ps : 0x66 -> 0f 38 4c
-/// vrcp14sd/ss : 0x66 -> 0f 38 4d
-/// vreducepd/ps : 0x66 -> 0f 3a 56
-/// vreducesd/ss : 0x66 -> 0f 3a 57
-/// vrndscalepd : 0x66 -> 0f 3a 09
-/// vrndscaleps : 0x66 -> 0f 3a 08
-/// vrndscalesd : 0x66 -> 0f 3a 0B
-/// vrndscaless : 0x66 -> 0f 3a 0A
-/// vrsqrt14pd/ps : 0x66 -> 0f 38 4e
-/// vrsqrt14sd/ss : 0x66 -> 0f 38 4f
-/// vscalefpd/ps : 0x66 -> 0f 38 2c
-/// vscalefsd/ss : 0x66 -> 0f 38 2d
-/// vscatterdps/pd : 0x66 -> 0f 38 a2
-/// vscatterqps/pd : 0x66 -> 0f 38 a3
-/// vshuff32x4/64x2 : 0x66 -> 0f 3a 23
-/// vshufi32x4/64x2 : 0x66 -> 0f 3a 43
+
+///EVEX: EXCLUSIVE ADDONS:
+/// vpmovb/w2m : 0xf3 -> 0f 38 29 [FREE]
+/// vpmovd/q2m : 0xf3 -> 0f 38 39 [FREE]
+/// vpmovdb : 0xf3 -> 0f 38 31 [FREE]
+/// vpmovsdb : 0xf3 -> 0f 38 21 [FREE]
+/// vpmovusdb : 0xf3 -> 0f 38 11 [FREE]
+/// vpmovdw : 0xf3 -> 0f 38 33 [FREE]
+/// vpmovsdw : 0xf3 -> 0f 38 23 [FREE]
+/// vpmovusdw : 0xf3 -> 0f 38 13 [FREE]
+/// vpmovm2b/w : 0xf3 -> of 38 28 [FREE]
+/// vpmovm2d/q : 0xf3 -> of 38 38 [FREE]
+/// vpmovqb : 0xf3 -> 0f 38 32 [FREE]
+/// vpmovsqb : 0xf3 -> 0f 38 22 [FREE]
+/// vpmovusqb : 0xf3 -> 0f 38 12 [FREE]
+/// vpmovqd : 0xf3 -> 0f 38 35 [FREE]
+/// vpmovsqd : 0xf3 -> 0f 38 25 [FREE]
+/// vpmovusqd : 0cf3 -> 0f 38 15 [FREE]
+/// vpmovqw : 0xf3 -> 0f 38 34 [FREE]
+/// vpmovsqw : 0xf3 -> 0f 38 24 [FREE]
+/// vpmovusqw : 0xf3 -> 0f 38 14 [FREE]
+/// vpmovwb : 0xf3 -> 0f 38 30 [FREE]
+/// vpmovswb : 0cf3 -> 0f 38 20 [FREE]
+/// vpmovuswb : 0xf3 -> 0f 38 10 [FREE]
+/// vptestnmb/w : 0xf3 -> 0f 38 26 [FREE]
+/// vptestnmd/q : 0xf3 -> 0f 38 27 [FREE]
+/// vprolvd/q : 0x66 -> 0f 38 15 [COLLISION blendvpd]
+/// vprorvd/q : 0x66 -> 0f 38 14 [COLLISION blendvps]
+/// vscalefpd/ps : 0x66 -> 0f 38 2c [COLLISION vmaskmovps]
+/// vscalefsd/ss : 0x66 -> 0f 38 2d [COLLISION vmaskmovps]
+
+/// vcvtusi2ss : 0xF3 -> 0F 7B [FREE]
+/// vblendmpd/s : 0x66 -> 0F 38 65 [FREE]
+/// vcompresspd : 0x66 -> 0F 38 8A [FREE]
+/// vexpandpd : 0x66 -> 0F 38 88 [FREE]
+/// vgatherdps : 0x66 -> 0F 38 92 [ALREADY IN]
+/// vgatherqps : 0x66 -> 0F 38 93 [ALREADY IN]
+/// vgetexppd : 0x66 -> 0F 38 42 [FREE]
+/// vgetexpsd : 0x66 -> 0F 38 43 [FREE]
+/// vpblendmb/w : 0x66 -> 0f 38 66 [FREE]
+/// vpblendmd/q : 0x66 -> 0f 38 64 [FREE]
+/// vpbroadcastb : 0x66 -> 0f 38 7A [FREE]
+/// vpbroadcastw : 0x66 -> 0f 38 7B [FREE]
+/// vpbroadcastd/q : 0x66 -> of 38 7C [FREE]
+/// vpbroadcastmb2q [COLLISION]
+/// vpbroadcastmw2d [COLLISION]
+/// vpcompressd/q : 0x66 0f 38 8b [FREE]
+/// vpconflictd/q : 0x66 -> 0f 38 c4 [FREE] 
+/// vpermb : 0x66 -> 0f 38 8d [FREE]
+/// vpermi2b/w : 0x66 -> 0f 38 75 [FREE]
+/// vpermi2/q : 0x66 -> 0f 38 76 [FREE] 
+/// vpermi2ps/pd : 0x66 -> 0f 38 77 [FREE] 
+/// vpermt2b/w : 0x66 -> 0f 38 7d [FREE] 
+/// vpermt2d/q : 0x66 -> 0f 38 7e [FREE] 
+/// vpermt2ps/pd : 0x66 -> 0f 38 7f [FREE] 
+/// vpexpandd/q : 0x66 -> 0f 38 89 [FREE] 
+/// vpgatherdd/q : 0x66 -> 0f 38 90 [ALREADY IN]
+/// vpgatherqd/q : 0x66 -> 0f 38 91 [ALREADY IN]
+/// vplzcntd/q : 0x66 -> 0f 38 44 [FREE] 
+/// vpmadd52huq : 0x66 -> 0f 38 b5 [FREE] 
+/// vpmadd52luq : 0x66 -> 0f 38 b4 [FREE] 
+/// vpmultishiftqb : 0x66 -> 0f 38 83 [FREE] 
+/// vpscatterdd : 0x66 0f 38 a0 [FREE] 
+/// vpscatterqd : 0x66 -> 0f 38 a1 [FREE] 
+/// vptestmb/w : 0x66 -> 0f 38 26 [FREE] 
+/// vptestmd/q : 0x66 -> 0f 38 27 [FREE] 
+/// vrcp14pd/ps : 0x66 -> 0f 38 4c [FREE] 
+/// vrcp14sd/ss : 0x66 -> 0f 38 4d [FREE] 
+/// vrsqrt14pd/ps : 0x66 -> 0f 38 4e [FREE]  
+/// vrsqrt14sd/ss : 0x66 -> 0f 38 4f [FREE] 
+/// vscatterdps/pd : 0x66 -> 0f 38 a2 [FREE]
+/// vscatterqps/pd : 0x66 -> 0f 38 a3 [FREE] 
+/// vprord/q : 0x66 -> 0f 38 72 [FREE] 
+
+/// vdbpsadbw : 0x66 -> 0F 3A 42 [ALREADY IN]
+/// vrndscalepd : 0x66 -> 0f 3a 09 [COLLISION vroundpd]
+/// vrndscaleps : 0x66 -> 0f 3a 08 [COLLISION vroundps]
+/// vrndscalesd : 0x66 -> 0f 3a 0B [COLLISION vroundsd]
+/// vrndscaless : 0x66 -> 0f 3a 0A [COLLISION vroundss]
+/// valignd/q : 0x66 -> 0F 3A 03 [FREE]
+/// vfixupimmpd : 0x66 -> 0F 3A 54 [FREE]
+/// vfixupimmsd : 0x66 -> 0F 3A 55 [FREE]
+/// vfpclasspd : 0x66 -> 0F 3A 66 [FREE]
+/// vfpclasssd : 0x66 -> 0F 3A 67 [FREE]
+/// vgetmantpd : 0x66 -> 0F 3A 26 [FREE]
+/// vgetmantsd : 0x66 -> 0F 3A 27 [FREE]
+/// vpcmpb : 0x66 -> 0f 3a 3f [FREE]
+/// vpcmpub : 0x66 -> 0f 3a 3e [FREE]
+/// vpcmpd/w/q : 0x66 -> 0f 3a 1f [FREE]
+/// vpcmpud/w/q : 0x66 -> 0f 3a 1e [FREE]
+/// vpternlogd/q : 0x66 -> 0f 3a 25 [FREE]
+/// vrangepd/ps : 0x66 -> of 3a 50 [FREE]
+/// vrangesd/ss : 0x66 -> 0f 3a 51 [FREE]
+/// vreducepd/ps : 0x66 -> 0f 3a 56 [FREE]
+/// vreducesd/ss : 0x66 -> 0f 3a 57 [FREE]
+/// vshuff32x4/64x2 : 0x66 -> 0f 3a 23 [FREE]
+/// vshufi32x4/64x2 : 0x66 -> 0f 3a 43 [FREE]
+/// vinsertf32x8 : 0x66 -> 0f 3a 1a [FREE]
+
+/// vcvtpd2udq : 0F 79 [COLLISION VMWRITE]
+/// vcvtqq2pd : 0xF3 -> 0F E6  [COLLISION vcvtdq2pd]
+/// vcvtqq2ps : 0F 5B [COLLISION vcvtdq2ps]
+/// vcvttpd2udq : 0F 78 [COLLISION VM READ]
+/// vprold/q : 0x66 -> 0f 72 [GROUP ?!?!]
+/// vcvtpd2qq : 0x66 -> 0F 7B [FREE]
+/// vcvtpd2uqq : 0x66 -> 0F 79 [FREE]
+/// vcvtsd2usi : 0xF2 -> 0F 79 [FREE]
+/// vcvtss2usi : 0xF3 -> 0F 79 [FREE]
+/// vcvttpd2qq : 0x66 -> 0F 7A [FREE]
+/// vcvttpd2uqq : 0x66 -> 0F 78 [FREE]
+/// vcvtudq2pd : 0xF3 -> 0F 7A [FREE]
+/// vcvtudq2ps : 0xf2 -> 0F 7A [FREE]
+/// vcvtusi2sd : 0xf2 -> 0F 7B [FREE]
+/// VCVTTSS2USI
+
+// VCVTUDQ2PS
+
+
 
 int main(int ac, const char* av[])
 {
@@ -247,7 +259,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x62\xF2\xED\x89\x10\xCB\x62\xF2\xED\x89\x10\x08";
+    const ubyte iraw[] = "\x62\xF2\x6D\x08\x15\xCB";
 #endif
 
     const ubyte* prt = iraw;
