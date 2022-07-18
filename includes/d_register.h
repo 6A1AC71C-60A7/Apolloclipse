@@ -200,3 +200,5 @@ typedef ubyte reg_t;
 #define D_REG_K5 0xC0
 #define D_REG_K6 0xC1
 #define D_REG_K7 0xC2
+#define D_REG_PAIR_DS_RSI 0xC3
+#define D_REG_PAIR_ES_RDI 0xC4

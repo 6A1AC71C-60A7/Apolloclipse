@@ -8,7 +8,7 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/avx512.txt"
+#define FILENAME "srcs/tests/samples/basic.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -37,8 +37,6 @@
 /// IN, lsl rax, rdx, lsl rax, [rdx], movsx, movzx, out, ...
 
 ///TODO: EXEPTION: ENTER opcode has 2 immediates ...
-
-///TODO: Handle registers pairs as operands: INS, OUTS, MOVS, SCAS, STOS,  ...
 
 ///TODO: AMBIGIOUS: xchg r8, rax and be NOP and also be pause ...
 /// ok is pause if is prefixed with 0xf3: "\xF3\x90"

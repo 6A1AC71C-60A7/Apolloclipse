@@ -199,6 +199,8 @@ static const char* const regs[] = {
 	"k5",
 	"k6",
 	"k7",
+	"ds:[rsi]",
+	"es:[rdi]",
 };
 
 static const char* const gp_regs_32[] = {

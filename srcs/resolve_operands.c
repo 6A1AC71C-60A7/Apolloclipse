@@ -280,11 +280,11 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                 break ;
 
             case AM_X:
-                ///TODO: Memory addressed by DS:RSI register pairs
+                *dest = D_REG_PAIR_DS_RSI;
                 break ;
 
             case AM_Y:
-                ///TODO: Memory addressed by ES:RDI register pairs
+                *dest = D_REG_PAIR_ES_RDI;
                 break ;
 
             case AM_KR:
