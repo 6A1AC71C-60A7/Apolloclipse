@@ -817,12 +817,23 @@ __always_inline
 static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t* map, instruction_t* const inst)
 {
 	const ubyte opcode = inst->opcode[2];
-	const ubyte prefix = *(udword*)inst->prefix;
+	const udword prefix = *(udword*)inst->prefix;
 
 	///TODO: Preform (move) the ambigiousness handling in group extensions here ?
 	/// MMM parse is a lot more complex, i don't think so (seems not worth)
 
-	if (map == lt_three_byte_0x38_opmap)
+	if (map == lt_one_byte_opmap)
+	{
+		if (opcode == 0x90)
+		{
+			if ((prefix & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) == 0
+			&& prefix & (RP_REXB_MASK | RP_REXW_MASK))
+				*found = (opfield_t){ .mnemonic = XCHG,	.am1 = DR_R8,	.ot1 = DRS_64,	.am2 = DR_RAX,	.ot2 = DRS_64,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
+			else if (prefix & MP_0xF3_MASK)
+				found->mnemonic = PAUSE;
+		}	
+	}
+	else if (map == lt_three_byte_0x38_opmap)
 	{
 		if (prefix & MP_0x66_MASK && MODRM_MOD_GET(inst->mod_rm) != 0b11)
 		{
@@ -961,6 +972,8 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 			}
 		}
 	}
+
+	inst->mnemonic = found->mnemonic;
 }
 
 static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)

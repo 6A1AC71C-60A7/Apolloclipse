@@ -6,12 +6,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 3000
+#define INST_NB 3//3000
 #define BUFFSIZE 0x6000
 #define FILENAME "srcs/tests/samples/basic.txt"
 
 #define TEST_FILE
-//#undef TEST_FILE
+#undef TEST_FILE
 
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
@@ -37,10 +37,6 @@
 /// IN, lsl rax, rdx, lsl rax, [rdx], movsx, movzx, out, ...
 
 ///TODO: EXEPTION: ENTER opcode has 2 immediates ...
-
-///TODO: AMBIGIOUS: xchg r8, rax and be NOP and also be pause ...
-/// ok is pause if is prefixed with 0xf3: "\xF3\x90"
-/// for the nop or xchg i have to reverse
 
 ///TODO: UMONITOR takes a register which is used as an address (but type is reg), default operand type
 ///         is currently dword but this is 32 bits addressing (0x67), need to make it qword by default.
@@ -240,7 +236,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x62\xF2\x6D\x08\x15\xCB";
+    const ubyte iraw[] = "\xF3\x90\x49\x90\x90";
 #endif
 
     const ubyte* prt = iraw;

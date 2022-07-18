@@ -428,7 +428,7 @@ static const opfield_t lt_one_byte_opmap[] = {
 
 	///TODO: NEXT ONE HAS MULTIPLE MNEMONICS
 	/// BYTE LELT IN OPFIELD_T COUND BE 'ISAMBIGIOUS'
-	{ .mnemonic = XCHG,		.am1 = DR_R8,	.ot1 = DRS_64,	.am2 = DR_RAX,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = NOP,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = XCHG,		.am1 = DR_RCX,	.ot1 = OR_64,	.am2 = DR_R9,	.ot2 = DRS_64,	.am3 = DR_RAX,	.ot3 = DRS_64,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = XCHG,		.am1 = DR_RDX,	.ot1 = OR_64,	.am2 = DR_R10,	.ot2 = DRS_64,	.am3 = DR_RAX,	.ot3 = DRS_64,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = XCHG,		.am1 = DR_RBX,	.ot1 = OR_64,	.am2 = DR_R11,	.ot2 = DRS_64,	.am3 = DR_RAX,	.ot3 = DRS_64,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
