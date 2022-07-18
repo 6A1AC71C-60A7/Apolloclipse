@@ -358,6 +358,11 @@ void	resolve_operands(instruction_t* const dest, opfield_t instruction)
     {
 		skip = 0x0;
         revolve_operand(dest, regs[i], ams[attr_index], ots[attr_index], &skip);
-		attr_index += skip + 1;
+
+        /* Addressing Mode H ((E)VEX.VVVV) is ignored for instructions with no (E)VEX prefix. */
+        if (ams[attr_index] == AM_H && !(*(udword*)dest->prefix & OP_EVEX_MASK || dest->vexxop[0]))
+            i--;
+
+        attr_index += skip + 1;
     }
 }

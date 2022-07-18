@@ -59,10 +59,6 @@
 ///SAMPLES: MISSING: PMULL, PMULH, PMADD, PCMPGTPB,
 /// SSE4: PMOVSXBW, PMOVZXBW, PMOVSXBD, PMOVZXBD, PMOVSXWD, PMOVZXWD, PMOVSXBQ, PMOVZXBQ, PMOVSXWQ, PMOVZXWQ, PMOVSXDQ, PMOVZXDQ
 
-////TODO: THERE IS SOMETHING STRANGE WITH 'AM_H', for SEE encodings this operand
-/// do not exist. The instruction is changed to destructive form.
-/// I have problems with vmovss (which seems to have 2 args in objdump but 3 args in a the opcode table ...)
-
 ///TODO: AMBIGIOUS SHIT IS RESOLVED BY MODRM.MOD
 /// OP2B[16] CAN BE EITHER VMOVHPS (MOD != 0B11) OR VMOVLHPS (MOD == 0B11)
 /// OP2B[12] CAN BE EITHER VMOVLPS (MOD != 0B11) OR VMOVHLPS (MOD == 0B11)
