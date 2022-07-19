@@ -252,3 +252,7 @@ movq QWORD [rcx], mm7
 
 emms
 
+pmullw mm1, mm2
+pmulhw mm1, mm2
+pmaddwd mm1, mm2
+pcmpgtb mm1, mm2

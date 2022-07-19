@@ -2131,6 +2131,8 @@ static ubyte print_register(FILE* where, reg_t reg, udword prefix)
 {
 	ubyte l = 0;
 
+	///TODO: Handle print 32-bit addressing
+
 	if (!(prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK)) && reg >= D_REG_RAX && reg <= D_REG_R15)
 	{
 		if (prefix & OS_BYTE_MASK)

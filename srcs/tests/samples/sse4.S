@@ -208,3 +208,19 @@ pcmpistrm xmm1, [rax], 0x69
 pcmpgtq xmm1, xmm2,
 pcmpgtq xmm1, [rax]
 
+pmovsxbw xmm1, xmm2
+pmovzxbw xmm1, xmm2
+pmovsxbd xmm1, xmm2
+pmovzxbd xmm1, xmm2
+pmovsxwd xmm1, xmm2
+pmovzxwd xmm1, xmm2
+pmovsxbq xmm1, xmm2
+pmovzxbq xmm1, xmm2
+pmovsxwq xmm1, xmm2
+pmovzxwq xmm1, xmm2
+pmovsxdq xmm1, xmm2
+pmovzxdq xmm1, xmm2
+pinsrq xmm1, [rax], 0x69
+pinsrq xmm1, rax, 0x69
+pextrq [rax], xmm2, 0x69
+pextrq rax, xmm2, 0x69

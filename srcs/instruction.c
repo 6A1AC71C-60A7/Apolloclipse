@@ -1226,12 +1226,15 @@ opcode_check:
 	
 	while (skip_pref == 0 && IS_GPM_MANDATORY_PREFIX(**iraw))
 	{
-		//mandatory_prefix = **iraw;
 		switch (**iraw)
 		{
 			case 0x66:
 				*(udword*)dest->prefix |= MP_0x66_MASK;
 				break ;
+
+				case 0x67:
+					*(udword*)dest->prefix |= MP_0x67_MASK;
+					break ;
 
 			case 0xF2:
 				*(udword*)dest->prefix |= MP_0xF2_MASK;

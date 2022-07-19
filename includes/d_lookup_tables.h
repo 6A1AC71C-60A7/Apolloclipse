@@ -223,10 +223,6 @@ static const ubyte lt_opcode_3dnow_map[] = {
 #define AMB_PADDW_INDEX 0x74
 #define AMB_PADDD_INDEX 0x75
 
-///TODO: This hight and unordered index fucks up all
-
-
-
 #define AMB_SCALE_0x66 1
 #define AMB_SCALE_0xF3 2
 #define AMB_SCALE_0xF2 3
@@ -426,8 +422,6 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = MOV,		.am1 = AM_S,	.ot1 = OT_W,	.am2 = AM_E,	.ot2 = OT_W,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = MODRM_EXT_GRP_1A,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 
-	///TODO: NEXT ONE HAS MULTIPLE MNEMONICS
-	/// BYTE LELT IN OPFIELD_T COUND BE 'ISAMBIGIOUS'
 	{ .mnemonic = NOP,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = XCHG,		.am1 = DR_RCX,	.ot1 = OR_64,	.am2 = DR_R9,	.ot2 = DRS_64,	.am3 = DR_RAX,	.ot3 = DRS_64,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = XCHG,		.am1 = DR_RDX,	.ot1 = OR_64,	.am2 = DR_R10,	.ot2 = DRS_64,	.am3 = DR_RAX,	.ot3 = DRS_64,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -577,12 +571,10 @@ static const opfield_t lt_two_byte_opmap[] = {
 
 	{ .mnemonic = AMB_VMOVUPS_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VMOVUPS2_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	///TODO: NEXT ONE IS AMBIGIOUS
 	{ .mnemonic = AMB_VMOVLPS_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VMOVLPS2_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VUNPCKLPS_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VUNPCKHPS_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	///TODO: NEXT ONE IS AMBIGIOUS
 	{ .mnemonic = AMB_VMOVHPS_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VMOVHPS2_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
@@ -700,7 +692,6 @@ static const opfield_t lt_two_byte_opmap[] = {
 	{ .mnemonic = AMB_PCMPEQB_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_PCMPEQW_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_PCMPEQD_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	///TODO: NEXT ONE IS AMBIGIOUS, MIGHT BE EMMS, VZEROUPPER (HAS v) 0R VZEROALL (HAS V)
 	{ .mnemonic = EMMS,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = AMB_VMREAD_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -789,14 +780,12 @@ static const opfield_t lt_two_byte_opmap[] = {
 	{ .mnemonic = XADD,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_G,	.ot2 = OT_V,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VCMPPS_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = MOVNTI,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = AM_G,	.ot2 =OT_Y,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	/// TODO: NEXT ONE IS AN SPETIAL CASE HAS OPTIONAL ATTRIBUTES (Ry/Mw) ...
 	{ .mnemonic = AMB_PINSRW_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_PEXTRW_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VSHUFPS_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = MODRM_EXT_GRP_9,			.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 
-	///NOTE: IGNORE 32 BITS (CAUSE 64 ARE HANDLED)
 	{ .mnemonic = BSWAP,	.am1 = DR_RAX,	.ot1 = OR_32,	.am2 = DR_R8,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = BSWAP,	.am1 = DR_RCX,	.ot1 = OR_32,	.am2 = DR_R9,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = BSWAP,	.am1 = DR_RDX,	.ot1 = OR_32,	.am2 = DR_R10,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -1078,7 +1067,6 @@ static const opfield_t lt_two_byte_ambigious_opmap[] = {
 
 	{ .mnemonic = 0 /* BSR NO PREF */,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VCMPPD,		.am1 = AM_V,	.ot1 = OT_PD,	.am2 = AM_H,	.ot2 = OT_PD,	.am3 = AM_W,	.ot3 = OT_PD,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
-	///TODO: EXCEPTION: AMBIGIOUS AM/OT 3
 	{ .mnemonic = VPINSRW,		.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_H,	.ot2 = OT_DQ,	.am3 = AM_R,	.ot3 = OT_Y,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VPEXTRW,		.am1 = AM_G,	.ot1 = OT_D,	.am2 = AM_U,	.ot2 = OT_DQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VSHUFPD,		.am1 = AM_V,	.ot1 = OT_PD,	.am2 = AM_H,	.ot2 = OT_PD,	.am3 = AM_W,	.ot3 = OT_PD,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
@@ -1740,7 +1728,6 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = VPABSD,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPABSQ,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
-	///TODO: NEXT 6 HAS AMBIGIOUS ATTRIBUTES
 	{ .mnemonic = VPMOVSXBW,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_U,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPMOVSXBD,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_U,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPMOVSXBQ,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_U,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -1759,7 +1746,6 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = VMASKMOVPS,		.am1 = AM_M,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_V,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = VMASKMOVPD,		.am1 = AM_M,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_V,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 
-	///TODO: NEXT 6 HAS AMBIGIOUS ATTRIBUTES
 	{ .mnemonic = VPMOVZXBW,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_U,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPMOVZXBD,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_U,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPMOVZXBQ,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_U,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -1888,8 +1874,8 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 
 	{ .mnemonic = VGATHERDD,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = VGATHERQD,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
-	{ .mnemonic = VGATHERDPS,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
-	{ .mnemonic = VGATHERQPS,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
+	{ .mnemonic = VGATHERDPS,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_V },
+	{ .mnemonic = VGATHERQPS,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VFMADDSUB132PS,	.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
@@ -2040,7 +2026,7 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,				.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 };
-///TODO: SOME STRUCTIONS ARE PREFIX-DEPENTENT AND IS NOT HANDLED YET
+
 static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 
 	{ .mnemonic = VPERMQ,			.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_W,	.ot2 = OT_QQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
@@ -2059,7 +2045,6 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 	{ .mnemonic = VBLENDPD,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VPBLENDW,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VPALIGNR,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = 0,		.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
-	///TODO: NEXT 2 AMBIGIOUS
 	{ .mnemonic = VPEXTRB,			.am1 = AM_R,	.ot1 = OT_D,	.am2 = AM_V,	.ot2 = OT_DQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = VPEXTRW,			.am1 = AM_R,	.ot1 = OT_D,	.am2 = AM_V,	.ot2 = OT_DQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -2069,7 +2054,6 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 	{ .mnemonic = VINSERTF128,		.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_H,	.ot2 = OT_QQ,	.am3 = AM_W,	.ot3 = OT_QQ,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = S_V },
 	{ .mnemonic = VEXTRACTF128,		.am1 = AM_W,	.ot1 = OT_DQ,	.am2 = AM_V,	.ot2 = OT_QQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = VCVTPS2PH,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
-	///TODO: NEXT 2 HAS AMBIGIOUS ATTRIBUTES
 	{ .mnemonic = VPINSRB,			.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_H,	.ot2 = OT_DQ,	.am3 = AM_R,	.ot3 = OT_Y,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VINSERTPS,		.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_H,	.ot2 = OT_DQ,	.am3 = AM_U,	.ot3 = OT_DQ,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 
@@ -2209,7 +2193,6 @@ static const opfield_t lt_three_byte_0x3A_opmap[] = {
 	{ .mnemonic = AMB_VBLENDPS_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VBLENDPD_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_VBLENDDW_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	///TODO: AMBIGIOUS: palignr AND vpalignr JUST PUT A FLAG OR SOMETHNG ALIKE (AMB_VPALIGNR_INDEX)
 	{ .mnemonic = AMB_PALIGNR_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = 0,						.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },

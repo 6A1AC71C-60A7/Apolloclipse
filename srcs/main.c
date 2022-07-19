@@ -6,12 +6,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define INST_NB 3//3000
+#define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/basic.txt"
+#define FILENAME "srcs/tests/samples/sse4.txt"
 
 #define TEST_FILE
-#undef TEST_FILE
+//#undef TEST_FILE
 
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
@@ -21,14 +21,10 @@
 /// ALSO: CALL NEAR IS E8 (MORE OPCODES) 
 /// RET COMPARISON MUST BE DONE USING OPCOFES, JUMP & CALL MIGHT BE DONE WITH OPCODE TOO AND JCC MUST BE DONE WITH ATTR
 
-///TODO: Handle 0x67 address size overwrite (makes it 32 bits, otherwise is 64-bits)
-/// Check Intel doc before handle this
-
 ///TODO: AM_O is also an immediate ?
 
 ///TODO: CALL INSTRUCTION ADDRESS RESOLUTION IS DIFERENT FROM OBJDUMP
-
-///TODO: TEST BWSAP BETTER (AMB REGS) IN TWO BYTE OPCODE MAP
+/// IS BECAUSE 0x5 IS ADDED TO THE IMMEDIATE NO MATER WHAT
 
 ///TODO: CASES WHERE OPERAND SIZE IS EXCEPTIONALLY DIFERENT ON OPERANDS ARE NOT
 /// HANDLED
@@ -50,40 +46,22 @@
 /// or just an addon (i don't know whether or not)
 /// After all the user can resolve the operand size looking at prefixes ...
 
-///SAMPLES: MISSING: PMULL, PMULH, PMADD, PCMPGTPB,
-/// SSE4: PMOVSXBW, PMOVZXBW, PMOVSXBD, PMOVZXBD, PMOVSXWD, PMOVZXWD, PMOVSXBQ, PMOVZXBQ, PMOVSXWQ, PMOVZXWQ, PMOVSXDQ, PMOVZXDQ
-
 ///TODO: mxx instructions which are the same overload than their VEX implementation are only present with a 'v' as first character
-/// MATBE should add them to the mnemonic or a flag in instruction_t
-
-///TODO: vgatherdps xmm1, [xmm1], xmm2 (DEREFERENCE TO XMM NOT HANDLED YET)
-
-///TODO: pinsrq pextrq missing
 
 ///TODO: FOR FMA: If VEX.W size is 64 bits, which means double are used and mnemonic must end by 'd' instead of 's'
-///ALSO: VEX.W is not handled yet in operand size resolution
-
-
-///TESTED:
-/// - BASIC
-/// - x87
-/// - MMX
-/// - SSE
-/// - SSE2
-/// - SSE3
-/// - SSE4
-/// - AVX
-/// - AVX2
-/// - AVX512
-/// - FMA
-/// - AES
-/// - VMX
+///ALSO: VEX.W is not handled yet in operand size resolution (ONLY USEFUL FOR PS/PD OR SS/SD)
 
 ///TODO: EVEX HAS DIFERENT DISPLACEMENT TO PARSE
+/// SEEMS ONLY USEFUL FOR THE DISPLAY
+
+///TODO: TEST AVX-512 broadcast and supress exceptions features
 
 ///TODO: EXTEND VIDX with EVEX.V2 (check in wikipedia EVEX)
-
-///TODO: VGATHERDD/QD (avx512) documentation says it has 3 args but test samples have only 2
+/// (FOR THE MOMENT ONLY GOOD TO KNOW FOR THE DISPLAY (fprint_instruction))
+/// WHICH EXTENDS SIB.BASE
+/// USEFUL FOR DEREFRENCE [x/y/zmm] registers (0-31)
+/// But this kind of addressing is very unique
+/// vgatherdps, ...
 
 ///ERRORS: AVX512:
 /// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic) [ FIXED AND TRUE ]
@@ -101,7 +79,6 @@
 /// vpsllvd == vpsllvq [ TRUE d:W0 ; q:W1 ]
 /// vpsravd == vpsravq [ TRUE d:W0 ; q:W1 ]
 /// vpsrlvd == vpsrlvq [ TRUE d:W0 ; q:W1 ]
-
 
 ///EVEX: EXCLUSIVE ADDONS:
 /// vpmovb/w2m : 0xf3 -> 0f 38 29 [FREE]

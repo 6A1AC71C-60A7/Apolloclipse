@@ -1825,6 +1825,7 @@
     xchg rdx, rbx
     xchg rdx, [rbx]
     xchg [rdx], rbx
+    xchg r8, rax
 
     ; Transactional end
 

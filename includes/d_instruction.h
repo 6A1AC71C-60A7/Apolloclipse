@@ -51,7 +51,8 @@
 */
 
 #define MP_0x66_MASK (udword)(RP_REXW_MASK << 1)
-#define MP_0xF2_MASK (udword)(MP_0x66_MASK << 1)
+#define MP_0x67_MASK (udword)(MP_0x66_MASK << 1)
+#define MP_0xF2_MASK (udword)(MP_0x67_MASK << 1)
 #define MP_0xF3_MASK (udword)(MP_0xF2_MASK << 1)
 
 /*
@@ -62,8 +63,6 @@
 #define OS_WORD_MASK (udword)(OS_BYTE_MASK << 1)
 #define OS_DWORD_MASK (udword)(OS_WORD_MASK << 1)
 #define OS_QWORD_MASK (udword)(OS_DWORD_MASK << 1)
-
-///TODO: These ones are not parse yet 
 #define OS_DQWORD_MASK (udword)(OS_QWORD_MASK << 1)
 #define OS_QQWORD_MASK (udword)(OS_DQWORD_MASK << 1)
 #define OS_DQQWORD_MASK (udword)(OS_QQWORD_MASK << 1)
