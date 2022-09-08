@@ -3,6 +3,12 @@
 
 #include <d_types.h>
 
+///TODO: in order to handle instructions having operands not following the
+/// the operand size change the registers encodings
+/// [ADDR 8-512 bits][GPR 8-64 bits][The rest like it is]
+/// Operand size is defined by only by the PREFIXES of default instruction operand size.
+/// OT_(B,W,D,Q,DQ,QQ,DQQ) do not affect operand size (of the whole instruction)
+
 typedef ubyte reg_t;
 
 #define	D_REG_NONE 0x0

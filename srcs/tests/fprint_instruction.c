@@ -4,6 +4,266 @@
 #include <d_register.h>
 #include <d_error.h>
 
+#define KEYWORD_PTR
+#undef KEYWORD_PTR
+
+#include <user/register.h>
+
+static const char* const regs_v2[] = {
+	"<[NONE]>",
+    "[MEM8]",
+	"[MEM16]",
+	"[MEM32]",
+	"[MEM64]",
+	"[MEM80]",
+	"[MEM128]",
+	"[MEM256]",
+	"[MEM512]",
+	"al",
+	"cl",
+	"dl",
+	"bl",
+	"spl",
+	"bpl",
+	"sil",
+	"dil",
+	"r8b",
+	"r9b",
+	"r10b",
+	"r11b",
+	"r12b",
+	"r13b",
+	"r14b",
+	"r15b",
+	"ax",
+	"cx",
+	"dx",
+	"bx",
+	"sp",
+	"bp",
+	"si",
+	"di",
+	"r8w",
+	"r9w",
+	"r10w",
+	"r11w",
+	"r12w",
+	"r13w",
+	"r14w",
+	"r15w",
+	"eax",
+	"ecx",
+	"edx",
+	"ebx",
+	"esp",
+	"ebp",
+	"esi",
+	"edi",
+	"r8d",
+	"r9d",
+	"r10d",
+	"r11d",
+	"r12d",
+	"r13d",
+	"r14d",
+	"r15d",
+    "rax",
+    "rcx",
+    "rdx",
+    "rbx",
+    "rsp",
+    "rbp",
+    "rsi",
+    "rdi",
+    "r8",
+    "r9",
+    "r10",
+    "r11",
+    "r12",
+    "r13",
+    "r14",
+    "r15",
+	"rflags",
+	/*"ds:[rsi]"*/"",
+	/*"es:[rdi]"*/"",
+    "ah",
+    "ch",
+    "dh",
+    "bh",
+    "es",
+    "cs",
+    "ss",
+    "ds",
+    "fs",
+    "gs",
+    "esb",
+    "csb",
+    "ssb",
+    "dsb",
+    "fsb",
+    "gsb",
+    "cr0",
+    "cr1",
+    "cr2",
+    "cr3",
+    "cr4",
+    "cr5",
+    "cr6",
+    "cr7",
+    "cr8",
+    "cr9",
+    "cr10",
+    "cr11",
+    "cr12",
+    "cr13",
+    "cr14",
+    "cr15",
+    "dr0",
+    "dr1",
+    "dr2",
+    "dr3",
+    "dr4",
+    "dr5",
+    "dr6",
+    "dr7",
+    "dr8",
+    "dr9",
+    "dr10",
+    "dr11",
+    "dr12",
+    "dr13",
+    "dr14",
+    "dr15",
+    "st0",
+    "st1",
+    "st2",
+    "st3",
+    "st4",
+    "st5",
+    "st6",
+    "st7",
+    "mmx0",
+    "mmx1",
+    "mmx2",
+    "mmx3",
+    "mmx4",
+    "mmx5",
+    "mmx6",
+    "mmx7",
+    "mmx0b",
+    "mmx1b",
+    "mmx2b",
+    "mmx3b",
+    "mmx4b",
+    "mmx5b",
+    "mmx6b",
+    "mmx7b",
+    "xmm0",
+    "xmm1",
+    "xmm2",
+    "xmm3",
+    "xmm4",
+    "xmm5",
+    "xmm6",
+    "xmm7",
+    "xmm8",
+    "xmm9",
+    "xmm10",
+    "xmm11",
+    "xmm12",
+    "xmm13",
+    "xmm14",
+    "xmm15",
+	"xmm16",
+	"xmm17",
+	"xmm18",
+	"xmm19",
+	"xmm20",
+	"xmm21",
+	"xmm22",
+	"xmm23",
+	"xmm24",
+	"xmm25",
+	"xmm26",
+	"xmm27",
+	"xmm28",
+	"xmm29",
+	"xmm30",
+	"xmm31",
+    "ymm0",
+    "ymm1",
+    "ymm2",
+    "ymm3",
+    "ymm4",
+    "ymm5",
+    "ymm6",
+    "ymm7",
+    "ymm8",
+    "ymm9",
+    "ymm10",
+    "ymm11",
+    "ymm12",
+    "ymm13",
+    "ymm14",
+    "ymm15",
+	"ymm16",
+	"ymm17",
+	"ymm18",
+	"ymm19",
+	"ymm20",
+	"ymm21",
+	"ymm22",
+	"ymm23",
+	"ymm24",
+	"ymm25",
+	"ymm26",
+	"ymm27",
+	"ymm28",
+	"ymm29",
+	"ymm30",
+	"ymm31",
+	"zmm0",
+    "zmm1",
+    "zmm2",
+    "zmm3",
+    "zmm4",
+    "zmm5",
+    "zmm6",
+    "zmm7",
+    "zmm8",
+    "zmm9",
+    "zmm10",
+    "zmm11",
+    "zmm12",
+    "zmm13",
+    "zmm14",
+    "zmm15",
+	"zmm16",
+	"zmm17",
+	"zmm18",
+	"zmm19",
+	"zmm20",
+	"zmm21",
+	"zmm22",
+	"zmm23",
+	"zmm24",
+	"zmm25",
+	"zmm26",
+	"zmm27",
+	"zmm28",
+	"zmm29",
+	"zmm30",
+	"zmm31",
+	"k0",
+	"k1",
+	"k2",
+	"k3",
+	"k4",
+	"k5",
+	"k6",
+	"k7",
+};
+
 static const char* const regs[] = {
     "[ADDR]",
     "rax",
@@ -2119,16 +2379,67 @@ static const char* const mnemonics[] = {
 };
 
 __always_inline
-static void print_mnemonic(FILE* where, instruction_t* const target)
+static void handle_exceptional_mnemonics(FILE* where, instruction_t* const target)
+{
+	const dword prefix = *(udword*)target->prefix;
+	const char*	addon;
+
+	// switch (target->mnemonic)
+	// {
+	// 	case CMPS:
+		if (target->mnemonic == CMPS || target->mnemonic == LODS || target->mnemonic == MOVS || target->mnemonic == SCAS || target->mnemonic == STOS)
+		{
+			if (prefix & OS_WORD_MASK)
+				addon = "w";
+			else if (prefix & OS_DWORD_MASK)
+				addon = "d";
+			else if (prefix & OS_QWORD_MASK)
+				addon = "q";
+
+		}
+		else if (target->mnemonic == INS || target->mnemonic == OUTS)
+		{
+			if (prefix & OS_WORD_MASK)
+				addon = "w";
+			else if (prefix & OS_DWORD_MASK)
+				addon = "d";
+		}
+
+
+		// break ;
+	// }
+
+	fprintf(where, "%s ", addon);
+}
+
+#define IS_EXCEPTIONAL_MNEMONIC(x) ((x) == CMPS || (x) == INS || (x) == LODS || (x) == MOVS || (x) == OUTS || (x) == SCAS || (x) == STOS)
+
+__always_inline
+static mnemonic_t print_mnemonic(FILE* where, instruction_t* const target)
 {
 	if (target->mnemonic == 0)
 		fprintf(where, "(bad) ");
 	else
-		fprintf(where, "%s ", mnemonics[target->mnemonic - 1]);
+		fprintf(where, "%s", mnemonics[target->mnemonic - 1]);
+
+	if (IS_EXCEPTIONAL_MNEMONIC(target->mnemonic))
+		handle_exceptional_mnemonics(where, target);
+	else
+		fprintf(where, " ");
+
+	return target->mnemonic;
 }
 
-static ubyte print_register(FILE* where, reg_t reg, udword prefix)
+__always_inline
+static udword print_register_V2(FILE* where, reg_t reg)
 {
+	return fprintf(where, "%s", regs_v2[reg]);
+}
+
+static udword print_register(FILE* where, reg_t reg, udword prefix)
+{
+	return print_register_V2(where, reg);
+
 	ubyte l = 0;
 
 	///TODO: Handle print 32-bit addressing
@@ -2147,6 +2458,9 @@ static ubyte print_register(FILE* where, reg_t reg, udword prefix)
 
 	return l;
 }
+
+///TODO:
+#define __FIXUP_OFFSET_TO_REMOVE AVL_OP_RAX //AVL_OP_AL
 
 static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 {
@@ -2172,7 +2486,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 					/* [BASE] */
 
 					fprintf(where, "[");
-					print_register(where, base + 2, *(udword*)inst->prefix);
+					print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 					fprintf(where, "]");
 				}
 				else
@@ -2180,9 +2494,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 					/* [BASE + (INDEX * SCALE)] */
 
 					fprintf(where, "[");
-					print_register(where, base + 2, *(udword*)inst->prefix);
+					print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 					fprintf(where, " + (");
-					print_register(where, index + 2, *(udword*)inst->prefix);
+					print_register(where, index + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 					fprintf(where, " * %d)]", scale);
 				}
 			}
@@ -2199,7 +2513,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 					/* [(INDEX * SCALE) + DISP32] */
 
 					fprintf(where, "[(");
-					print_register(where, index + 2, *(udword*)inst->prefix);
+					print_register(where, index + 2 , *(udword*)inst->prefix);
 					fprintf(where, " * %d) + %d]", scale, inst->displacement);
 				}
 			}
@@ -2213,7 +2527,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				/* [BASE + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + 2, *(udword*)inst->prefix);
+				print_register(where, base + 2 , *(udword*)inst->prefix);
 				fprintf(where, " + %"PRIdd"]", inst->displacement);
 			}
 			else
@@ -2221,9 +2535,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				/* [BASE + (INDEX * SCALE) + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + 2, *(udword*)inst->prefix);
+				print_register(where, base + 2 , *(udword*)inst->prefix);
 				fprintf(where, " + (");
-				print_register(where, index + 2, *(udword*)inst->prefix);
+				print_register(where, index + 2 , *(udword*)inst->prefix);
 				fprintf(where, " * %d) + %"PRIdd"]", scale, inst->displacement);
 			}
 			break ;
@@ -2233,10 +2547,10 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 		{
 			if (index == 0b0100)
 			{
-				/* [BASE + DISP32] */
+				/* [BASE + DISP32 ] */
 
 				fprintf(where, "[");
-				print_register(where, base + 2, *(udword*)inst->prefix);
+				print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 				fprintf(where, " + %d]", inst->displacement);
 			}
 			else
@@ -2244,9 +2558,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				/* [BASE + (INDEX * SCALE) + DISP32] */
 
 				fprintf(where, "[");
-				print_register(where, base + 2, *(udword*)inst->prefix);
+				print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 				fprintf(where, " + (");
-				print_register(where, index + 2, *(udword*)inst->prefix);
+				print_register(where, index + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 				fprintf(where, " * %d) + %d]", scale, inst->displacement);
 			}
 			break ;
@@ -2254,11 +2568,15 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 	}
 }
 
+
+
 __always_inline
-static void print_address(FILE* where, instruction_t* const inst, ubyte isfirst)
+static void print_address(FILE* where, instruction_t* const inst, reg_t reg, ubyte isfirst)
 {
 	const ubyte mod = MODRM_MOD_GET(inst->mod_rm);
 	const ubyte rm = MODRM_RM_EXTENDED_GET(inst);
+
+	//DEBUG("PRINT ADDRESS: MOD=%d, RM=%d\n", mod, rm);
 
 	const ubyte* direction = (dword)inst->displacement < 0 ? (ubyte*)"-" : (ubyte*)"+";
 
@@ -2268,12 +2586,55 @@ static void print_address(FILE* where, instruction_t* const inst, ubyte isfirst)
 	if (!isfirst)
 		fprintf(where, ", ");
 
+	const char* size;
+
+	switch (reg)
+	{
+		case AVL_OP_MEM8:
+			size = "BYTE";
+			break ;
+
+		case AVL_OP_MEM16:
+			size = "WORD";
+			break ;
+
+		case AVL_OP_MEM32:
+			size = "DWORD";
+			break ;
+
+		case AVL_OP_MEM64:
+			size = "QWORD";
+			break ;
+
+		case AVL_OP_MEM80:
+			size = "TBYTE";
+			break ;
+
+		case AVL_OP_MEM128:
+			size = "DQWORD";
+			break ;
+
+		case AVL_OP_MEM256:
+			size = "QQWORD";
+			break ;
+
+		case AVL_OP_MEM512:
+			size = "DQQWORD";
+			break ;
+	}
+
+	fprintf(where, "%s"
+#ifdef KEYWORD_PTR
+			" PTR"
+#endif
+			" ", size);
+
 	if (mod == 0b11 || (mod == 0b00 && (rm <= 0b0011 || (rm >= 0b0110 && rm <= 0b1011) || rm >= 0b1110)))
 	{
 		/* [R/M] */
 
 		fprintf(where, "[");
-		print_register(where, rm + 2, *(udword*)inst->prefix);
+		print_register(where, rm + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 		fprintf(where, "]");
 	}
 	else if (mod == 0b00)
@@ -2302,8 +2663,9 @@ static void print_address(FILE* where, instruction_t* const inst, ubyte isfirst)
 		else
 		{
 			/* [R/M + DISP8] */
+
 			fprintf(where, "[");
-			print_register(where, rm + 2, *(udword*)inst->prefix);
+			print_register(where, rm + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 			fprintf(where, " %s %"PRIdd"]", direction, inst->displacement);
 		}
 	}
@@ -2320,7 +2682,7 @@ static void print_address(FILE* where, instruction_t* const inst, ubyte isfirst)
 			/* [R/M + DISP32] */
 
 			fprintf(where, "[");
-			print_register(where, rm + 2, *(udword*)inst->prefix);
+			print_register(where, rm + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
 			fprintf(where, " %s %d]", direction, inst->displacement);
 		}
 	}
@@ -2330,9 +2692,11 @@ static ubyte print_operand(FILE* where, instruction_t* const inst, reg_t reg, ud
 {
 	ubyte l = 0x0;
 
-	if (reg == D_REG_ADDR)
+	///TODO: REDO THE ADDRESS PRINTING FOR THE NEW IMPLEMENTATION
+
+	if (reg >= AVL_OP_MEM8 && reg <= AVL_OP_MEM512)
 	{
-		print_address(where, inst, isfirst);
+		print_address(where, inst, reg, isfirst);
 		l++;
 	}
 	else if (reg)
@@ -2372,7 +2736,7 @@ static ubyte print_operands(FILE* where, instruction_t* const target)
 
 	return print_operand(where, target, target->reg1, prefix, 1)
 	+ print_merge_zero_avx512(where, target)
-	+ print_operand(where, target, target->reg2, prefix, 0)
+	+ print_operand(where, target, target->reg2, prefix, !(target->reg1 != AVL_OP_PAIR_DS_RSI && target->reg1 != AVL_OP_PAIR_ES_RDI))
 	+ print_operand(where, target, target->reg3, prefix, 0);
 }
 
@@ -2387,14 +2751,44 @@ static void print_immediate(FILE* where, instruction_t* const target, ubyte has_
     }
 }
 
+__always_inline
+static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
+{
+	if (target->mnemonic == OUT)
+	{
+		print_immediate(where, target, 0);
+		print_operand(where, target, target->reg2, *(udword*)target->prefix, 0);
+	}
+	else if (target->mnemonic == ENTER)
+	{
+		fprintf(where, "0x%"PRIXq", ", target->immediate & 0x0000FFFF);
+		fprintf(where, "0x%"PRIXq"", (target->immediate & 0x00FF0000) >> 0x10);
+	}
+}
+
+#define IS_EXCEPTION_INST(x) ( \
+	((x)->mnemonic == OUT && *(udword*)((x)->prefix) & OP_IMMEDIATE_MASK) \
+	|| (x)->mnemonic == ENTER \
+	|| (x)->mnemonic == LODSB \
+	|| (x)->mnemonic == LODS \
+	|| (x)->mnemonic == SCAS \
+	|| (x)->mnemonic == STOS \
+)
+
 void    fprint_instruction(FILE* where, instruction_t* const target)
 {
-	dword has_operands;
+
+	dword				has_operands = 0;
 
 	print_mnemonic(where, target);
-	has_operands = print_operands(where, target);
-    print_immediate(where, target, has_operands);
 
+	if (IS_EXCEPTION_INST(target))
+		handle_exceptional_formats(where, target);
+	else
+	{
+		has_operands = print_operands(where, target);
+    	print_immediate(where, target, has_operands);
+	}
 
 	if (*(word*)target->opcode == 0x0 && target->vexxop[0] == 0)
 	{

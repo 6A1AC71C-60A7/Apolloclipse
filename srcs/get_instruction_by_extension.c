@@ -65,10 +65,10 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 				{ .mnemonic = 0,	.am1 = 0,	.ot1 = 0,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 				{ .mnemonic = NOT,	.am1 = 0,	.ot1 = 0,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 				{ .mnemonic = NEG,	.am1 = 0,	.ot1 = 0,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-				{ .mnemonic = MUL,	.am1 = 0,	.ot1 = 0,	.am2 = DR_RAX,	.ot2 = DRS_8,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-				{ .mnemonic = IMUL,	.am1 = 0,	.ot1 = 0,	.am2 = DR_RAX,	.ot2 = DRS_8,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-				{ .mnemonic = DIV,	.am1 = 0,	.ot1 = 0,	.am2 = DR_RAX,	.ot2 = DRS_8,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-				{ .mnemonic = IDIV,	.am1 = 0,	.ot1 = 0,	.am2 = DR_RAX,	.ot2 = DRS_8,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = MUL,	.am1 = 0,	.ot1 = 0,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = IMUL,	.am1 = 0,	.ot1 = 0,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = DIV,	.am1 = 0,	.ot1 = 0,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+				{ .mnemonic = IDIV,	.am1 = 0,	.ot1 = 0,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 			};
 			inst = arr[reg];
 
@@ -79,8 +79,8 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			{
 				if (reg == 0b000)
 					inst.ot2 = OT_Z;
-				else if (reg >= 0b100)
-					inst.ot2 = DRS_64;
+				// else if (reg >= 0b100)
+				// 	inst.ot2 = DRS_64;
 			}
 			break ;
 		}
@@ -260,15 +260,15 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 		case 0x9:
 			if (mod == 0b11)
 			{
-				if (rm < 0b010)
+				if (reg >= 0b110)
 				{
 					static const opfield_t arr[] = {
 						{ .mnemonic = RDRAND,	.am1 = AM_R,	.ot1 = OT_V,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 						{ .mnemonic = RDSEED,	.am1 = AM_R,	.ot1 = OT_V,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
 					};
-					inst = arr[rm];
+					inst = arr[reg - 0b110];
 				}
-				if (prefix & MP_0xF3_MASK)
+				if (inst.mnemonic == RDSEED && prefix & MP_0xF3_MASK)
 					/// TODO: RDPID AMBIGIOUS ATTRIBUTE
 					inst = (opfield_t){ .mnemonic = RDPID,	.am1 = AM_R,	.ot1 = OT_Q,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 			}
@@ -284,9 +284,9 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 						else if (reg == 0b011)
 							inst = (opfield_t){ .mnemonic = XRSTORS,.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 						else if (reg == 0b100)
-							inst = (opfield_t){ .mnemonic = SAVEC,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
+							inst = (opfield_t){ .mnemonic = XSAVEC,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 						else if (reg == 0b101)
-							inst = (opfield_t){ .mnemonic = SAVES,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }; 
+							inst = (opfield_t){ .mnemonic = XSAVES,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }; 
 					}
 					if (reg == 0b110)
 						inst = (opfield_t){ .mnemonic = VMPTRLD,	.am1 = AM_M,	.ot1 = OT_Q,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
@@ -315,7 +315,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			else
 			{
 				if (reg == 0b000)
-					inst = (opfield_t){ .mnemonic = MOV,	.am1 = AM_E,	.ot1 = OT_Z,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
+					inst = (opfield_t){ .mnemonic = MOV,	.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_I,	.ot2 = OT_Z,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 				else if (reg == 0b111 && rm == 0b000)
 					///NOTE: Have changed OT_Z to OT_D to make it work (differs from Intel's manual)
 					inst = (opfield_t){ .mnemonic = XBEGIN,	.am1 = AM_J,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };

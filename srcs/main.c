@@ -1,17 +1,31 @@
 
+///ENGINE: NOTES:
+// Add an option to load the static data into the heap whether is possible
+//      Per explemple if EPO with jmp before exit (heap is no longer needed)
+
 #include <tests.h>
 #include <d_opcode.h>
 #include <d_register.h>
+
+#include <user/register.h>
+
+#include <user.h>
 
 #include <fcntl.h>
 #include <unistd.h>
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/sse4.txt"
+#define FILENAME "srcs/tests/samples/basic.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
+
+/// monitor (2 immediates), outs (immediate before register)
+
+///TODO: Check in registers.h
+
+///TODO: Add flags resolution and R|W per operand
 
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
@@ -213,7 +227,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xF3\x90\x49\x90\x90";
+    const ubyte iraw[] = "\xc8\x10\x20\x00\xc8\x10\x00\x01\xc8\x10\x00\x10";
 #endif
 
     const ubyte* prt = iraw;

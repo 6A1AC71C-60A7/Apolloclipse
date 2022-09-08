@@ -2,8 +2,8 @@
 
 #include <stdio.h>
 
-# define ERROR(x...) (fprintf(stderr, x))
-# define DEBUG(x...) (fprintf(stderr, x))
+#define ERROR(x...) (fprintf(stderr, x))
+#define DEBUG(x...) (fprintf(stderr, x))
 
 typedef enum
 {

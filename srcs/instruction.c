@@ -29,8 +29,8 @@
 ///NOTE: GPM stands for "Gereral Purpose Multiple"
 
 #define IS_GPM_MANDATORY_PREFIX(x) ( \
-	(x) == 0x66 \
-	|| (x) == 0xF2 \
+	/*(x) == 0x66*/ \
+	/*|| */ (x) == 0xF2 \
 	|| (x) == 0xF3 \
 )
 
@@ -90,6 +90,7 @@ static void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 			if (lt_legacy_prefixes[prefix_it] == **iraw)
 			{
 				*dest |= LP_LOCK_MASK << prefix_it;
+				DEBUG("[DEBUG] FOUND PREFIX: %X\n", **iraw);
 #ifndef LP_STOP_IF_REPEATED
 				found = 1;
 				(*iraw)++;
@@ -107,6 +108,9 @@ static void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 #else
 	while (old != *dest);
 #endif
+
+	///TODO: FIRST OF ALL TO FIX THIS REMOVE THE F2 AND F3 PREFIXES LIKE IS HAS BEEN DONE WITH 66 AND 67
+	DEBUG("[DEBUG][END] (%d) (%d)\n", *dest & MP_0x66_MASK, *dest & MP_0xF2_MASK);
 
 }
 
@@ -978,13 +982,17 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 
 static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 {
+	(void)mnemonic;
+
 	///TODO: Only CALL near JMP near and RET near ?!?!
 	///TODO: Mnemonic must have specific operands to be in this list ?
 	///TODO: Jcc, jrCXZ, LOOPcc, MOVcr, MOVdr, 
-	return mnemonic == CALL || mnemonic == ENTER || mnemonic == JMP || mnemonic == LEAVE
+
+	///TODO: SELECT BY OPCODE
+	return 0; /* mnemonic == CALL || mnemonic == ENTER || mnemonic == JMP || mnemonic == LEAVE
 	|| mnemonic == LGDT || mnemonic == LIDT || mnemonic == LLDT || mnemonic == LOOP
 	|| mnemonic == LTR || mnemonic == POP || mnemonic == POPF || mnemonic == PUSH
-	|| mnemonic == PUSHF || mnemonic == RET;
+	|| mnemonic == PUSHF || mnemonic == RET; */
 }
 
 #define IS_ONE_BYTE_OPCODE_MAP(x) (*(uword*)(x) == 0x0)
@@ -994,9 +1002,18 @@ static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
 #define IS_DEFAULT_REGISTER(x) ((x) >= 32)
 #define IS_TWO_BYTE_NONVEX_SIMD(x) (((x) >= 0x1 && (x) <= 0x2) || ((x) >= 0x5 && (x) <= 0x7) || (x) >= 0xC)
 
+#define IS_EXCEPTION_NONVEX_NONSIMD(x) ((x) == 0xC0 || (x) == 0xC1 || (x) == 0xC3 || (x) == 0xC7)
+#define GET_ROW(x) (((x) >> 0x4) & 0xF)
+#define GET_COLUMN(x) ((x) & 0xF)
+#define IS_TWO_BYTE_NONVEX_SIMD_V2(x) !IS_EXCEPTION_NONVEX_NONSIMD(x) && ((GET_ROW(x) == 0x1 && GET_COLUMN(x) < 0x8) || GET_ROW(x) == 0x2 || (GET_ROW(x) >= 0x5 && GET_ROW(x) <= 0x7) || (GET_ROW(x) == 0xC && GET_COLUMN(x) < 0x8) || GET_ROW(x) > 0xC)
+
+#define IS_0x38_NONVEX_SIMD(x) (/*!(GET_ROW(x) == 0x8 && GET_COLUMN(x) <= 0x8) && */ GET_ROW(x) != 0xF)
+
 __always_inline
 static void		get_operand_size(instruction_t* const dest, opfield_t found)
 {
+	(void)found;
+
 	///TODO: REDO THIS WITHOUT TRIPLE RETURN 
 	if (*(udword*)dest->prefix & OP_EVEX_MASK)
 	{
@@ -1021,8 +1038,17 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 
 		///TODO: For the future: if is EVEX the size also could be 512bits
 	}
-	else if ((dest->opcode[0] && IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) || dest->opcode[1])
+	else if ((dest->opcode[0] && !dest->opcode[1] && 
+		/* IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) */
+		IS_TWO_BYTE_NONVEX_SIMD_V2(dest->opcode[2]))
+		 || 
+		 /*(dest->opcode[1] == 0x38 && ((((dest->opcode[2] >> 4) & 0xF) == 0x8 && (dest->opcode[2] & 0xF) >= 0x8) || ((dest->opcode[2] >> 4) & 0xF) < 0xF )) */
+		(dest->opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->opcode[2])))
 	{
+		DEBUG("[DEBUG] COND1: %d COND2: %d\n", (dest->opcode[0] && !dest->opcode[1]
+			 && /* IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) */
+			IS_TWO_BYTE_NONVEX_SIMD_V2(dest->opcode[2]))
+			, (dest->opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->opcode[2])));
 		*(udword*)dest->prefix |= OS_DQWORD_MASK;
 		return ;
 	}
@@ -1031,28 +1057,28 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		the whole instruction */
 
 	udword* const prefix = (udword*)dest->prefix;
-	ubyte isreg = 0x0;
+	//ubyte isreg = 0x0;
 
 	/* Set to default operand size */
 
 	if (is_mnemonic_default_64_bits(dest->mnemonic))
 		*prefix |= OS_QWORD_MASK;
-	else if (IS_DEFAULT_REGISTER(found.am1))
-	{
-		isreg = 0x1;
-		if (found.ot1 == DRS_8 || found.ot1 == OR_8)
-			*prefix |= OS_BYTE_MASK;
-		else if (found.ot1 == DRS_16 || found.ot1 == OR_16)
-			*prefix |= OS_WORD_MASK;
-		///TODO: SEEMS NEXT ONE NEVER HAPPENS
-		else if (found.ot1 == DRS_128 || found.ot1 == OR_128)
-			*prefix |= OS_DQWORD_MASK;
-		///TODO: SEEMS NEXT ONE NEVER HAPPENS
-		else if (found.ot1 == DRS_256 || found.ot1 == OR_256)
-			*prefix |= OS_QQWORD_MASK;
-		else
-			*prefix |= OS_DWORD_MASK;
-	}
+	// else if (IS_DEFAULT_REGISTER(found.am1))
+	// {
+	// 	isreg = 0x1;
+	// 	if (found.ot1 == DRS_8 || found.ot1 == OR_8)
+	// 		*prefix |= OS_BYTE_MASK;
+	// 	else if (found.ot1 == DRS_16 || found.ot1 == OR_16)
+	// 		*prefix |= OS_WORD_MASK;
+	// 	///TODO: SEEMS NEXT ONE NEVER HAPPENS
+	// 	else if (found.ot1 == DRS_128 || found.ot1 == OR_128)
+	// 		*prefix |= OS_DQWORD_MASK;
+	// 	///TODO: SEEMS NEXT ONE NEVER HAPPENS
+	// 	else if (found.ot1 == DRS_256 || found.ot1 == OR_256)
+	// 		*prefix |= OS_QQWORD_MASK;
+	// 	else
+	// 		*prefix |= OS_DWORD_MASK;
+	// }
 	else
 		*prefix |= OS_DWORD_MASK;
 
@@ -1060,7 +1086,7 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 
 	if (*prefix & OS_DWORD_MASK)
 	{
-		if (*prefix & MP_0x66_MASK)
+		if (*prefix & MP_0x66_MASK && !(dest->opcode[1] == 0x38 && ((dest->opcode[2] >> 4) & 0xF) == 0xF))
 		{
 			OS_RESET(*prefix);
 			*prefix |= OS_WORD_MASK;
@@ -1072,31 +1098,42 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		}
 	}
 
-	if (isreg == 0x0)
-	{
-		switch (found.ot1)
-		{
-			case OT_B:
-				OS_RESET(*prefix);
-				*prefix |= OS_BYTE_MASK;
-				break ;
+	// if (isreg == 0x0)
+	// {
+	// 	switch (found.ot1)
+	// 	{
+	// 		case OT_B:
+	// 			OS_RESET(*prefix);
+	// 			*prefix |= OS_BYTE_MASK;
+	// 			break ;
 
-			case OT_W:
-				OS_RESET(*prefix);
-				*prefix |= OS_WORD_MASK;
-				break ;
+	// 		case OT_W:
+	// 			OS_RESET(*prefix);
+	// 			*prefix |= OS_WORD_MASK;
+	// 			break ;
 
-			case OT_D:
-				OS_RESET(*prefix);
-				*prefix |= OS_DWORD_MASK;
-				break ;
+	// 		case OT_D:
+	// 			OS_RESET(*prefix);
+	// 			*prefix |= OS_DWORD_MASK;
+	// 			break ;
 
-			case OT_Q:
-				OS_RESET(*prefix);
-				*prefix |= OS_QWORD_MASK;
-				break ;
-		}
-	}
+	// 		case OT_Q:
+	// 			OS_RESET(*prefix);
+	// 			*prefix |= OS_QWORD_MASK;
+	// 			break ;
+	// 	}
+	// }
+	
+	const char* __size;
+	if (*prefix & OS_BYTE_MASK)
+		__size = "BYTE";
+	else if (*prefix & OS_WORD_MASK)
+		__size = "WORD";
+	else if (*prefix & OS_DWORD_MASK)
+		__size = "DWORD";
+	else if (*prefix & OS_QWORD_MASK)
+		__size = "QWORD";
+	DEBUG("---------> Operand size is %s\n", __size);
 }
 
 #define HAS_IMMEDIATE(x) ( \
@@ -1118,11 +1155,11 @@ static ubyte	get_immediate_operand_type(opfield_t opfield)
 
 	if (HAS_IMMEDIATE(opfield.am1))
 		ot = opfield.ot1;
-	if (HAS_IMMEDIATE(opfield.am2))
+	else if (HAS_IMMEDIATE(opfield.am2))
 		ot = opfield.ot2;
-	if (HAS_IMMEDIATE(opfield.am3))
+	else if (HAS_IMMEDIATE(opfield.am3))
 		ot = opfield.ot3;
-	if (HAS_IMMEDIATE(opfield.am4))
+	else if (HAS_IMMEDIATE(opfield.am4))
 		ot = opfield.ot4;
 
 	return ot;
@@ -1136,6 +1173,8 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 	///TODO: Not 100% sure but i think if is AM_L the immediate value is always 8-bits.
 
 	*(udword*)dest->prefix |= OP_IMMEDIATE_MASK;
+
+	DEBUG("[DEBUG][OT OF IMMEDIATE]: %d\n", ot);
 
 	switch (ot)
 	{
@@ -1198,6 +1237,9 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 			}
 		}
 	}
+
+	if (dest->mnemonic == ENTER)
+		dest->immediate |= (*((*iraw)++) << 0x10);
 }
 
 #define HAS_GROUP_EXTENTION(x) ((x == S_1A))
@@ -1224,32 +1266,39 @@ opcode_check:
 	///TODO: IF OPCODE MAP 0X66 IS ONE BYTE OPCODE MAP 0X66 MEANS 16 BYTES OPERAND SIZE ...
 	/// https://stackoverflow.com/questions/68289333/is-there-a-default-operand-size-in-the-x86-64-amd64-architecture
 	
-	while (skip_pref == 0 && IS_GPM_MANDATORY_PREFIX(**iraw))
-	{
-		switch (**iraw)
-		{
-			case 0x66:
-				*(udword*)dest->prefix |= MP_0x66_MASK;
-				break ;
+	// while (skip_pref == 0 && IS_GPM_MANDATORY_PREFIX(**iraw))
+	// {
+	// 	switch (**iraw)
+	// 	{
+	// 		// case 0x66:
+	// 		// 	*(udword*)dest->prefix |= MP_0x66_MASK;
+	// 		// 	break ;
 
-				case 0x67:
-					*(udword*)dest->prefix |= MP_0x67_MASK;
-					break ;
+	// 		// case 0x67:
+	// 		// 	*(udword*)dest->prefix |= MP_0x67_MASK;
+	// 		// 	break ;
 
-			case 0xF2:
-				*(udword*)dest->prefix |= MP_0xF2_MASK;
-				break ;
+	// 		///TODO: 0xF2 and 0xF3 are already parsed like is done with
+	// 		/// 0x66 and 0x67 but i don't know if i'm fcking up
+	// 		/// something by removing them form here.
+	// 		/// Maybe thay need to be checked before REX ...
+	// 		/// TODO: I must fix this, not have ambigious/repeated shit
+	// 		///SOLUTION: Check legacy prefixes (legacy_prefixes) before REX
 
-			case 0XF3:
-				*(udword*)dest->prefix |= MP_0xF3_MASK;
-				break ;
-		}
-		skip_duplicated(iraw, 0xFF);
-	}
+	// 		// case 0xF2:
+	// 		// 	*(udword*)dest->prefix |= MP_0xF2_MASK;
+	// 		// 	break ;
+
+	// 		// case 0XF3:
+	// 		// 	*(udword*)dest->prefix |= MP_0xF3_MASK;
+	// 		// 	break ;
+	// 	}
+	// 	skip_duplicated(iraw, 0xFF);
+	// }
 
 	DEBUG("::::: BEFORE: %02X\n", **iraw);
 
-	if (skip_pref == 0 && (isrex = IS_REXBYTE(**iraw)))
+	if ((isvex | isescape) == 0 && (isrex = IS_REXBYTE(**iraw)))
 	{
 		get_rex_prefix((udword*)dest->prefix, iraw);
 		skip_duplicated(iraw, 0xF0);
@@ -1294,8 +1343,14 @@ opcode_check:
 		else if (*(uword*)dest->opcode == 0x0)
 		{
 			get_legacy_prefixes((udword*)dest->prefix, iraw);
-			if ((st = err_handle_legacy_prefixes((udword*)dest->prefix)) != SUCCESS)
+
+			///TODO: Useful error check but for instructions which have have 2 prefixes fails
+			/// They're always exceptions ... (0f 38 F0)
+			/// Opcode values isn't parsed yet so is difucult to know whether or not is an exception ...
+			if (0 && (st = err_handle_legacy_prefixes((udword*)dest->prefix)) != SUCCESS)
 				goto error;
+
+			DEBUG("[DEBUG] PREFIX AFTER: %d\n", *(udword*)dest->prefix & MP_0xF2_MASK);
 		}		
 	}
 
@@ -1377,7 +1432,8 @@ skip_prefix_check:
 	else
 		DEBUG("DEBUG: HAS NOT IMMEDIATE\n");
 
-	resolve_operands(dest, found);
+	//resolve_operands(dest, found);
+	resolve_operands_v2(dest, found);
 
 	dest->size = *iraw - istart;
 

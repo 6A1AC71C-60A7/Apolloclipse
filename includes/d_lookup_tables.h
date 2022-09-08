@@ -477,7 +477,7 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = MOV,		.am1 = DR_RDI,	.ot1 = OR_64,	.am2 = DR_R15,	.ot2 = DRS_64,	.am3 = AM_I,	.ot3 = OT_V,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
-	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = RET,		.am1 = AM_I,	.ot1 = OT_W,	.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
 	{ .mnemonic = RET,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,	.ot3 = 0,	.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
 	{ .mnemonic = LES,		.am1 = AM_G,	.ot1 = OT_Z,	.am2 = AM_M,	.ot2 = OT_P,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
@@ -496,7 +496,7 @@ static const opfield_t lt_one_byte_opmap[] = {
 
 	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
-	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = DR_RDX,	.ot2 = DRS_8,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
+	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = DR_RCX,	.ot2 = DRS_8,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = MODRM_EXT_GRP_2,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = DR_RCX,	.ot2 = DRS_8,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = AAM,		.am1 = AM_I,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
 	{ .mnemonic = AAD,		.am1 = AM_I,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
@@ -786,14 +786,14 @@ static const opfield_t lt_two_byte_opmap[] = {
 
 	{ .mnemonic = MODRM_EXT_GRP_9,			.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 
-	{ .mnemonic = BSWAP,	.am1 = DR_RAX,	.ot1 = OR_32,	.am2 = DR_R8,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = BSWAP,	.am1 = DR_RCX,	.ot1 = OR_32,	.am2 = DR_R9,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = BSWAP,	.am1 = DR_RDX,	.ot1 = OR_32,	.am2 = DR_R10,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = BSWAP,	.am1 = DR_RBX,	.ot1 = OR_32,	.am2 = DR_R11,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = BSWAP,	.am1 = DR_RSP,	.ot1 = OR_32,	.am2 = DR_R12,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = BSWAP,	.am1 = DR_RBP,	.ot1 = OR_32,	.am2 = DR_R13,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = BSWAP,	.am1 = DR_RSI,	.ot1 = OR_32,	.am2 = DR_R14,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	{ .mnemonic = BSWAP,	.am1 = DR_RDI,	.ot1 = OR_32,	.am2 = DR_R15,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RAX,	.ot1 = OR_64,	.am2 = DR_R8,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RCX,	.ot1 = OR_64,	.am2 = DR_R9,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RDX,	.ot1 = OR_64,	.am2 = DR_R10,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RBX,	.ot1 = OR_64,	.am2 = DR_R11,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RSP,	.ot1 = OR_64,	.am2 = DR_R12,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RBP,	.ot1 = OR_64,	.am2 = DR_R13,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RSI,	.ot1 = OR_64,	.am2 = DR_R14,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = BSWAP,	.am1 = DR_RDI,	.ot1 = OR_64,	.am2 = DR_R15,	.ot2 = DRS_64,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = AMB_VADDSUBPD_INDEX,		.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = AMB_PSRLW_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },

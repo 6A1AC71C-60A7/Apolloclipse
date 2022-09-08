@@ -222,7 +222,7 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
                 break ;
 
             case AM_O:
-                ///TODO: WTF
+                ///TODO: WTF (mov moffs, X | mov X, moffs)
                 break ;
 
             case AM_P:
@@ -306,12 +306,15 @@ static void revolve_operand(instruction_t* const inst, reg_t* const dest, ubyte 
     }
 	else
 	{
-		if (ot == DRS_87)
+		if (ot == DRS_87) // Requires new alignement for new implementation
 			*dest = am - 14;
 		else if (am < DR_AH)
 		{
+
+            // Requires size resolution for newer implementation
+
 			*dest = am - 30;
-			if (IS_AMBIGIOUS(ot))
+			if (IS_AMBIGIOUS(ot)) // Same than before
             {
                 if (*(udword*)inst->prefix & RP_REXB_MASK)
                     *dest += 8;

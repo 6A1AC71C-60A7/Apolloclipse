@@ -34,7 +34,7 @@
 #define LP_ADDRSZ_MASK (udword)(LP_OPSZ_MASK << 1)
 
 /*
-** REX prefixes masks
+** REX prefix masks
 */
 
 /// This 1-bit value is an extension to the MODRM.rm field or the SIB.base field
@@ -50,16 +50,20 @@
 ** Mandatory prefix
 */
 
-#define MP_0x66_MASK (udword)(RP_REXW_MASK << 1)
-#define MP_0x67_MASK (udword)(MP_0x66_MASK << 1)
-#define MP_0xF2_MASK (udword)(MP_0x67_MASK << 1)
-#define MP_0xF3_MASK (udword)(MP_0xF2_MASK << 1)
+///TODO: I missed up that 0x66 and 0x67 are already parsed as LP_OPSZ_MASK and LP_ADDRSZ_MASK
+/// Redo all without next 2
+/// TODO: Same for 0xf2 and 0xf3 ...
+
+#define MP_0x66_MASK /*(udword)(RP_REXW_MASK << 1)*/ LP_OPSZ_MASK
+#define MP_0x67_MASK /*(udword)(MP_0x66_MASK << 1)*/ LP_ADDRSZ_MASK
+#define MP_0xF2_MASK /*(udword)(/ *MP_0x67_MASK* / RP_REXW_MASK << 1)*/ LP_REPNX_MASK
+#define MP_0xF3_MASK /* (udword)(MP_0xF2_MASK << 1) */ LP_REPX_MASK
 
 /*
 ** Operand size
 */
 
-#define OS_BYTE_MASK (udword)(MP_0xF3_MASK << 1)
+#define OS_BYTE_MASK (udword)(RP_REXW_MASK << 1)
 #define OS_WORD_MASK (udword)(OS_BYTE_MASK << 1)
 #define OS_DWORD_MASK (udword)(OS_WORD_MASK << 1)
 #define OS_QWORD_MASK (udword)(OS_DWORD_MASK << 1)
@@ -122,7 +126,6 @@
 #define EVEX_V2_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x3) & 0x1)
 #define EVEX_K_GET(x) (ubyte)((*(ubyte*)((x) + 0x2)) & 0x7)
 
-///HERE: SEGFAULT
 #define EVEX_VVVVV_EXTENDTED_GET(x) ((!EVEX_V2_GET(x) << 0x4) | EVEX_VVVV_GET(x))
 #define EVEX_L_EXTENDED_GET(x) ((EVEX_L2_GET(x) << 1) | EVEX_L_GET(x))
 
@@ -186,5 +189,6 @@ void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
 opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found);
 extern void		resolve_operands(instruction_t* const dest, opfield_t instruction);
+extern void		resolve_operands_v2(instruction_t* const dest, opfield_t instruction);
 
 void			get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw);
