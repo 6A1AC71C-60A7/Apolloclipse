@@ -13,6 +13,12 @@ $(addprefix includes/,\
 	d_types.h\
 	d_utils.h\
 	tests.h\
+	$(addprefix user/,\
+		prefix.h\
+		register.h\
+		types.h\
+	)\
+	user.h\
 )
 SRCS	=\
 $(addprefix srcs/,\
@@ -23,8 +29,9 @@ $(addprefix srcs/,\
 	instruction.c\
 	main.c\
 	resolve_operands.c\
+	resolve_operands_V2.c\
 	$(addprefix tests/,\
-		test_instruction.c\
 		fprint_instruction.c\
+		test_instruction.c\
 	)\
 )
