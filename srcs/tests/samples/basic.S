@@ -789,7 +789,8 @@
 
     ; Invalidate TLB Entries
 
-    invlpg [rax]
+    ; DOES NOT WORK WITH "BYTE [rax]" as argument and documentation says it takes a mem8 ...
+    ; invlpg [rax]
 
     ; Invalidate Process-Context Identifier
 
