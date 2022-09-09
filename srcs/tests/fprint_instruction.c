@@ -7,6 +7,9 @@
 #define KEYWORD_PTR
 #undef KEYWORD_PTR
 
+#define ADDRESING_GREATHER_THAN_QWORD
+#undef ADDRESING_GREATHER_THAN_QWORD
+
 #include <user/register.h>
 
 static const char* const regs_v2[] = {
@@ -83,7 +86,7 @@ static const char* const regs_v2[] = {
     "r13",
     "r14",
     "r15",
-	"rflags",
+	/*"rflags"*/"",
 	/*"ds:[rsi]"*/"",
 	/*"es:[rdi]"*/"",
     "ah",
@@ -2586,7 +2589,7 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 	if (!isfirst)
 		fprintf(where, ", ");
 
-	const char* size;
+	const char* size = "";
 
 	switch (reg)
 	{
@@ -2606,6 +2609,7 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 			size = "QWORD";
 			break ;
 
+#ifdef ADDRESING_GREATHER_THAN_QWORD
 		case AVL_OP_MEM80:
 			size = "TBYTE";
 			break ;
@@ -2621,6 +2625,8 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 		case AVL_OP_MEM512:
 			size = "DQQWORD";
 			break ;
+#endif
+
 	}
 
 	fprintf(where, "%s"
@@ -2768,11 +2774,17 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 
 #define IS_EXCEPTION_INST(x) ( \
 	((x)->mnemonic == OUT && *(udword*)((x)->prefix) & OP_IMMEDIATE_MASK) \
+	|| (x)->mnemonic == OUTS \
+	|| (x)->mnemonic == OUTSB \
 	|| (x)->mnemonic == ENTER \
 	|| (x)->mnemonic == LODSB \
 	|| (x)->mnemonic == LODS \
 	|| (x)->mnemonic == SCAS \
+	|| (x)->mnemonic == SCASB \
 	|| (x)->mnemonic == STOS \
+	|| (x)->mnemonic == STOSB \
+	|| (x)->mnemonic == INS \
+	|| (x)->mnemonic == INSB \
 )
 
 void    fprint_instruction(FILE* where, instruction_t* const target)

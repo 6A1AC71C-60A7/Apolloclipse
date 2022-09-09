@@ -57,6 +57,27 @@ static reg_t	get_general_purpose_register(uqword index, ubyte ot, udword prefix)
 			found = gpr64[index];
 			break ;
 
+		case OT_C:
+			if (prefix & OS_BYTE_MASK)
+				found = gpr8[index];
+			else
+				found = gpr16[index];
+			break ;
+
+		case OT_Y:
+			if (prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
+				found = gpr64[index];
+			else
+				found = gpr32[index];
+			break ;
+
+		case OT_Z:
+			if (prefix & OS_WORD_MASK)
+				found = gpr16[index];
+			else if (!(prefix & OS_BYTE_MASK))
+				found = gpr32[index];
+			break ;
+
 		default:
 		{
 			if (prefix & OS_BYTE_MASK)
@@ -108,6 +129,31 @@ static reg_t	get_memory(ubyte ot, udword prefix)
 		// case OT_DQQ:
 		// 	found = AVL_OP_MEM512;
 		// 	break ;
+
+		case OT_S:
+			found = AVL_OP_MEM80;
+			break ;
+
+		case OT_C:
+			if (prefix & OS_BYTE_MASK)
+				found = AVL_OP_MEM8;
+			else
+				found = AVL_OP_MEM16;
+			break ;
+
+		case OT_Y:
+			if (prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
+				found = AVL_OP_MEM64;
+			else
+				found = AVL_OP_MEM32;
+			break ;
+
+		case OT_Z:
+			if (prefix & OS_WORD_MASK)
+				found = AVL_OP_MEM16;
+			else if (!(prefix & OS_BYTE_MASK))
+				found = AVL_OP_MEM32;
+			break ;
 
 		default:
 		{

@@ -90,7 +90,7 @@ static void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 			if (lt_legacy_prefixes[prefix_it] == **iraw)
 			{
 				*dest |= LP_LOCK_MASK << prefix_it;
-				DEBUG("[DEBUG] FOUND PREFIX: %X\n", **iraw);
+				DEBUG("[DEBUG] FOUND PREFIX: %02X\n", **iraw);
 #ifndef LP_STOP_IF_REPEATED
 				found = 1;
 				(*iraw)++;
@@ -110,7 +110,7 @@ static void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 #endif
 
 	///TODO: FIRST OF ALL TO FIX THIS REMOVE THE F2 AND F3 PREFIXES LIKE IS HAS BEEN DONE WITH 66 AND 67
-	DEBUG("[DEBUG][END] (%d) (%d)\n", *dest & MP_0x66_MASK, *dest & MP_0xF2_MASK);
+	DEBUG("[DEBUG][END] (**iraw)=[%02X] (%d) (%d)\n", **iraw, *dest & MP_0x66_MASK, *dest & MP_0xF2_MASK);
 
 }
 
@@ -485,8 +485,8 @@ static void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode
 	else if (prefix & MP_0xF2_MASK)
 	{
 		static const opfield_t arr[] = {
-			{ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_D,	.am2 = AM_E,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-			{ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_D,	.am2 = AM_E,	.ot2 = OT_Y,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+			{ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_Y,	.am2 = AM_E,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+			{ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_Y,	.am2 = AM_E,	.ot2 = OT_Y,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 			{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 			{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 			{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -980,16 +980,25 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	inst->mnemonic = found->mnemonic;
 }
 
-static ubyte	is_mnemonic_default_64_bits(mnemonic_t mnemonic)
+#define ISDFT64_CALL(x) (!(x)->opcode[0] && (x)->opcode[2] == 0xFF && (x)->mnemonic == CALL)
+#define ISDFT64_JMP(x) (!(x)->opcode[0] && (x)->opcode[2] == 0xFF && (x)->mnemonic == JMP)
+#define ISDFT64_LGTD(x) ((x)->mnemonic == LGDT)
+#define ISDFT64_LIDT(x) ((x)->mnemonic == LIDT)
+#define ISDFT64_LLTD(x) ((x)->mnemonic == LLDT)
+#define ISDFT64_POP(x) (!(x)->opcode[0] && (((x)->opcode[2] >= 0x58 && (x)->opcode[2] <= 0x5F) || (x)->opcode[2] == 0x8F))
+#define ISDFT64_PUSH(x) ((!(x)->opcode[0] && ((x)->opcode[2] == 0x50 || (x)->opcode[2] == 0x6A || (x)->opcode[2] == 0x68)))
+#define ISDFT64_PREFETCHW(x) ((x)->mnemonic == PREFETCHW)
+#define ISDFT64_MOVCRDR(x) ((x)->opcode[0] && !(x)->opcode[1] && (x)->opcode[2] >= 0x20 && (x)->opcode[2] <= 0x23)
+
+static ubyte	is_mnemonic_default_64_bits(instruction_t* const inst)
 {
-	(void)mnemonic;
 
 	///TODO: Only CALL near JMP near and RET near ?!?!
 	///TODO: Mnemonic must have specific operands to be in this list ?
 	///TODO: Jcc, jrCXZ, LOOPcc, MOVcr, MOVdr, 
 
 	///TODO: SELECT BY OPCODE
-	return 0; /* mnemonic == CALL || mnemonic == ENTER || mnemonic == JMP || mnemonic == LEAVE
+	return ISDFT64_CALL(inst) || ISDFT64_JMP(inst) || ISDFT64_LGTD(inst) || ISDFT64_LIDT(inst) || ISDFT64_LLTD(inst) || ISDFT64_POP(inst) || ISDFT64_PUSH(inst) || ISDFT64_PREFETCHW(inst) || ISDFT64_MOVCRDR(inst); /* mnemonic == CALL || mnemonic == ENTER || mnemonic == JMP || mnemonic == LEAVE
 	|| mnemonic == LGDT || mnemonic == LIDT || mnemonic == LLDT || mnemonic == LOOP
 	|| mnemonic == LTR || mnemonic == POP || mnemonic == POPF || mnemonic == PUSH
 	|| mnemonic == PUSHF || mnemonic == RET; */
@@ -1061,7 +1070,7 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 
 	/* Set to default operand size */
 
-	if (is_mnemonic_default_64_bits(dest->mnemonic))
+	if (is_mnemonic_default_64_bits(dest))
 		*prefix |= OS_QWORD_MASK;
 	// else if (IS_DEFAULT_REGISTER(found.am1))
 	// {
@@ -1084,8 +1093,8 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 
 	/* Overwrite with prefixes */
 
-	if (*prefix & OS_DWORD_MASK)
-	{
+	// if (*prefix & OS_DWORD_MASK)
+	// {
 		if (*prefix & MP_0x66_MASK && !(dest->opcode[1] == 0x38 && ((dest->opcode[2] >> 4) & 0xF) == 0xF))
 		{
 			OS_RESET(*prefix);
@@ -1095,7 +1104,7 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		{
 			OS_RESET(*prefix);
 			*prefix |= OS_QWORD_MASK;
-		}
+		// }
 	}
 
 	// if (isreg == 0x0)
@@ -1123,7 +1132,17 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 	// 			break ;
 	// 	}
 	// }
-	
+
+	/* Exception in which the operand size must be WORD but
+		is DWORD when the documentation is followed ... 
+		OPERATION: mov WORD [], segment_register
+		[ ONLY WHEN IS ADDRESSING ] */
+	if (!dest->opcode[0] && dest->opcode[2] == 0x8C && (dest->mod_rm & 0b11000000) != 0b11000000)
+	{
+		OS_RESET(*prefix);
+		*prefix |= OS_WORD_MASK;
+	}
+
 	const char* __size;
 	if (*prefix & OS_BYTE_MASK)
 		__size = "BYTE";
@@ -1300,6 +1319,7 @@ opcode_check:
 
 	if ((isvex | isescape) == 0 && (isrex = IS_REXBYTE(**iraw)))
 	{
+		DEBUG("---> HAS REX BYTE <---\n");
 		get_rex_prefix((udword*)dest->prefix, iraw);
 		skip_duplicated(iraw, 0xF0);
 	}
@@ -1351,6 +1371,7 @@ opcode_check:
 				goto error;
 
 			DEBUG("[DEBUG] PREFIX AFTER: %d\n", *(udword*)dest->prefix & MP_0xF2_MASK);
+			DEBUG("[DEBUG] VALUE (**iraw) AFTER: %02X\n", **iraw);
 		}		
 	}
 

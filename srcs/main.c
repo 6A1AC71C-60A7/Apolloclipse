@@ -227,7 +227,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xc8\x10\x20\x00\xc8\x10\x00\x01\xc8\x10\x00\x10";
+    const ubyte iraw[] = "\x49\x63\x01";
 #endif
 
     const ubyte* prt = iraw;
