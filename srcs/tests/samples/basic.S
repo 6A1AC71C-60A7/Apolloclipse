@@ -1771,6 +1771,7 @@
 
     ; User Level Set Up Monitor Address
 
+    umonitor eax
     umonitor rax
 
     ; Write Back and Invalitade Cache
