@@ -525,7 +525,7 @@ static const opfield_t lt_one_byte_opmap[] = {
 	{ .mnemonic = JMP,		.am1 = AM_J,	.ot1 = OT_Z,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
 	{ .mnemonic = JMP,		.am1 = AM_A,	.ot1 = OT_P,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_I64 },
 	{ .mnemonic = JMP,		.am1 = AM_J,	.ot1 = OT_B,	.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_F64 },
-	{ .mnemonic = IN,		.am1 = DR_RAX,	.ot1 = DRS_16,	.am2 = DR_RDX,	.ot2 = DRS_16,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
+	{ .mnemonic = IN,		.am1 = DR_RAX,	.ot1 = DRS_8,	.am2 = DR_RDX,	.ot2 = DRS_16,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = IN,		.am1 = DR_RAX,	.ot1 = DRS_32,	.am2 = DR_RDX,	.ot2 = DRS_16,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = OUT,		.am1 = DR_RDX,	.ot1 = DRS_16,	.am2 = DR_RAX,	.ot2 = DRS_8,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = OUT,		.am1 = DR_RDX,	.ot1 = DRS_16,	.am2 = DR_RAX,	.ot2 = DRS_32,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },

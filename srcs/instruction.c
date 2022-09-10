@@ -1007,7 +1007,7 @@ static ubyte	is_mnemonic_default_64_bits(instruction_t* const inst)
 #define IS_ONE_BYTE_OPCODE_MAP(x) (*(uword*)(x) == 0x0)
 #define IS_TWO_BYTE_OPCODE_MAP(x) (*(uword*)(x) == 0xF)
 #define IS_WORD_OVERWRITABLE_TWOBYTES_OPMAP(x) (((x) >= 0x9 && (x) <= 0xC) || (x) == 0x0 || (x) == 0x4)
-#define OS_RESET(x) ((x) &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK))
+#define OS_RESET(x) ((x) &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
 #define IS_DEFAULT_REGISTER(x) ((x) >= 32)
 #define IS_TWO_BYTE_NONVEX_SIMD(x) (((x) >= 0x1 && (x) <= 0x2) || ((x) >= 0x5 && (x) <= 0x7) || (x) >= 0xC)
 
@@ -1019,7 +1019,7 @@ static ubyte	is_mnemonic_default_64_bits(instruction_t* const inst)
 #define IS_0x38_NONVEX_SIMD(x) (/*!(GET_ROW(x) == 0x8 && GET_COLUMN(x) <= 0x8) && */ GET_ROW(x) != 0xF)
 
 __always_inline
-static void		get_operand_size(instruction_t* const dest, opfield_t found)
+static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
 {
 	(void)found;
 
@@ -1142,6 +1142,19 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		OS_RESET(*prefix);
 		*prefix |= OS_WORD_MASK;
 	}
+	/* More exceptions ... */
+	else if (dest->mnemonic == CMPXCHG8B && *prefix & RP_REXW_MASK)
+	{
+		dest->mnemonic = CMPXCHG16B;
+		OS_RESET(*prefix);
+		*prefix |= OS_DQWORD_MASK;
+		found->ot1 = OT_DQ;
+	}
+	else if (dest->mnemonic == UMONITOR && !(*prefix & LP_ADDRSZ_MASK))
+	{
+		OS_RESET(*prefix);
+		*prefix |= OS_QWORD_MASK;
+	}
 
 	const char* __size;
 	if (*prefix & OS_BYTE_MASK)
@@ -1152,6 +1165,8 @@ static void		get_operand_size(instruction_t* const dest, opfield_t found)
 		__size = "DWORD";
 	else if (*prefix & OS_QWORD_MASK)
 		__size = "QWORD";
+	else if (*prefix & OS_DQWORD_MASK)
+		__size = "DQWORD";
 	DEBUG("---------> Operand size is %s\n", __size);
 }
 
@@ -1446,7 +1461,7 @@ skip_prefix_check:
 		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
 
 	handle_ambigious_arguments(&found, map, dest);
-	get_operand_size(dest, found);
+	get_operand_size(dest, &found);
 
 	if (has_immediate(found))
 		get_immediate(found, dest, iraw);

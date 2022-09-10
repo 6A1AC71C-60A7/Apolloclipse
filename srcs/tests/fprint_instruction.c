@@ -692,16 +692,16 @@ static const char* const mnemonics[] = {
 	"jp",   // jump if parity.
 	"jcxz",   // jump register cx zero.
 	"jecxz",   // jump register ecx zero.
-	"loop",   // loop with ecx counter.
-	"loopz",   // loop with ecx and zero/
-	"loope",   // loop with ecx and equal.
-	"loopnz",   // loop with ecx and not zero.
-	"loopne",   // loop with ecx and not equal.
 	"call",   // call procedure.
 	"ret",   // return.
 	"iret",   // return from interrupt.
 	"int",   // software interrupt.
 	"into",   // interrupt on overflow.
+	"loop",   // loop with ecx counter.
+	"loopz",   // loop with ecx and zero/
+	"loope",   // loop with ecx and equal.
+	"loopnz",   // loop with ecx and not zero.
+	"loopne",   // loop with ecx and not equal.
 	"bound",   // detect value out of range.
 
 	/* 8) string */
@@ -2385,7 +2385,7 @@ __always_inline
 static void handle_exceptional_mnemonics(FILE* where, instruction_t* const target)
 {
 	const dword prefix = *(udword*)target->prefix;
-	const char*	addon;
+	const char*	addon = "";
 
 	// switch (target->mnemonic)
 	// {
@@ -2407,6 +2407,16 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 			else if (prefix & OS_DWORD_MASK)
 				addon = "d";
 		}
+		else if (target->mnemonic == IRET)
+		{
+			if (prefix & OS_QWORD_MASK)
+				addon = "q";
+		}
+		else if (target->mnemonic == XRSTOR || target->mnemonic == XRSTORS || target->mnemonic == XSAVE || target->mnemonic == XSAVEC || target->mnemonic == XSAVES)
+		{
+			if (prefix & RP_REXW_MASK)
+				addon = "64";
+		}
 
 
 		// break ;
@@ -2415,7 +2425,21 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 	fprintf(where, "%s ", addon);
 }
 
-#define IS_EXCEPTIONAL_MNEMONIC(x) ((x) == CMPS || (x) == INS || (x) == LODS || (x) == MOVS || (x) == OUTS || (x) == SCAS || (x) == STOS)
+#define IS_EXCEPTIONAL_MNEMONIC(x) ( \
+	(x) == CMPS \
+	|| (x) == INS \
+	|| (x) == LODS \
+	|| (x) == MOVS \
+	|| (x) == OUTS \
+	|| (x) == SCAS \
+	|| (x) == STOS \
+	|| (x) == IRET \
+	|| (x) == XRSTOR \
+	|| (x) == XRSTORS \
+	|| (x) == XSAVE \
+	|| (x) == XSAVEC \
+	|| (x) == XSAVES \
+)
 
 __always_inline
 static mnemonic_t print_mnemonic(FILE* where, instruction_t* const target)
@@ -2746,15 +2770,51 @@ static ubyte print_operands(FILE* where, instruction_t* const target)
 	+ print_operand(where, target, target->reg3, prefix, 0);
 }
 
+#define IMMEDIATE_JMP_ADDON 0x4
+#define IMMEDIATE_LOOP_ADDON 0x1
+
 __always_inline
 static void print_immediate(FILE* where, instruction_t* const target, ubyte has_operands)
 {
 	if (*(udword*)target->prefix & OP_IMMEDIATE_MASK)
     {
+		if ((target->mnemonic >= JMP && target->mnemonic < RET) || target->mnemonic == XBEGIN)
+			target->immediate += IMMEDIATE_JMP_ADDON;
+		else if (target->mnemonic >= LOOP && target->mnemonic <= LOOPNE)
+			target->immediate += IMMEDIATE_LOOP_ADDON;
+
         if (has_operands)
             fprintf(where, ", ");
         fprintf(where, "0x%"PRIXq"", target->immediate);
     }
+}
+
+
+__always_inline
+static void	handle_conversions(FILE* where, instruction_t* const target)
+{
+	const udword prefix = *(udword*)target->prefix;
+	const char* name;
+
+	if (target->mnemonic == CBW)
+	{
+		if (prefix & OS_WORD_MASK)
+			name = "cbw";
+		else if (prefix & OS_DWORD_MASK)
+			name = "cwde";
+		else if (prefix & OS_QWORD_MASK)
+			name = "cdqe";
+	}
+	else if (target->mnemonic == CWD)
+	{
+		if (prefix & OS_WORD_MASK)
+			name = "cwd";
+		else if (prefix & OS_DWORD_MASK)
+			name = "cdq";
+		else if (prefix & OS_QWORD_MASK)
+			name = "cqo";
+	}
+	fprintf(where, "%s ", name);
 }
 
 __always_inline
@@ -2771,6 +2831,11 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 		fprintf(where, "0x%"PRIXq"", (target->immediate & 0x00FF0000) >> 0x10);
 	}
 }
+
+#define IS_CONVERSION_INST(x) ( \
+	(x)->mnemonic == CBW \
+	|| (x)->mnemonic == CWD \
+)
 
 #define IS_EXCEPTION_INST(x) ( \
 	((x)->mnemonic == OUT && *(udword*)((x)->prefix) & OP_IMMEDIATE_MASK) \
@@ -2792,7 +2857,10 @@ void    fprint_instruction(FILE* where, instruction_t* const target)
 
 	dword				has_operands = 0;
 
-	print_mnemonic(where, target);
+	if (IS_CONVERSION_INST(target))
+		handle_conversions(where, target);
+	else
+		print_mnemonic(where, target);
 
 	if (IS_EXCEPTION_INST(target))
 		handle_exceptional_formats(where, target);

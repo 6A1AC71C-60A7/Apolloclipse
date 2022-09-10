@@ -176,16 +176,16 @@ typedef enum
 	JP,				// Jump if parity.
 	JCXZ,			// Jump register CX zero.
 	JECXZ,			// Jump register ECX zero.
-	LOOP,			// Loop with ECX counter.
-	LOOPZ,			// Loop with ECX and zero/
-	LOOPE,			// Loop with ECX and equal.
-	LOOPNZ,			// Loop with ECX and not zero.
-	LOOPNE,			// Loop with ECX and not equal.
 	CALL,			// Call procedure.
 	RET,			// Return.
 	IRET,			// Return from interrupt.
 	INT,			// Software interrupt.
 	INTO,			// Interrupt on overflow.
+	LOOP,			// Loop with ECX counter.
+	LOOPZ,			// Loop with ECX and zero/
+	LOOPE,			// Loop with ECX and equal.
+	LOOPNZ,			// Loop with ECX and not zero.
+	LOOPNE,			// Loop with ECX and not equal.
 	BOUND,			// Detect value out of range.
 
 	/* 8) String */

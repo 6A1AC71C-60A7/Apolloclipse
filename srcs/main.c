@@ -21,8 +21,6 @@
 #define TEST_FILE
 //#undef TEST_FILE
 
-/// monitor (2 immediates), outs (immediate before register)
-
 ///TODO: Check in registers.h
 
 ///TODO: Add flags resolution and R|W per operand
@@ -39,14 +37,6 @@
 
 ///TODO: CALL INSTRUCTION ADDRESS RESOLUTION IS DIFERENT FROM OBJDUMP
 /// IS BECAUSE 0x5 IS ADDED TO THE IMMEDIATE NO MATER WHAT
-
-///TODO: CASES WHERE OPERAND SIZE IS EXCEPTIONALLY DIFERENT ON OPERANDS ARE NOT
-/// HANDLED
-/// EXEMPLE: crc eax, cl -> has 32 bit operand size even if cl is 8 bits
-/// Cases like that are exeptional and is better to handle them after the diassembler output buy opcode value
-/// IN, lsl rax, rdx, lsl rax, [rdx], movsx, movzx, out, ...
-
-///TODO: EXEPTION: ENTER opcode has 2 immediates ...
 
 ///TODO: UMONITOR takes a register which is used as an address (but type is reg), default operand type
 ///         is currently dword but this is 32 bits addressing (0x67), need to make it qword by default.
@@ -227,7 +217,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x49\x63\x01";
+    const ubyte iraw[] = "\x48\x0f\xc7\x08";
 #endif
 
     const ubyte* prt = iraw;
