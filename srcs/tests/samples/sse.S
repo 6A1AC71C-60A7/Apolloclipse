@@ -295,7 +295,8 @@ psadbw mm1, [rax]
 ; Shuffle the words in mm2/m64 based on the encoding in imm8 and store the result in mm1.
 
 pshufw mm1, mm2, 0x69
-pshufw mm1, [rax], 0x69
+; TODO: Invalid instruction pshufw mm1, QWORD [rax], 0x69, documentation states that operand 2 mmx/m64 ...
+;pshufw mm1, [rax], 0x69
 
 ; Load MXCSR register from m32.
 
