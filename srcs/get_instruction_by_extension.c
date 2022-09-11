@@ -455,9 +455,12 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 			}
 			else if (HAS_NOT_MANDATORY_PREFIX(prefix))
 			{
+
+				///TODO: Temporally fixup of addressing size of fxsacve and fxrsor using OT_S
+			
 				static const opfield_t arr[] = {
-					{ .mnemonic = FXSAVE,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
-					{ .mnemonic = FXRSTOR,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
+					{ .mnemonic = FXSAVE,	.am1 = AM_M,	.ot1 = OT_S,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
+					{ .mnemonic = FXRSTOR,	.am1 = AM_M,	.ot1 = OT_S,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
 					{ .mnemonic = LDMXCSR,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
 					{ .mnemonic = STMXCSR,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
 					{ .mnemonic = XSAVE,	.am1 = AM_M,	.ot1 = OT_S,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },

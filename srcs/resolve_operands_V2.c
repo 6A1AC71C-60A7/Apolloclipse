@@ -321,6 +321,44 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 
 #define IS_AMBIGIOUS(x) ((x) >= OR_8 && (x) <= OR_512)
 
+#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(x) ( \
+	(x) == MOVQ \
+	|| (x) == VMOVSD \
+	|| (x) == VADDSD \
+	|| (x) == VCVTSD2SI \
+	|| (x) == VCVTTSD2SI \
+)
+
+#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_32(x) ( \
+	(x) == MOVD \
+	|| (x) == VMOVSS \
+	|| (x) == VADDSS \
+	|| (x) == VCVTSS2SI  \
+	|| (x) == VCVTTSS2SI \
+	|| (x) == VLDMXCSR \
+	|| (x) == VSTMXCSR \
+	|| (x) == VEXTRACTPS \
+	|| (x) == VINSERTPS \
+)
+#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_16(x) ( \
+	(x) == VPINSRW \
+	|| (x) == VPEXTRW \
+)
+
+#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_8(x) ( \
+	(x) == VPINSRB \
+	|| (x) == VPEXTRB \
+)
+
+#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_3264(x) ( \
+	(x) == VCVTSI2SD \
+/*	|| (x) == CVTSI2SS \ */ \
+	|| (x) == MOVNTI \
+	|| (x) == VPINSRQ \
+	|| (x) == VPEXTRQ \
+	|| (x) == VCVTSI2SD \
+)
+
 static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, ubyte am, ubyte ot, ubyte* const skip)
 {
 	DEBUG("[DEBUG] RESOLVE OPERAND: AM: %d OT: %d\n", am, ot);
@@ -368,19 +406,39 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				break ;
 
 			case AM_E:
+			{
+				udword p = *(udword*)inst->prefix;
+
+				if (inst->mnemonic == VCVTSI2SS && !(p & RP_REXW_MASK))
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_DWORD_MASK;
+				}
+
 				if (modrm_mod == 0b11)
-					*dest = get_general_purpose_register(modrm_rm, ot, *(udword*)inst->prefix);
+					*dest = get_general_purpose_register(modrm_rm, ot, p);
 				else
-					*dest = get_memory(ot, *(udword*)inst->prefix);
+					*dest = get_memory(ot, p);
 				break ;
+			}
 
 			case AM_F:
 				*dest = AVL_OP_RFLAGS;
 				break ;
 
 			case AM_G:
-				*dest = get_general_purpose_register(modrm_reg, ot, *(udword*)inst->prefix);
+			{
+				udword p = *(udword*)inst->prefix;
+
+				if ((inst->mnemonic == VCVTSS2SI || inst->mnemonic == VCVTTSS2SI) && !(p & RP_REXW_MASK))
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_DWORD_MASK;
+				}
+
+				*dest = get_general_purpose_register(modrm_reg, ot, p);
 				break ;
+			}
 
 			case AM_H:
 				*dest = get_vector(vex_vvvv, ot, *(udword*)inst->prefix);
@@ -391,8 +449,18 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				break ;
 
 			case AM_M:
-				*dest = get_memory(ot, *(udword*)inst->prefix);
+			{
+				udword p = *(udword*)inst->prefix;
+
+				if (inst->mnemonic == PINSRW)
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_WORD_MASK;
+				}
+
+				*dest = get_memory(ot, p);
 				break ;
+			}
 
 			case AM_N:
 				*dest = get_mmx_register(modrm_rm);
@@ -406,9 +474,26 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				*dest = get_mmx_register(modrm_reg);
 				break ;
 
-			case AM_R:
-				*dest = get_general_purpose_register(modrm_rm, ot, *(udword*)inst->prefix);
+			case AM_Q:
+				if (modrm_mod == 0b11)
+					*dest = get_mmx_register(modrm_rm);
+				else
+					*dest = get_memory(ot, *(udword*)inst->prefix);
 				break ;
+
+			case AM_R:
+			{
+				udword p = *(udword*)inst->prefix;
+
+				if (inst->mnemonic == PINSRW)
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_WORD_MASK;
+				}
+
+				*dest = get_general_purpose_register(modrm_rm, ot, p);
+				break ;
+			}
 
 			case AM_S:
 				*dest = get_segment_register(modrm_reg);
@@ -427,11 +512,39 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 
 			///TODO: AM_U and AM_W are the same, there must be an error
 			case AM_W:
-				if (modrm_mod == 0b110)
+			{
+				if (modrm_mod == 0b11)
 					*dest = get_vector(modrm_rm, ot, *(udword*)inst->prefix);
 				else
+				{
+
 					*dest = get_memory(ot, *(udword*)inst->prefix);
+
+					if (inst->vexxop[0] == 0)
+					{
+						if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(inst->mnemonic))
+							*dest = AVL_OP_MEM64;
+						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_32(inst->mnemonic))
+							*dest = AVL_OP_MEM32;
+						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_16(inst->mnemonic))
+							*dest = AVL_OP_MEM16;
+						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_8(inst->mnemonic))
+							*dest = *(udword*)inst->prefix & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
+					}
+					else
+					{
+						if (0 /* 64 bit exception */)
+							*dest = AVL_OP_MEM64;
+						else if (0 /* 32 bit exception */)
+							*dest = AVL_OP_MEM32;
+						else if (0 /* 32 bit exception */)
+							*dest = AVL_OP_MEM16;
+						else if (0 /* 32 - 64 exception */)
+							*dest = *(udword*)inst->prefix & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
+					}
+				}
 				break ;
+			}
 
 			case AM_X:
                 *dest = AVL_OP_PAIR_DS_RSI;

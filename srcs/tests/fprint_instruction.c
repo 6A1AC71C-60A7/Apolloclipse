@@ -145,22 +145,22 @@ static const char* const regs_v2[] = {
     "st5",
     "st6",
     "st7",
-    "mmx0",
-    "mmx1",
-    "mmx2",
-    "mmx3",
-    "mmx4",
-    "mmx5",
-    "mmx6",
-    "mmx7",
-    "mmx0b",
-    "mmx1b",
-    "mmx2b",
-    "mmx3b",
-    "mmx4b",
-    "mmx5b",
-    "mmx6b",
-    "mmx7b",
+    "mm0",
+    "mm1",
+    "mm2",
+    "mm3",
+    "mm4",
+    "mm5",
+    "mm6",
+    "mm7",
+    "mm0b",
+    "mm1b",
+    "mm2b",
+    "mm3b",
+    "mm4b",
+    "mm5b",
+    "mm6b",
+    "mm7b",
     "xmm0",
     "xmm1",
     "xmm2",
@@ -2412,7 +2412,7 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 			if (prefix & OS_QWORD_MASK)
 				addon = "q";
 		}
-		else if (target->mnemonic == XRSTOR || target->mnemonic == XRSTORS || target->mnemonic == XSAVE || target->mnemonic == XSAVEC || target->mnemonic == XSAVES)
+		else if (target->mnemonic == XRSTOR || target->mnemonic == XRSTORS || target->mnemonic == XSAVE || target->mnemonic == XSAVEC || target->mnemonic == XSAVES || target->mnemonic == FXSAVE || target->mnemonic == FXRSTOR)
 		{
 			if (prefix & RP_REXW_MASK)
 				addon = "64";
@@ -2439,6 +2439,13 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 	|| (x) == XSAVE \
 	|| (x) == XSAVEC \
 	|| (x) == XSAVES \
+	|| (x) == FXSAVE \
+	|| (x) == FXRSTOR \
+)
+
+#define IS_NONVECTORIAL_SSEX(x) ( \
+	(NM_ISAVX((x)->mnemonic) || NM_ISAVX2((x)->mnemonic) || NM_AVX512((x)->mnemonic) || x->mnemonic > ENDBR64) \
+	&& (x)->vexxop[0] == 0 \
 )
 
 __always_inline
@@ -2447,7 +2454,12 @@ static mnemonic_t print_mnemonic(FILE* where, instruction_t* const target)
 	if (target->mnemonic == 0)
 		fprintf(where, "(bad) ");
 	else
-		fprintf(where, "%s", mnemonics[target->mnemonic - 1]);
+	{
+		const char* mnemonic = mnemonics[target->mnemonic - 1];
+		if (IS_NONVECTORIAL_SSEX(target) && *mnemonic == 'v')
+			mnemonic++;
+		fprintf(where, "%s", mnemonic);
+	}
 
 	if (IS_EXCEPTIONAL_MNEMONIC(target->mnemonic))
 		handle_exceptional_mnemonics(where, target);
@@ -2618,36 +2630,36 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 	switch (reg)
 	{
 		case AVL_OP_MEM8:
-			size = "BYTE";
+			size = "BYTE ";
 			break ;
 
 		case AVL_OP_MEM16:
-			size = "WORD";
+			size = "WORD ";
 			break ;
 
 		case AVL_OP_MEM32:
-			size = "DWORD";
+			size = "DWORD ";
 			break ;
 
 		case AVL_OP_MEM64:
-			size = "QWORD";
+			size = "QWORD ";
 			break ;
 
 #ifdef ADDRESING_GREATHER_THAN_QWORD
 		case AVL_OP_MEM80:
-			size = "TBYTE";
+			size = "TBYTE ";
 			break ;
 
 		case AVL_OP_MEM128:
-			size = "DQWORD";
+			size = "DQWORD ";
 			break ;
 
 		case AVL_OP_MEM256:
-			size = "QQWORD";
+			size = "QQWORD ";
 			break ;
 
 		case AVL_OP_MEM512:
-			size = "DQQWORD";
+			size = "DQQWORD ";
 			break ;
 #endif
 
@@ -2655,9 +2667,9 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 
 	fprintf(where, "%s"
 #ifdef KEYWORD_PTR
-			" PTR"
+			"PTR "
 #endif
-			" ", size);
+			, size);
 
 	if (mod == 0b11 || (mod == 0b00 && (rm <= 0b0011 || (rm >= 0b0110 && rm <= 0b1011) || rm >= 0b1110)))
 	{

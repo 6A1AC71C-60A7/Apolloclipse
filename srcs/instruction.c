@@ -4,7 +4,6 @@
 #include <d_lookup_tables.h>
 #include <d_utils.h>
 
-
 // 1) Check for REX | [{66, f2, f3}], 0f
 // 2) If multiple REX, {66, f2, f3} or 0f skip and ignore
 // 3) If ((1)) check for opcode
@@ -950,18 +949,18 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 				switch (opcode)
 				{
 					case 0x12:
-						found->mnemonic = VMOVHLPS;
-						found->am3 = AM_U;
+						found->mnemonic = VMOVLPS;
+						found->am3 = AM_M;
 						break ;
 
 					case 0x16:
-						found->mnemonic = VMOVLHPS;
-						found->am3 = AM_U;
+						found->mnemonic = VMOVHPS;
+						found->am3 = AM_M;
 						break ;
 
 					case 0xC4:
-						found->am3 = AM_M;
-						found->ot3 = OT_W;
+						found->am2 = AM_M;
+						found->ot2 = OT_W;
 						break ;
 
 					case 0x77:
@@ -1058,7 +1057,49 @@ static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
 			 && /* IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) */
 			IS_TWO_BYTE_NONVEX_SIMD_V2(dest->opcode[2]))
 			, (dest->opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->opcode[2])));
+
 		*(udword*)dest->prefix |= OS_DQWORD_MASK;
+
+		// if (dest->vexxop[0] == 0)
+		// {
+		// 	if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(dest->mnemonic))
+		// 	{
+		// 		OS_RESET(*(udword*)dest->prefix);
+		// 		*(udword*)dest->prefix |= OS_QWORD_MASK;
+		// 	}
+		// 	else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_32(dest->mnemonic))
+		// 	{
+		// 		OS_RESET(*(udword*)dest->prefix);
+		// 		*(udword*)dest->prefix |= OS_DWORD_MASK;
+		// 	}
+		// 	else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_16(dest->mnemonic))
+		// 	{
+		// 		OS_RESET(*(udword*)dest->prefix);
+		// 		*(udword*)dest->prefix |= OS_WORD_MASK;
+		// 	}
+		// 	else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_8(dest->mnemonic))
+		// 	{
+		// 		OS_RESET(*(udword*)dest->prefix);
+		// 		*(udword*)dest->prefix |= OS_BYTE_MASK;
+		// 	}
+		// 	else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_3264(dest->mnemonic))
+		// 	{
+		// 		OS_RESET(*(udword*)dest->prefix);
+		// 		*(udword*)dest->prefix |= *(udword*)dest->prefix & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+		// 	}
+		// }
+		// else
+		// {
+		// 	if (0 /* 64 bit exception */)
+		// 		*(udword*)dest->prefix |= OS_QWORD_MASK;
+		// 	else if (0 /* 32 bit exception */)
+		// 		*(udword*)dest->prefix |= OS_DWORD_MASK;
+		// 	else if (0 /* 16 bit exception */)
+		// 		*(udword*)dest->prefix |= OS_WORD_MASK;
+		// 	else if (0 /* 32 - 64 exception */)
+		// 		*(udword*)dest->prefix |= *(udword*)dest->prefix & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+		// }
+
 		return ;
 	}
 
