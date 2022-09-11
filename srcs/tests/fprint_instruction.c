@@ -2852,10 +2852,24 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 	|| (x)->mnemonic == INSB \
 )
 
+void	swap(reg_t *x, reg_t *y) 
+{
+	if (x != y)
+	{
+		*x ^= *y;
+		*y ^= *x;
+		*x ^= *y;
+	}
+}
+
+#define IS_XGHG_INVERTED(x) (!(x)->opcode[0] && (x)->opcode[2] >= 0x86 && (x)->opcode[2] <= 0x87 && ((x)->mod_rm & 0b11000000) == 0b11000000)
+
 void    fprint_instruction(FILE* where, instruction_t* const target)
 {
-
 	dword				has_operands = 0;
+
+	if (IS_XGHG_INVERTED(target))
+		swap(&target->reg1, &target->reg2);
 
 	if (IS_CONVERSION_INST(target))
 		handle_conversions(where, target);
