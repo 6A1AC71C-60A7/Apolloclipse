@@ -662,8 +662,9 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					}
 				}
 			}
-			if (found->am1 == 0 || found->am1 == AMB)
+			//if (found->am1 == 0 || found->am1 == AMB)
 				*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * scale)];
+			DEBUG("[DEBUG INDEXING MAP 0x0F38] INDEX IS [%ld] (mnemonic='%d')\n", GET_MAP_INDEX(opcode) + (0x100 * scale), found->mnemonic);
 		}
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
@@ -1043,6 +1044,7 @@ static ubyte	is_mnemonic_default_64_bits(instruction_t* const inst)
 #define IS_TWO_BYTE_NONVEX_SIMD_V2(x) !IS_EXCEPTION_NONVEX_NONSIMD(x) && ((GET_ROW(x) == 0x1 && GET_COLUMN(x) < 0x8) || GET_ROW(x) == 0x2 || (GET_ROW(x) >= 0x5 && GET_ROW(x) <= 0x7) || (GET_ROW(x) == 0xC && GET_COLUMN(x) < 0x8) || GET_ROW(x) > 0xC)
 
 #define IS_0x38_NONVEX_SIMD(x) (/*!(GET_ROW(x) == 0x8 && GET_COLUMN(x) <= 0x8) && */ GET_ROW(x) != 0xF)
+#define IS_0x3A_NONVEX_SIMD(x, p) (((x) == 0x0F && (p) & MP_0x66_MASK) || ((x) == 0xF0 && (p) & MP_0xF2_MASK))
 
 __always_inline
 static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
@@ -1078,7 +1080,8 @@ static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
 		IS_TWO_BYTE_NONVEX_SIMD_V2(dest->opcode[2]))
 		 || 
 		 /*(dest->opcode[1] == 0x38 && ((((dest->opcode[2] >> 4) & 0xF) == 0x8 && (dest->opcode[2] & 0xF) >= 0x8) || ((dest->opcode[2] >> 4) & 0xF) < 0xF )) */
-		(dest->opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->opcode[2])))
+		(dest->opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->opcode[2]))
+		|| (dest->opcode[1] == 0x3A && IS_0x3A_NONVEX_SIMD(dest->opcode[2], *(udword*)dest->prefix)))
 	{
 		DEBUG("[DEBUG] COND1: %d COND2: %d\n", (dest->opcode[0] && !dest->opcode[1]
 			 && /* IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) */
@@ -1510,7 +1513,7 @@ skip_prefix_check:
 
 		if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
 		{
-			DEBUG("IS INDEXING: %x\n", dest->opcode[2]);
+			DEBUG("IS INDEXING: %02X\n", dest->opcode[2]);
 			redirect_indexing_opfield(map, &found, *(udword*)dest->prefix, dest->opcode[2]);
 		}
 	}

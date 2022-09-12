@@ -2044,7 +2044,7 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 	{ .mnemonic = VBLENDPS,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VBLENDPD,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VPBLENDW,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
-	{ .mnemonic = VPALIGNR,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = 0,		.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
+	{ .mnemonic = VPALIGNR,			.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VPEXTRB,			.am1 = AM_R,	.ot1 = OT_D,	.am2 = AM_V,	.ot2 = OT_DQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = VPEXTRW,			.am1 = AM_R,	.ot1 = OT_D,	.am2 = AM_V,	.ot2 = OT_DQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = 0 },

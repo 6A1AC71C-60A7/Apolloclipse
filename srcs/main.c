@@ -16,14 +16,15 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/sse2.txt"
+#define FILENAME "srcs/tests/samples/sse3.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
 
 /*
-    - SEE2 ERRORS:
-
+    - SEE3 ERRORS:
+        - movddup QWORD mem
+        - phaddw/d, phaddsw, phsubw/d, phsubsw, pabsb, pabsw/d, ... ALL  only uses mmx (no xmm spetialization)
 */
 
 ///TODO: Check in registers.h
@@ -222,7 +223,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x66\x41\x0f\x74\xEA";
+    const ubyte iraw[] = "\x66\x0f\x3a\x0f\xca\x69";
 #endif
 
     const ubyte* prt = iraw;

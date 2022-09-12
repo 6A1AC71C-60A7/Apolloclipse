@@ -333,6 +333,7 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 	|| (x) == VCMPSD \
 	|| (x) == VCOMISD \
 	|| (x) == VUCOMISD \
+	|| (x) == VMOVDDUP \
 	/*|| ((x) == PSUBQ && !(p & MP_0x66_MASK))*/ \
 	/*|| ((x) == PMULUDQ && !(p & MP_0x66_MASK))*/\
 	|| (x) == VCVTSD2SI \
