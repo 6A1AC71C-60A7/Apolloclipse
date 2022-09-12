@@ -270,11 +270,13 @@ pavgw xmm2, [rax]
 
 ; Extract the word specified by imm8 from xmm and move it to reg, bits 15-0. The upper bits of r32 or r64 is zeroed.
 
+pextrw eax, xmm2, 0x69
 pextrw rax, xmm2, 0x69
 
 ; Move the low word of r32 or from m16 into xmm at the word position specified by imm8.
 
 pinsrw xmm1, eax, 0x69
+pinsrw xmm1, rax, 0x69
 pinsrw xmm1, WORD [rax], 0x69
 
 ; Compare packed unsigned byte integers in xmm1 and xmm2/m128 and store packed maximum values in xmm1.
@@ -453,7 +455,8 @@ cmppd xmm1, [rax], 0x69
 ; Compare low double-precision floating-point value in xmm2/m32 and xmm1 using bits 2:0 of imm8 as comparison predicate.
 
 cmpsd xmm1, xmm2, 0x69
-cmpsd xmm1, [rax], 0x69
+; TODO: Another NASM 'bug' : cmpsd xmm1, QWORD [rax], 0x69 should work but it doesn't
+; cmpsd xmm1, [rax], 0x69
 
 ; Compare low double-precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
 
@@ -593,7 +596,8 @@ movdqu [rax], xmm1
 ; Subtract quadword integer in mm1 from mm2 /m64.
 
 psubq mm1, mm2
-psubq mm1, [rax]
+; Another NASM bug psubq mm1, QWORD [rax] should work but it doesn't ...
+; psubq mm1, [rax]
 
 ; Subtract packed quadword integers in xmm1 from xmm2 /m128.
 
@@ -603,7 +607,8 @@ psubq xmm2, [rax]
 ; Multiply unsigned doubleword integer in mm1 by unsigned doubleword integer in mm2/m64, and store the quadword result in mm1.
 
 pmuludq mm1, mm2
-pmuludq mm1, [rax]
+; TODO: Another NASM bug : pmuludq mm1, QWORD [rax] should work but it doesn't ...
+; pmuludq mm1, [rax]
 
 ; Multiply packed unsigned doubleword integers in xmm1 by packed unsigned doubleword integers in xmm2/m128, and store the quadword results in xmm1.
 
@@ -639,7 +644,9 @@ movdq2q mm1, xmm1
 
 ; Flush Cache Line
 
-clflush [rax]
+; TODO: Another 'bug' from NASM: Documentation states that the argument must be a m8
+; But clflush BYTE [rax] do not compile ...
+; clflush [rax]
 
 ; Move packed integer values in xmm1 to m128 using non-temporal hint.
 
