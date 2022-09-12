@@ -2054,7 +2054,7 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 	{ .mnemonic = VINSERTF128,		.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_H,	.ot2 = OT_QQ,	.am3 = AM_W,	.ot3 = OT_QQ,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = S_V },
 	{ .mnemonic = VEXTRACTF128,		.am1 = AM_W,	.ot1 = OT_DQ,	.am2 = AM_V,	.ot2 = OT_QQ,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = VCVTPS2PH,		.am1 = AM_W,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = AM_I,	.ot3 = OT_B,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
-	{ .mnemonic = VPINSRB,			.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_H,	.ot2 = OT_DQ,	.am3 = AM_R,	.ot3 = OT_Y,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
+	{ .mnemonic = VPINSRB,			.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_H,	.ot2 = OT_DQ,	.am3 = AM_R,	.ot3 = OT_D,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 	{ .mnemonic = VINSERTPS,		.am1 = AM_V,	.ot1 = OT_DQ,	.am2 = AM_H,	.ot2 = OT_DQ,	.am3 = AM_U,	.ot3 = OT_DQ,	.am4 = AM_I,	.ot4 = OT_B,	.symbol = 0 },
 
 	///TODO: NEXT CAN ALSO BE Q

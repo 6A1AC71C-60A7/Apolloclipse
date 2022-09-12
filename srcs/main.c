@@ -16,15 +16,17 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/sse3.txt"
+#define FILENAME "srcs/tests/samples/sse4.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
 
 /*
-    - SEE3 ERRORS:
-        - movddup QWORD mem
-        - phaddw/d, phaddsw, phsubw/d, phsubsw, pabsb, pabsw/d, ... ALL  only uses mmx (no xmm spetialization)
+    - SEE4 ERRORS:
+        - DWORD MEM: roundss, insertps
+        - QWORD MEM: roundsd
+        - pinsrd AND pextrd can be 32-64 and renamed to pinsrq/pextrq (DWORD vesion has QWORD as default ...)
+
 */
 
 ///TODO: Check in registers.h

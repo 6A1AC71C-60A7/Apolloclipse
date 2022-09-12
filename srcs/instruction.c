@@ -928,10 +928,16 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 
 				case 0x21:
 					found->am3 = AM_M;
-					found->ot2 = OT_D;
+					found->ot3 = OT_D;
 					break ;
 			}
 		}
+
+		if (opcode == 0x22 && prefix & RP_REXW_MASK)
+			found->mnemonic = VPINSRQ;
+		else if (opcode == 0x16 && prefix & RP_REXW_MASK)
+			found->mnemonic = VPEXTRQ;
+
 	}
 	else if (map == lt_two_byte_opmap)
 	{
@@ -1044,7 +1050,7 @@ static ubyte	is_mnemonic_default_64_bits(instruction_t* const inst)
 #define IS_TWO_BYTE_NONVEX_SIMD_V2(x) !IS_EXCEPTION_NONVEX_NONSIMD(x) && ((GET_ROW(x) == 0x1 && GET_COLUMN(x) < 0x8) || GET_ROW(x) == 0x2 || (GET_ROW(x) >= 0x5 && GET_ROW(x) <= 0x7) || (GET_ROW(x) == 0xC && GET_COLUMN(x) < 0x8) || GET_ROW(x) > 0xC)
 
 #define IS_0x38_NONVEX_SIMD(x) (/*!(GET_ROW(x) == 0x8 && GET_COLUMN(x) <= 0x8) && */ GET_ROW(x) != 0xF)
-#define IS_0x3A_NONVEX_SIMD(x, p) (((x) == 0x0F && (p) & MP_0x66_MASK) || ((x) == 0xF0 && (p) & MP_0xF2_MASK))
+#define IS_0x3A_NONVEX_SIMD(x, p) (!((x) == 0x0F && !((p) & MP_0x66_MASK)) && !((x) == 0xF0 && (p) & MP_0xF2_MASK))
 
 __always_inline
 static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
