@@ -2373,7 +2373,7 @@ static const char* const mnemonics[] = {
 	"vpblendvps",
 	"vpblendvpd",
 	"vblendvb",
-	"vaeskeygen",
+	"vaeskeygenassist",
 
 	"vpabsq",
 	"vcvttpd2qq",

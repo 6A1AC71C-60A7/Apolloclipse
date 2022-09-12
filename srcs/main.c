@@ -16,7 +16,7 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/sse4.txt"
+#define FILENAME "srcs/tests/samples/aes.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
