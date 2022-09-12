@@ -321,12 +321,25 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 
 #define IS_AMBIGIOUS(x) ((x) >= OR_8 && (x) <= OR_512)
 
-#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(x) ( \
+#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(x, p) ( \
 	(x) == MOVQ \
 	|| (x) == VMOVSD \
 	|| (x) == VADDSD \
+	|| (x) == VMULSD \
+	|| (x) == VDIVSD \
+	|| (x) == VSQRTSD \
+	|| (x) == VMAXSD \
+	|| (x) == VMINSD \
+	|| (x) == VCMPSD \
+	|| (x) == VCOMISD \
+	|| (x) == VUCOMISD \
+	/*|| ((x) == PSUBQ && !(p & MP_0x66_MASK))*/ \
+	/*|| ((x) == PMULUDQ && !(p & MP_0x66_MASK))*/\
 	|| (x) == VCVTSD2SI \
 	|| (x) == VCVTTSD2SI \
+	|| (x) == VCVTPS2PD \
+	|| (x) == VCVTSD2SS \
+	|| (x) == VCVTDQ2PD \
 )
 
 #define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_32(x) ( \
@@ -339,6 +352,7 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 	|| (x) == VSTMXCSR \
 	|| (x) == VEXTRACTPS \
 	|| (x) == VINSERTPS \
+	|| (x) == VCVTSS2SD \
 )
 #define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_16(x) ( \
 	(x) == VPINSRW \
@@ -409,7 +423,7 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 			{
 				udword p = *(udword*)inst->prefix;
 
-				if (inst->mnemonic == VCVTSI2SS && !(p & RP_REXW_MASK))
+				if ((inst->mnemonic == VCVTSI2SS || inst->mnemonic == MOVD || inst->mnemonic == VMOVD || inst->mnemonic == VCVTSI2SD) && !(p & RP_REXW_MASK))
 				{
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_DWORD_MASK;
@@ -430,7 +444,7 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 			{
 				udword p = *(udword*)inst->prefix;
 
-				if ((inst->mnemonic == VCVTSS2SI || inst->mnemonic == VCVTTSS2SI) && !(p & RP_REXW_MASK))
+				if ((inst->mnemonic == VCVTSS2SI || inst->mnemonic == VCVTTSS2SI || inst->mnemonic == VPEXTRW || inst->mnemonic == VCVTSD2SI || inst->mnemonic == VCVTTSD2SI) && !(p & RP_REXW_MASK))
 				{
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_DWORD_MASK;
@@ -490,6 +504,11 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_WORD_MASK;
 				}
+				else if (inst->mnemonic == VPINSRW && !(p & RP_REXW_MASK))
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_DWORD_MASK;
+				}
 
 				*dest = get_general_purpose_register(modrm_rm, ot, p);
 				break ;
@@ -522,7 +541,7 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 
 					if (inst->vexxop[0] == 0)
 					{
-						if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(inst->mnemonic))
+						if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(inst->mnemonic, *(udword*)inst->prefix))
 							*dest = AVL_OP_MEM64;
 						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_32(inst->mnemonic))
 							*dest = AVL_OP_MEM32;

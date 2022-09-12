@@ -16,10 +16,15 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/basic.txt"
+#define FILENAME "srcs/tests/samples/sse2.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
+
+/*
+    - SEE2 ERRORS:
+
+*/
 
 ///TODO: Check in registers.h
 
@@ -217,7 +222,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xf3\x0f\x2a\x08";
+    const ubyte iraw[] = "\x66\x41\x0f\x74\xEA";
 #endif
 
     const ubyte* prt = iraw;

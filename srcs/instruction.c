@@ -940,8 +940,16 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 			{
 				if (opcode == 0xC4)
 				{
-					found->am2 = AM_M;
-					found->ot2 = OT_W;
+					if (inst->mnemonic == PINSRW)
+					{
+						found->am2 = AM_M;
+						found->ot2 = OT_W;
+					}
+					else if (inst->mnemonic == VPINSRW)
+					{
+						found->am3 = AM_M;
+						found->ot3 = OT_W;
+					}
 				}
 			}
 			else if ((prefix & (MP_0x66_MASK | MP_0xF3_MASK | MP_0xF2_MASK)) == 0)
@@ -972,6 +980,25 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 								found->mnemonic = VZEROALL;
 						}
 				}
+			}
+		}
+		else
+		{
+			if (opcode == 0x6E || opcode == 0x7E)
+			{
+				
+				if (prefix & RP_REXW_MASK)
+				{
+					if (inst->mnemonic == MOVD)
+						found->mnemonic = MOVQ;
+					else if (inst->mnemonic == VMOVD)
+						found->mnemonic = VMOVQ;
+				}
+			}
+			else if (opcode >= 0x74 && opcode <= 0x76 && prefix & MP_0x66_MASK)
+			{
+				if (prefix & OP_EVEX_MASK)
+					found->am1 = AM_KR;
 			}
 		}
 	}
