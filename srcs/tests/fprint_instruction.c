@@ -2398,7 +2398,6 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 				addon = "d";
 			else if (prefix & OS_QWORD_MASK)
 				addon = "q";
-
 		}
 		else if (target->mnemonic == INS || target->mnemonic == OUTS)
 		{
@@ -2418,6 +2417,7 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 				addon = "64";
 		}
 
+		
 
 		// break ;
 	// }
@@ -2449,10 +2449,50 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 )
 
 __always_inline
+static void handle_x87_exceptions(FILE* where, instruction_t* const target)
+{
+	const char* mnemonic = 0;
+	static udword was_fwait;
+
+	if (target->mnemonic == FCLEX)
+	{
+		if (was_fwait)
+			mnemonic = "fclex";
+		else
+			mnemonic = "fnclex";
+	}
+	else if (target->mnemonic == FINIT)
+	{
+		if (was_fwait)
+			mnemonic = "finit";
+		else
+			mnemonic = "fninit";
+	}
+	else if (target->mnemonic == FSAVE)
+	{
+		if (was_fwait)
+			mnemonic = "fsave";
+		else
+			mnemonic = "fnsave";
+	}
+
+	if (mnemonic)
+		fprintf(where, "%s", mnemonic);
+
+	if (was_fwait)
+		was_fwait = 0;
+
+	if (target->mnemonic == FWAIT)
+		was_fwait = 1;
+}
+
+__always_inline
 static mnemonic_t print_mnemonic(FILE* where, instruction_t* const target)
 {
 	if (target->mnemonic == 0)
 		fprintf(where, "(bad) ");
+	else if (target->mnemonic == FWAIT || target->mnemonic == FCLEX || target->mnemonic == FINIT || target->mnemonic == FSAVE)
+		handle_x87_exceptions(where, target);
 	else
 	{
 		const char* mnemonic = mnemonics[target->mnemonic - 1];
@@ -2842,6 +2882,10 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 		fprintf(where, "0x%"PRIXq", ", target->immediate & 0x0000FFFF);
 		fprintf(where, "0x%"PRIXq"", (target->immediate & 0x00FF0000) >> 0x10);
 	}
+	else if (target->vexxop[0] == 0 && target->opcode[2] == 0xD9 && target->mod_rm >= 0xC0 && target->mod_rm <= 0xC7)
+		print_operand(where, target, target->reg2, *(udword*)target->prefix, 1);
+	else if (target->vexxop[0] == 0 && target->opcode[2] == 0xDD && target->mod_rm >= 0xE0 && target->mod_rm <= 0xE7)
+		print_operand(where, target, target->reg1, *(udword*)target->prefix, 1);
 }
 
 #define IS_CONVERSION_INST(x) ( \
@@ -2862,6 +2906,8 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 	|| (x)->mnemonic == STOSB \
 	|| (x)->mnemonic == INS \
 	|| (x)->mnemonic == INSB \
+	|| ((x)->vexxop[0] == 0 && (x)->opcode[2] == 0xD9 && (x)->mod_rm >= 0xC0 && (x)->mod_rm <= 0xC7) \
+	|| ((x)->vexxop[0] == 0 && (x)->opcode[2] == 0xDD && (x)->mod_rm >= 0xE0 && (x)->mod_rm <= 0xE7) \
 )
 
 void	swap(reg_t *x, reg_t *y) 

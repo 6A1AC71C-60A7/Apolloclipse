@@ -16,7 +16,7 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/mmx.txt"
+#define FILENAME "srcs/tests/samples/x87.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
@@ -225,7 +225,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x66\x0f\x3a\x0f\xca\x69";
+    const ubyte iraw[] = "\xD9\xC7";
 #endif
 
     const ubyte* prt = iraw;

@@ -130,6 +130,14 @@ static reg_t	get_memory(ubyte ot, udword prefix)
 		// 	found = AVL_OP_MEM512;
 		// 	break ;
 
+		case OT_DS:
+		// fall through
+		case OT_DSS:
+		// fall through
+		case OT_EXT:
+		// fall through
+		case OT_BCD:
+		// fall through
 		case OT_S:
 			found = AVL_OP_MEM80;
 			break ;
