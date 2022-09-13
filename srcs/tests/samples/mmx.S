@@ -124,17 +124,20 @@ punpckhdq mm2, [rsi]
 ; Unpack and interleave low-order bytes from mm and mm/m64 into mm.
 
 punpcklbw mm2, mm6
-punpcklbw mm2, [rsi]
+; NASM BUG ...
+; punpcklbw mm2, [rsi]
 
 ; Unpack and interleave low-order words from mm and mm/m64 into mm.
 
 punpcklwd mm2, mm6
-punpcklwd mm2, [rsi]
+; NASM BUG ...
+; punpcklwd mm2, [rsi]
 
 ; Unpack and interleave low-order doublewords from mm and mm/m64 into mm.
 
 punpckldq mm2, mm6
-punpckldq mm2, [rsi]
+; NASM BUG ...
+; punpckldq mm2, [rsi]
 
 ; Bitwise AND mm/m64 and mm.
 
