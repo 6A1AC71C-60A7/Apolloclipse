@@ -236,8 +236,10 @@ ftst
 
 ; Wait
 
-wait
-fwait
+; NOTE: No longuer possible to display these 2, however they are perfecty parsed
+
+; wait
+; fwait
 
 ; Examine Floating-Point
 
