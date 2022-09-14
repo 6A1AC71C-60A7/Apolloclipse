@@ -16,7 +16,7 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/x87.txt"
+#define FILENAME "srcs/tests/samples/fma.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE

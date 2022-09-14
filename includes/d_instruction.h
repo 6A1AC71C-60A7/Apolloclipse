@@ -90,7 +90,7 @@
 #define VEXXOP_MAP_SELECT_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0b00011111)
 /// For integer instructions: when 1, a 64-bit operand size is used; otherwise, when 0, the default operand size is used (equivalent with REX.W)
 /// For non-integer instructions, this bit is a general opcode extension bit
-#define VEXXOP_WE_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x8) & 0x1)
+#define VEXXOP_WE_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x7) & 0x1)
 /// An additional operand for the instruction, the value of the XMM or YMM register is 'inverted'
 #define VEXXOP_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x3) & 0xF)
 #define VEXXOP2_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x3) & 0xF)

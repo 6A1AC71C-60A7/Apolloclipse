@@ -1466,63 +1466,63 @@ static const char* const mnemonics[] = {
 	"vfmadd132pd",	// fused multiply-add of packed double-precision floating-point values.
 	"vfmadd213pd",	// fused multiply-add of packed double-precision floating-point values.
 	"vfmadd231pd",	// fused multiply-add of packed double-precision floating-point values.
-	"vfmadd132ps",	// fused multiply-add of packed single-precision floating-point values.
-	"vfmadd213ps",	// fused multiply-add of packed single-precision floating-point values.
-	"vfmadd231ps",	// fused multiply-add of packed single-precision floating-point values.
+	"vfmadd132p",	// fused multiply-add of packed single-precision floating-point values.
+	"vfmadd213p",	// fused multiply-add of packed single-precision floating-point values.
+	"vfmadd231p",	// fused multiply-add of packed single-precision floating-point values.
 	"vfmadd132sd",	// fused multiply-add of scalar double-precision floating-point values.
 	"vfmadd213sd",	// fused multiply-add of scalar double-precision floating-point values.
 	"vfmadd231sd",	// fused multiply-add of scalar double-precision floating-point values.
-	"vfmadd132ss",	// fused multiply-add of scalar single-precision floating-point values.
-	"vfmadd213ss",	// fused multiply-add of scalar single-precision floating-point values.
-	"vfmadd231ss",	// fused multiply-add of scalar single-precision floating-point values.
+	"vfmadd132s",	// fused multiply-add of scalar single-precision floating-point values.
+	"vfmadd213s",	// fused multiply-add of scalar single-precision floating-point values.
+	"vfmadd231s",	// fused multiply-add of scalar single-precision floating-point values.
 	"vfmaddsub132pd",	// fused multiply-alternating add/subtract of packed double-precision floating-point values.
 	"vfmaddsub213pd",	// fused multiply-alternating add/subtract of packed double-precision floating-point values.
 	"vfmaddsub231pd",	// fused multiply-alternating add/subtract of packed double-precision floating-point values.
-	"vfmaddsub132ps",	// fused multiply-alternating add/subtract of packed single-precision floating-point values.
-	"vfmaddsub213ps",	// fused multiply-alternating add/subtract of packed single-precision floating-point values.
-	"vfmaddsub231ps",	// fused multiply-alternating add/subtract of packed single-precision floating-point values.
+	"vfmaddsub132p",	// fused multiply-alternating add/subtract of packed single-precision floating-point values.
+	"vfmaddsub213p",	// fused multiply-alternating add/subtract of packed single-precision floating-point values.
+	"vfmaddsub231p",	// fused multiply-alternating add/subtract of packed single-precision floating-point values.
 	"vfmsubadd132pd",	// fused multiply-alternating subtract/add of packed double-precision floating-point values.
 	"vfmsubadd213pd",	// fused multiply-alternating subtract/add of packed double-precision floating-point values.
 	"vfmsubadd231pd",	// fused multiply-alternating subtract/add of packed double-precision floating-point values.
-	"vfmsubadd132ps",	// fused multiply-alternating subtract/add of packed single-precision floating-point values.
-	"vfmsubadd213ps",	// fused multiply-alternating subtract/add of packed single-precision floating-point values.
-	"vfmsubadd231ps",	// fused multiply-alternating subtract/add of packed single-precision floating-point values.
+	"vfmsubadd132p",	// fused multiply-alternating subtract/add of packed single-precision floating-point values.
+	"vfmsubadd213p",	// fused multiply-alternating subtract/add of packed single-precision floating-point values.
+	"vfmsubadd231p",	// fused multiply-alternating subtract/add of packed single-precision floating-point values.
 	"vfmsub132pd",	// fused multiply-subtract of packed double-precision floating-point values.
 	"vfmsub213pd",	// fused multiply-subtract of packed double-precision floating-point values.
 	"vfmsub231pd",	// fused multiply-subtract of packed double-precision floating-point values.
-	"vfmsub132ps",	// fused multiply-subtract of packed single-precision floating-point values.
-	"vfmsub213ps",	// fused multiply-subtract of packed single-precision floating-point values.
-	"vfmsub231ps",	// fused multiply-subtract of packed single-precision floating-point values.
+	"vfmsub132p",	// fused multiply-subtract of packed single-precision floating-point values.
+	"vfmsub213p",	// fused multiply-subtract of packed single-precision floating-point values.
+	"vfmsub231p",	// fused multiply-subtract of packed single-precision floating-point values.
 	"vfmsub132sd",	// fused multiply-subtract of scalar double-precision floating-point values.
 	"vfmsub213sd",	// fused multiply-subtract of scalar double-precision floating-point values.
 	"vfmsub231sd",	// fused multiply-subtract of scalar double-precision floating-point values.
-	"vfmsub132ss",	// fused multiply-subtract of scalar single-precision floating-point values.
-	"vfmsub213ss",	// fused multiply-subtract of scalar single-precision floating-point values.
-	"vfmsub231ss",	// fused multiply-subtract of scalar single-precision floating-point values.
+	"vfmsub132s",	// fused multiply-subtract of scalar single-precision floating-point values.
+	"vfmsub213s",	// fused multiply-subtract of scalar single-precision floating-point values.
+	"vfmsub231s",	// fused multiply-subtract of scalar single-precision floating-point values.
 	"vfnmadd132pd",	// fused negative multiply-add of packed double-precision floating-point values.
 	"vfnmadd213pd",	// fused negative multiply-add of packed double-precision floating-point values.
 	"vfnmadd231pd",	// fused negative multiply-add of packed double-precision floating-point values.
-	"vfnmadd132ps",	// fused negative multiply-add of packed single-precision floating-point values.
-	"vfnmadd213ps",	// fused negative multiply-add of packed single-precision floating-point values.
-	"vfnmadd231ps",	// fused negative multiply-add of packed single-precision floating-point values.
+	"vfnmadd132p",	// fused negative multiply-add of packed single-precision floating-point values.
+	"vfnmadd213p",	// fused negative multiply-add of packed single-precision floating-point values.
+	"vfnmadd231p",	// fused negative multiply-add of packed single-precision floating-point values.
 	"vfnmadd132sd",	// fused negative multiply-add of scalar double-precision floating-point values.
 	"vfnmadd213sd",	// fused negative multiply-add of scalar double-precision floating-point values.
 	"vfnmadd231sd",	// fused negative multiply-add of scalar double-precision floating-point values.
-	"vfnmadd132ss",	// fused negative multiply-add of scalar single-precision floating-point values.
-	"vfnmadd213ss",	// fused negative multiply-add of scalar single-precision floating-point values.
-	"vfnmadd231ss",	// fused negative multiply-add of scalar single-precision floating-point values.
+	"vfnmadd132s",	// fused negative multiply-add of scalar single-precision floating-point values.
+	"vfnmadd213s",	// fused negative multiply-add of scalar single-precision floating-point values.
+	"vfnmadd231s",	// fused negative multiply-add of scalar single-precision floating-point values.
 	"vfnmsub132pd",	// fused negative multiply-subtract of packed double-precision floating-point values.
 	"vfnmsub213pd",	// fused negative multiply-subtract of packed double-precision floating-point values.
 	"vfnmsub231pd",	// fused negative multiply-subtract of packed double-precision floating-point values.
-	"vfnmsub132ps",	// fused negative multiply-subtract of packed single-precision floating-point values.
-	"vfnmsub213ps",	// fused negative multiply-subtract of packed single-precision floating-point values.
-	"vfnmsub231ps",	// fused negative multiply-subtract of packed single-precision floating-point values.
+	"vfnmsub132p",	// fused negative multiply-subtract of packed single-precision floating-point values.
+	"vfnmsub213p",	// fused negative multiply-subtract of packed single-precision floating-point values.
+	"vfnmsub231p",	// fused negative multiply-subtract of packed single-precision floating-point values.
 	"vfnmsub132sd",	// fused negative multiply-subtract of scalar double-precision floating-point values.
 	"vfnmsub213sd",	// fused negative multiply-subtract of scalar double-precision floating-point values.
 	"vfnmsub231sd",	// fused negative multiply-subtract of scalar double-precision floating-point values.
-	"vfnmsub132ss",	// fused negative multiply-subtract of scalar single-precision floating-point values.
-	"vfnmsub213ss",	// fused negative multiply-subtract of scalar single-precision floating-point values.
-	"vfnmsub231ss",	// fused negative multiply-subtract of scalar single-precision floating-point values.
+	"vfnmsub132s",	// fused negative multiply-subtract of scalar single-precision floating-point values.
+	"vfnmsub213s",	// fused negative multiply-subtract of scalar single-precision floating-point values.
+	"vfnmsub231s",	// fused negative multiply-subtract of scalar single-precision floating-point values.
 
 	/////////////////////////////////////////
 	// advanced vector extensions 2 (avx2) //
@@ -2381,6 +2381,10 @@ static const char* const mnemonics[] = {
 
 };
 
+#define IS_FMA_MNEMONIC(x) ( \
+	(x) >= VFMADD132PD && (x) <= VFNMSUB231SS \
+)
+
 __always_inline
 static void handle_exceptional_mnemonics(FILE* where, instruction_t* const target)
 {
@@ -2416,6 +2420,13 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 			if (prefix & RP_REXW_MASK)
 				addon = "64";
 		}
+		else if (IS_FMA_MNEMONIC(target->mnemonic))
+		{
+			if (*(udword*)target->prefix & RP_REXW_MASK)
+				addon = "d";
+			else
+				addon = "s";
+		}
 
 		
 
@@ -2426,7 +2437,8 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 }
 
 #define IS_EXCEPTIONAL_MNEMONIC(x) ( \
-	(x) == CMPS \
+	IS_FMA_MNEMONIC(x) \
+	|| (x) == CMPS \
 	|| (x) == INS \
 	|| (x) == LODS \
 	|| (x) == MOVS \
@@ -2491,6 +2503,7 @@ static mnemonic_t print_mnemonic(FILE* where, instruction_t* const target)
 {
 	if (target->mnemonic == 0)
 		fprintf(where, "(bad) ");
+	///TODO: This can be handled 1 frame before in 'handle_conversions'
 	else if (target->mnemonic == FWAIT || target->mnemonic == FCLEX || target->mnemonic == FINIT || target->mnemonic == FSAVE)
 		handle_x87_exceptions(where, target);
 	else
@@ -2803,10 +2816,12 @@ static ubyte print_merge_zero_avx512(FILE* where, instruction_t* const target)
 		ubyte kindex = EVEX_K_GET(target->vexxop);
 		if (kindex)
 			fprintf(where, " {%s}", regs_k[kindex]);
+
+		
+		if (EVEX_Z_GET(target->vexxop))
+			fprintf(where, " {z}");
 	}
 
-	if (EVEX_Z_GET(target->vexxop))
-		fprintf(where, " {z}");
 
 	return 0;
 }
