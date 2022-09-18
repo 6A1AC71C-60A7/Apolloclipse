@@ -612,7 +612,11 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				{
 					udword p = *(udword*)inst->prefix;
 
-					if ((inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTDQ2PD || inst->mnemonic == VCVTPH2PS || inst->mnemonic == VCVTPS2PH) && p & OS_QQWORD_MASK)
+					if ((inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTDQ2PD || inst->mnemonic == VCVTPH2PS
+					|| inst->mnemonic == VCVTPS2PH || inst->mnemonic == VPSLLW || inst->mnemonic == VPSLLD
+					|| inst->mnemonic == VPSLLQ || inst->mnemonic == VPSRLW || inst->mnemonic == VPSRLD
+					|| inst->mnemonic == VPSRLQ || inst->mnemonic == VPSRAW || inst->mnemonic == VPSRAD
+					|| inst->mnemonic == VBROADCASTSS || inst->mnemonic == VBROADCASTSD) && p & OS_QQWORD_MASK)
 					{
 						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 						p |= OS_DQWORD_MASK;

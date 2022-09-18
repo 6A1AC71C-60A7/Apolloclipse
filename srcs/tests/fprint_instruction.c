@@ -1532,13 +1532,13 @@ static const char* const mnemonics[] = {
 	"vpermpd",// permute double-precision fp elements in ymm2/m256 using indexes in imm8 and store the result in ymm1.
 	"vpermps",// permute single-precision fp elements in ymm3/m256 using indexes in ymm2 and store the result in ymm1
 	"vpermq",	// permute quadwords in ymm2/m256 using indexes in imm8 and store the result in ymm1.
-	"vpsllvd",// shift doublewords in xmm2 left by amount specified in the corresponding element of"
+	"vpsllv",// shift doublewords in xmm2 left by amount specified in the corresponding element of"
 		//xmm3/m128 or ymm3/m256 while shifting in 0s.
 	"vpsllvq",// shift quadwords in xmm2 left by amount specified in the corresponding element of"
 		//xmm3/m128 or ymm3/m256 while shifting in 0s.
 	"vpsravd",// shift doublewords in xmm2 right by amount specified in the corresponding element of"
 		//xmm3/m128 while shifting in the sign bits.
-	"vpsrlvd",// shift doublewords in xmm2 right by amount specified in the corresponding element of"
+	"vpsrlv",// shift doublewords in xmm2 right by amount specified in the corresponding element of"
 		//xmm3/m128 or ymm3/m256 while shifting in 0s.
 	"vpsrlvq",// shift quadwords in xmm2 right by amount specified in the corresponding element of"
 		//xmm3/m128 or ymm3/m256 while shifting in 0s.
@@ -1550,7 +1550,7 @@ static const char* const mnemonics[] = {
 		//conditioned on mask specified by x/ymm2. conditionally gathered elements are merged into x/ymm1.
 	"vgatherqpd",// using qword indices specified in vm64x, gather double-precision fp values from memory"
 		//conditioned on mask specified by x/ymm2. conditionally gathered elements are merged into x/ymm1.
-	"vgatherdps",// using dword indices specified in vm32x, gather single-precision fp values from memory"
+	"vgatherdp",// using dword indices specified in vm32x, gather single-precision fp values from memory"
 		//conditioned on mask specified by xmm2. conditionally gathered elements are merged into xmm1.
 	"vgatherqps",// using qword indices specified in vm64x/y, gather single-precision fp values from memory"
 		//conditioned on mask specified by x/ymm2. conditionally gathered elements are merged into x/ymm1.
@@ -2421,12 +2421,19 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 			if (prefix & RP_REXW_MASK)
 				addon = "64";
 		}
-		else if (IS_FMA_MNEMONIC(target->mnemonic))
+		else if (IS_FMA_MNEMONIC(target->mnemonic) || target->mnemonic == VGATHERDPS)
 		{
-			if (*(udword*)target->prefix & RP_REXW_MASK)
+			if (prefix & RP_REXW_MASK)
 				addon = "d";
 			else
 				addon = "s";
+		}
+		else if (target->mnemonic == VPSLLVD || target->mnemonic == VPSRLVD)
+		{
+			if (prefix & RP_REXW_MASK)
+				addon = "q";
+			else
+				addon = "d";
 		}
 
 		
@@ -2454,6 +2461,9 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 	|| (x) == XSAVES \
 	|| (x) == FXSAVE \
 	|| (x) == FXRSTOR \
+	|| (x) == VGATHERDPS \
+	|| (x) == VPSLLVD \
+	|| (x) == VPSRLVD \
 )
 
 #define IS_NONVECTORIAL_SSEX(x) ( \
@@ -2526,6 +2536,7 @@ static mnemonic_t print_mnemonic(FILE* where, instruction_t* const target)
 __always_inline
 static udword print_register_V2(FILE* where, reg_t reg)
 {
+	DEBUG("PRINT REGISTER: %d\n", reg);
 	return fprintf(where, "%s", regs_v2[reg]);
 }
 
@@ -2552,10 +2563,7 @@ static udword print_register(FILE* where, reg_t reg, udword prefix)
 	return l;
 }
 
-///TODO:
-#define __FIXUP_OFFSET_TO_REMOVE AVL_OP_RAX //AVL_OP_AL
-
-static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
+static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg_t addr_reg_offset)
 {
 	///TODO: WHAT I AM SUPOSED TO DO WITH hasdisp ?!?! (Add twice the displacement ?!?)
 	/// I don't think so, i've only parsed 1 displacement
@@ -2565,8 +2573,6 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 	const ubyte scale = 0x1 << SIB_SCALE_GET(inst->sib);
 	const ubyte index = SIB_INDEX_EXTENDED_GET(inst);
 	const ubyte base = SIB_BASE_EXTENDED_GET(inst);
-
-	///TODO: For the moment only general purpose registers addressing is handled
 	
 	switch (mod)
 	{
@@ -2579,7 +2585,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 					/* [BASE] */
 
 					fprintf(where, "[");
-					print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+					print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
 					fprintf(where, "]");
 				}
 				else
@@ -2587,9 +2593,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 					/* [BASE + (INDEX * SCALE)] */
 
 					fprintf(where, "[");
-					print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+					print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
 					fprintf(where, " + (");
-					print_register(where, index + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+					print_register(where, index + addr_reg_offset, *(udword*)inst->prefix);
 					fprintf(where, " * %d)]", scale);
 				}
 			}
@@ -2606,7 +2612,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 					/* [(INDEX * SCALE) + DISP32] */
 
 					fprintf(where, "[(");
-					print_register(where, index + 2 , *(udword*)inst->prefix);
+					print_register(where, index + addr_reg_offset , *(udword*)inst->prefix);
 					fprintf(where, " * %d) + %d]", scale, inst->displacement);
 				}
 			}
@@ -2620,7 +2626,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				/* [BASE + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + 2 , *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset , *(udword*)inst->prefix);
 				fprintf(where, " + %"PRIdd"]", inst->displacement);
 			}
 			else
@@ -2628,9 +2634,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				/* [BASE + (INDEX * SCALE) + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + 2 , *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset , *(udword*)inst->prefix);
 				fprintf(where, " + (");
-				print_register(where, index + 2 , *(udword*)inst->prefix);
+				print_register(where, index + addr_reg_offset , *(udword*)inst->prefix);
 				fprintf(where, " * %d) + %"PRIdd"]", scale, inst->displacement);
 			}
 			break ;
@@ -2643,7 +2649,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				/* [BASE + DISP32 ] */
 
 				fprintf(where, "[");
-				print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
 				fprintf(where, " + %d]", inst->displacement);
 			}
 			else
@@ -2651,9 +2657,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 				/* [BASE + (INDEX * SCALE) + DISP32] */
 
 				fprintf(where, "[");
-				print_register(where, base + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
 				fprintf(where, " + (");
-				print_register(where, index + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+				print_register(where, index + addr_reg_offset, *(udword*)inst->prefix);
 				fprintf(where, " * %d) + %d]", scale, inst->displacement);
 			}
 			break ;
@@ -2661,7 +2667,25 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp)
 	}
 }
 
+__always_inline
+static reg_t get_addressing_reg_offset(instruction_t* const inst)
+{
+	reg_t offset = AVL_OP_RAX;
 
+	if (inst->mnemonic == VGATHERDPS || inst->mnemonic == VPGATHERDD || inst->mnemonic == VPGATHERQD)
+	{
+		if ((inst->vexxop[2] ? VEXXOP_L_GET(inst->vexxop) : VEXXOP2_L_GET(inst->vexxop))
+		&& !(inst->mnemonic == VGATHERDPS && *(udword*)inst->prefix & RP_REXW_MASK))
+		// vgatherpd always use [xmm]
+			offset = AVL_OP_YMM0;
+		else
+			offset = AVL_OP_XMM0;
+	}
+
+	DEBUG("OFFSET IS: %d (%d)\n", offset, AVL_OP_XMM0);
+
+	return offset;
+}
 
 __always_inline
 static void print_address(FILE* where, instruction_t* const inst, reg_t reg, ubyte isfirst)
@@ -2672,6 +2696,8 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 	//DEBUG("PRINT ADDRESS: MOD=%d, RM=%d\n", mod, rm);
 
 	const ubyte* direction = (dword)inst->displacement < 0 ? (ubyte*)"-" : (ubyte*)"+";
+
+	const reg_t addr_reg_offset = get_addressing_reg_offset(inst);
 
 	///TODO: For the moment only 64-bits addressing is handled
 	///TODO: For the moment only general purpose registers addressing is handled
@@ -2730,7 +2756,7 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 		/* [R/M] */
 
 		fprintf(where, "[");
-		print_register(where, rm + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+		print_register(where, rm + addr_reg_offset, *(udword*)inst->prefix);
 		fprintf(where, "]");
 	}
 	else if (mod == 0b00)
@@ -2739,7 +2765,7 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 		{
 			/* [SIB] */
 
-			print_sib(where, inst, 0);
+			print_sib(where, inst, 0, addr_reg_offset);
 		}
 		else if (rm == 0101 || rm == 0b1101)
 		{
@@ -2754,14 +2780,14 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 		{
 			/* [SIB + DIPS8] */
 
-			print_sib(where, inst, 8);
+			print_sib(where, inst, 8, addr_reg_offset);
 		}
 		else
 		{
 			/* [R/M + DISP8] */
 
 			fprintf(where, "[");
-			print_register(where, rm + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+			print_register(where, rm + addr_reg_offset, *(udword*)inst->prefix);
 			fprintf(where, " %s %"PRIdd"]", direction, inst->displacement);
 		}
 	}
@@ -2771,14 +2797,14 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 		{
 			/* [SIB + DISP32] */
 
-			print_sib(where, inst, 32);
+			print_sib(where, inst, 32, addr_reg_offset);
 		}
 		else
 		{
 			/* [R/M + DISP32] */
 
 			fprintf(where, "[");
-			print_register(where, rm + __FIXUP_OFFSET_TO_REMOVE, *(udword*)inst->prefix);
+			print_register(where, rm + addr_reg_offset, *(udword*)inst->prefix);
 			fprintf(where, " %s %d]", direction, inst->displacement);
 		}
 	}

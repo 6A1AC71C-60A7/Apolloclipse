@@ -16,18 +16,16 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/avx.txt"
+#define FILENAME "srcs/tests/samples/avx2.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
 
 /*
-    - AVX ERRORS:
-        - vmovss (10 11) -> only when mod != 0b11
-        - vmovsd (10 11) -> only when mod != 0b11
-        - vpcmpestri and vpcmpestrm (60 61 62 63)
+    - AVX2
+    - vbroadcastss xmm1, DWORD [rax] BUG NASM
 */
-
+    
 ///TODO: Check in registers.h
 
 ///TODO: Add flags resolution and R|W per operand
@@ -224,7 +222,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xc5\xf8\x5a\x08";
+    const ubyte iraw[] = "\xc4\xe2\x69\x92\x0c\x0d\x00\x00\x00\x00\x00\x00";
 #endif
 
     const ubyte* prt = iraw;
