@@ -509,7 +509,8 @@ vcmpps ymm1, ymm2, [rax], 0x69
 ; Compare low single-precision floating-point value in xmm3/m32 and xmm2 using bits 4:0 of imm8 as comparison predicate.
 
 vcmpss xmm1, xmm2, xmm3, 0x69
-vcmpss xmm1, xmm2, [rax], 0x69
+; NASM BUG ...
+; vcmpss xmm1, xmm2, [rax], 0x69
 
 ; Compare low single-precision floating-point values in xmm1 and xmm2/mem32 and set the EFLAGS flags accordingly.
 
