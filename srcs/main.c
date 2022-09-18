@@ -16,17 +16,16 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/fma.txt"
+#define FILENAME "srcs/tests/samples/avx.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
 
 /*
-    - SEE4 ERRORS:
-        - DWORD MEM: roundss, insertps
-        - QWORD MEM: roundsd
-        - pinsrd AND pextrd can be 32-64 and renamed to pinsrq/pextrq (DWORD vesion has QWORD as default ...)
-
+    - AVX ERRORS:
+        - vmovss (10 11) -> only when mod != 0b11
+        - vmovsd (10 11) -> only when mod != 0b11
+        - vpcmpestri and vpcmpestrm (60 61 62 63)
 */
 
 ///TODO: Check in registers.h
@@ -225,7 +224,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xD9\xC7";
+    const ubyte iraw[] = "\xc5\xf8\x5a\x08";
 #endif
 
     const ubyte* prt = iraw;

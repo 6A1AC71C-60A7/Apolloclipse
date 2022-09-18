@@ -2107,7 +2107,8 @@ static const char* const mnemonics[] = {
 	"vphaddd",// add 32-bit integers horizontally, pack to (x/y)mm1.
 	"vphaddsw",//  add 16-bit signed integers horizontally, pack saturated integers to (x/y)mm1.
 	"vphsubw",// 
-	"vphsubd",// 
+	"vphsubsw",//
+	"vphsubd",//  
 	"vpinsrb",//
 	"vpinsrd",//
 	"vpinsrq",//
@@ -2370,8 +2371,8 @@ static const char* const mnemonics[] = {
 	"vblendps",
 	"vblendpd",
 	"vpblendw",
-	"vpblendvps",
-	"vpblendvpd",
+	"vblendvps",
+	"vblendvpd",
 	"vblendvb",
 	"vaeskeygenassist",
 
@@ -2850,9 +2851,18 @@ static void print_immediate(FILE* where, instruction_t* const target, ubyte has_
 		else if (target->mnemonic >= LOOP && target->mnemonic <= LOOPNE)
 			target->immediate += IMMEDIATE_LOOP_ADDON;
 
-        if (has_operands)
-            fprintf(where, ", ");
-        fprintf(where, "0x%"PRIXq"", target->immediate);
+		if ((target->mnemonic == VBLENDVPS || target->mnemonic == VBLENDVPD) && target->opcode[2] >= 0x4A && target->opcode[2] <= 0x4B)
+		{
+			///TODO: Imm seems to be empty
+			print_operand(where, target, target->immediate, *(udword*)target->prefix, 0);
+		}
+		else
+		{
+			if (has_operands)
+				fprintf(where, ", ");
+			fprintf(where, "0x%"PRIXq"", target->immediate);
+		}
+
     }
 }
 

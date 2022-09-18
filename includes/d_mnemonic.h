@@ -1597,6 +1597,7 @@ typedef enum
 	VPHADDD,		// Add 32-bit integers horizontally, pack to (x/y)mm1.
 	VPHADDSW,		//  Add 16-bit signed integers horizontally, pack saturated integers to (x/y)mm1.
 	VPHSUBW,		// 
+	VPHSUBSW,		// 
 	VPHSUBD,		// 
 	VPINSRB,		//
 	VPINSRD,		//

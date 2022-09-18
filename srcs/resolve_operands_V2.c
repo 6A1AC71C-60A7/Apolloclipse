@@ -384,6 +384,49 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 	|| (x) == VCVTSI2SD \
 )
 
+#define IS_VOSMEMEXTENTED_EXCEPTION_NONVEC_64(x, p) ( \
+	(x) == VMOVSD \
+	|| (x) == VADDSD \
+	|| (x) == VMULSD \
+	|| (x) == VDIVSD \
+	|| (x) == VSQRTSD \
+	|| (x) == VMAXSD \
+	|| (x) == VMINSD \
+	|| (x) == VCMPSD \
+	|| (x) == VCOMISD \
+	|| (x) == VUCOMISD \
+	|| (x) == VCVTSD2SS \
+	|| ((x) == VCVTDQ2PD && !((p) & OS_QQWORD_MASK)) \
+	|| (x) == VCVTSD2SI \
+	|| (x) == VCVTTSD2SI \
+	|| (x) == VROUNDSD \
+	|| ((x) == VCVTPH2PS && !((p) & OS_QQWORD_MASK)) \
+	|| ((x) == VCVTPS2PH && !((p) & OS_QQWORD_MASK)) \
+	|| ((x) == VCVTPS2PD && !((p) & OS_QQWORD_MASK)) \
+	|| ((x) == VMOVDDUP && !((p) & OS_QQWORD_MASK)) \
+)
+
+#define IS_VOSMEMEXTENTED_EXCEPTION_NONVEC_32(x) ( \
+	(x) == VMOVSS \
+	|| (x) == VMULSS \
+	|| (x) == VDIVSS \
+	|| (x) == VRSQRTSS \
+	|| (x) == VMAXSS \
+	|| (x) == VMINSS \
+	|| ((x) == VCMPSS /*&& !((p) & RP_REXW_MASK)*/) \
+	|| (x) == VCOMISS \
+	|| (x) == VUCOMISS \
+	|| (x) == VCVTSS2SI \
+	|| (x) == VCVTTSS2SI \
+	/*|| (x) == VCVTPS2PD*/ \
+	|| (x) == VCVTSS2SD \
+	|| (x) == VROUNDSS \
+)
+
+#define IS_VEX_AMH_EXCEPTION(x) ( \
+	(((x)->opcode[2] == 0x10 || (x)->opcode [2]== 0x11) && ((x)->mnemonic == VMOVSS || (x)->mnemonic == VMOVSD) && MODRM_MOD_GET((x)->mod_rm) != 0b11) \
+)
+
 static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, ubyte am, ubyte ot, ubyte* const skip)
 {
 	DEBUG("[DEBUG] RESOLVE OPERAND: AM: %d OT: %d\n", am, ot);
@@ -455,7 +498,7 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 			{
 				udword p = *(udword*)inst->prefix;
 
-				if ((inst->mnemonic == VCVTSS2SI || inst->mnemonic == VCVTTSS2SI || inst->mnemonic == VPEXTRW || inst->mnemonic == VCVTSD2SI || inst->mnemonic == VCVTTSD2SI) && !(p & RP_REXW_MASK))
+				if ((inst->mnemonic == VCVTSS2SI || inst->mnemonic == VCVTTSS2SI || inst->mnemonic == VPEXTRW || inst->mnemonic == VCVTSD2SI || inst->mnemonic == VCVTTSD2SI || inst->mnemonic == VMOVMSKPS || inst->mnemonic == VMOVMSKPD) && !(p & RP_REXW_MASK))
 				{
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_DWORD_MASK;
@@ -481,6 +524,18 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				{
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_WORD_MASK;
+				}
+
+				else if (inst->vexxop[0] && (inst->mnemonic == VMOVLPS || inst->mnemonic == VMOVHPS || inst->mnemonic == VMOVLPD || inst->mnemonic == VMOVHPD))
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_QWORD_MASK;
+				}
+
+				else if (inst->vexxop[0] && (inst->mnemonic == VLDMXCSR|| inst->mnemonic == VSTMXCSR))
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_DWORD_MASK;
 				}
 
 				*dest = get_memory(ot, p);
@@ -537,14 +592,34 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				break ;
 
 			case AM_V:
-				*dest = get_vector(modrm_reg, ot, *(udword*)inst->prefix);
+			{
+				udword p = *(udword*)inst->prefix;
+
+				if ((inst->mnemonic == VCVTPD2PS || inst->mnemonic == VCVTPD2DQ || inst->mnemonic == VCVTTPD2DQ) && p & OS_QQWORD_MASK)
+				{
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p |= OS_DQWORD_MASK;
+				}
+
+				*dest = get_vector(modrm_reg, ot, p);
 				break ;
+			}
 
 			///TODO: AM_U and AM_W are the same, there must be an error
 			case AM_W:
 			{
 				if (modrm_mod == 0b11)
-					*dest = get_vector(modrm_rm, ot, *(udword*)inst->prefix);
+				{
+					udword p = *(udword*)inst->prefix;
+
+					if ((inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTDQ2PD || inst->mnemonic == VCVTPH2PS || inst->mnemonic == VCVTPS2PH) && p & OS_QQWORD_MASK)
+					{
+						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						p |= OS_DQWORD_MASK;
+					}
+
+					*dest = get_vector(modrm_rm, ot, p);
+				}
 				else
 				{
 
@@ -563,11 +638,11 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 					}
 					else
 					{
-						if (0 /* 64 bit exception */)
+						if (IS_VOSMEMEXTENTED_EXCEPTION_NONVEC_64(inst->mnemonic, *(udword*)inst->prefix))
 							*dest = AVL_OP_MEM64;
-						else if (0 /* 32 bit exception */)
+						else if (IS_VOSMEMEXTENTED_EXCEPTION_NONVEC_32(inst->mnemonic))
 							*dest = AVL_OP_MEM32;
-						else if (0 /* 32 bit exception */)
+						else if (0 /* 16 bit exception */)
 							*dest = AVL_OP_MEM16;
 						else if (0 /* 32 - 64 exception */)
 							*dest = *(udword*)inst->prefix & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
@@ -697,9 +772,16 @@ void	resolve_operands_v2(instruction_t* const dest, opfield_t instruction)
         resolve_operand_v2(dest, regs[i], ams[attr_index], ots[attr_index], &skip);
 
         /* Addressing Mode H ((E)VEX.VVVV) is ignored for instructions with no (E)VEX prefix. */
-        if (ams[attr_index] == AM_H && !(*(udword*)dest->prefix & OP_EVEX_MASK || dest->vexxop[0]))
+        if (ams[attr_index] == AM_H && !(*(udword*)dest->prefix & OP_EVEX_MASK || (dest->vexxop[0] && !IS_VEX_AMH_EXCEPTION(dest))))
             i--;
 
         attr_index += skip + 0x1;
     }
+
+	if (instruction.am4 == AM_L)
+	{
+		DEBUG("AM_L imm: %lX\n", (dest->immediate >> 0x4) & 0xF);
+		dest->immediate = get_vector((dest->immediate >> 0x4) & 0xF, instruction.ot4, *(udword*)dest->prefix);
+		DEBUG("FINAL IMM VALUE (am_l): %ld\n", dest->immediate);
+	}
 }

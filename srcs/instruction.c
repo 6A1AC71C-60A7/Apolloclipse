@@ -981,10 +981,10 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 					case 0x77:
 						if (inst->vexxop[0])
 						{
-							if (MODRM_RM_EXTENDED_GET(inst) == 0)
-								found->mnemonic = VZEROUPPER;
-							else
+							if (inst->vexxop[2] ? VEXXOP_L_GET(inst->vexxop) : VEXXOP2_L_GET(inst->vexxop))
 								found->mnemonic = VZEROALL;
+							else
+								found->mnemonic = VZEROUPPER;
 						}
 				}
 			}
@@ -1285,7 +1285,7 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 
 	*(udword*)dest->prefix |= OP_IMMEDIATE_MASK;
 
-	DEBUG("[DEBUG][OT OF IMMEDIATE]: %d\n", ot);
+	DEBUG("[DEBUG][OT OF IMMEDIATE]: %d (**iraw='%X')\n", ot, **iraw);
 
 	switch (ot)
 	{
@@ -1344,6 +1344,9 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 						else if ((prefix & (OS_BYTE_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK)) == 0)
 							dest->immediate = *((*(udword**)iraw)++);
 						break ;
+					default:
+						dest->immediate = *((*iraw)++);
+
 				}
 			}
 		}
@@ -1351,6 +1354,8 @@ static void		get_immediate(opfield_t opfield, instruction_t* const dest, const u
 
 	if (dest->mnemonic == ENTER)
 		dest->immediate |= (*((*iraw)++) << 0x10);
+
+	DEBUG("IMMEDIATE IS: %lX\n", dest->immediate);
 }
 
 #define HAS_GROUP_EXTENTION(x) ((x == S_1A))

@@ -461,8 +461,8 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte mo
 				static const opfield_t arr[] = {
 					{ .mnemonic = FXSAVE,	.am1 = AM_M,	.ot1 = OT_S,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
 					{ .mnemonic = FXRSTOR,	.am1 = AM_M,	.ot1 = OT_S,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
-					{ .mnemonic = LDMXCSR,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
-					{ .mnemonic = STMXCSR,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
+					{ .mnemonic = VLDMXCSR,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
+					{ .mnemonic = VSTMXCSR,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
 					{ .mnemonic = XSAVE,	.am1 = AM_M,	.ot1 = OT_S,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
 					{ .mnemonic = XRSTOR,	.am1 = AM_M,	.ot1 = OT_S,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
 					{ .mnemonic = XSAVEOPT,	.am1 = AM_M,	.ot1 = OT_Y,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1C },
