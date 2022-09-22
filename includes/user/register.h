@@ -263,7 +263,7 @@
 ** ZMM Registers
 */
 
-#define AVL_OP_ZMM0 (AVL_OP_XMM31 + 0x1)
+#define AVL_OP_ZMM0 (AVL_OP_YMM31 + 0x1)
 #define AVL_OP_ZMM1 (AVL_OP_ZMM0 + 0x1)
 #define AVL_OP_ZMM2 (AVL_OP_ZMM1 + 0x1)
 #define AVL_OP_ZMM3 (AVL_OP_ZMM2 + 0x1)

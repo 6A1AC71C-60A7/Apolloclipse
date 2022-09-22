@@ -1814,7 +1814,9 @@ typedef enum
 	VMOVDQA,
 
 	VPOR,
+	VPORD,
 	VPXOR,
+	VPXORD,
 
 	VUCOMISS,
 	VCOMISS,

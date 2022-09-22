@@ -16,16 +16,16 @@
 
 #define INST_NB 3000
 #define BUFFSIZE 0x6000
-#define FILENAME "srcs/tests/samples/avx2.txt"
+#define FILENAME "srcs/tests/samples/avx512.txt"
 
 #define TEST_FILE
 //#undef TEST_FILE
 
 /*
-    - AVX2
-    - vbroadcastss xmm1, DWORD [rax] BUG NASM
+    - AVX512
+        - vprol / vpror distinction (bit 4 of modrm dictates ???) function 'handle_evex_addons_0x0F_opmap'
 */
-    
+
 ///TODO: Check in registers.h
 
 ///TODO: Add flags resolution and R|W per operand
@@ -222,7 +222,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\xc4\xe2\x69\x92\x0c\x0d\x00\x00\x00\x00\x00\x00";
+    const ubyte iraw[] = "\x62\xf1\x7d\x89\x79\xca";
 #endif
 
     const ubyte* prt = iraw;
@@ -234,6 +234,10 @@ int main(int ac, const char* av[])
     {
         //fprint_info(stdout, &dest[i]);
         fprint_instruction(stdout, &dest[i]);
+#ifdef TEST_FILE
+        if (i < INST_NB - 1 && dest[i].mnemonic != dest[i + 1].mnemonic)
+            fprintf(stdout, "\n");
+#endif
     }
     //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
 

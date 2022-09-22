@@ -76,6 +76,7 @@ typedef enum
 	OT_Y,		// Doubleword or quadword (in 64-bit mode), depending on operand-size attribute.
 	OT_Z,		// Word for 16-bit operand-size or doubleword for 32 or 64-bit operand-size.
 
+	OT_DQQ,		// Double-Quad-Quadword (512-bits), regardless of operand-size attribute.
 	OT_DS,		// 14/28 bytes pointer, depending on operand-size attribute.
 	OT_DSS,		// 98/108 bytes pointer, depending on operand-size-attribute.
 	OT_EXT,		// Reference to a 80-bit Double-Extented floating point data.

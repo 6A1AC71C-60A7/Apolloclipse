@@ -1536,7 +1536,7 @@ static const char* const mnemonics[] = {
 		//xmm3/m128 or ymm3/m256 while shifting in 0s.
 	"vpsllvq",// shift quadwords in xmm2 left by amount specified in the corresponding element of"
 		//xmm3/m128 or ymm3/m256 while shifting in 0s.
-	"vpsravd",// shift doublewords in xmm2 right by amount specified in the corresponding element of"
+	"vpsrav",// shift doublewords in xmm2 right by amount specified in the corresponding element of"
 		//xmm3/m128 while shifting in the sign bits.
 	"vpsrlv",// shift doublewords in xmm2 right by amount specified in the corresponding element of"
 		//xmm3/m128 or ymm3/m256 while shifting in 0s.
@@ -2077,10 +2077,10 @@ static const char* const mnemonics[] = {
 	"vpaddsw",//
 	"vpalignr",//
 	"vpand",	//
-	"vpandd",	//
+	"vpand",	//
 	"vpandq",	//
 	"vpandn",	//
-	"vpandnd",//
+	"vpandn",//
 	"vpandnq",//
 	"vpavgb",	//
 	"vpavgw",	//
@@ -2324,6 +2324,8 @@ static const char* const mnemonics[] = {
 	"vmovdqa",
 
 	"vpor",
+	"vpor",
+	"vpxor",
 	"vpxor",
 
 	"vucomiss",
@@ -2428,12 +2430,44 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 			else
 				addon = "s";
 		}
-		else if (target->mnemonic == VPSLLVD || target->mnemonic == VPSRLVD)
+		else if (target->mnemonic == VPSLLVD || target->mnemonic == VPSRLVD || target->mnemonic == VPANDD
+		|| target->mnemonic == VPANDND || target->mnemonic == VPORD || target->mnemonic == VPXORD
+		|| target->mnemonic == VPSRAVD)
 		{
 			if (prefix & RP_REXW_MASK)
 				addon = "q";
 			else
 				addon = "d";
+		}
+		else if (prefix & OP_EVEX_MASK && (target->mnemonic == VMOVDQA || target->mnemonic == VMOVDQU))
+		{
+			if (prefix & RP_REXW_MASK)
+				addon = "64";
+			else
+				addon = "32";
+		}
+		else if (target->mnemonic == KMOV || target->mnemonic == KADD || target->mnemonic == KAND || target->mnemonic == KANDN
+		|| target->mnemonic == KNOT || target->mnemonic == KOR || target->mnemonic == KORTEST || target->mnemonic == KSHIFTL
+		|| target->mnemonic == KSHIFTR || target->mnemonic == KTEST || target->mnemonic == KXNOR
+		|| target->mnemonic == KXOR)
+		{
+			if (prefix & OS_BYTE_MASK)
+				addon = "b";
+			else if (prefix & OS_WORD_MASK)
+				addon = "w";
+			else if (prefix & OS_DWORD_MASK)
+				addon = "d";
+			else if (prefix & OS_QWORD_MASK)
+				addon = "q";
+		}
+		else if (target->mnemonic == KUNPCK)
+		{
+			if (prefix & OS_WORD_MASK)
+				addon = "bw";
+			else if (prefix & OS_DWORD_MASK)
+				addon = "wd";
+			else if (prefix & OS_QWORD_MASK)
+				addon = "dq";
 		}
 
 		
@@ -2464,6 +2498,26 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 	|| (x) == VGATHERDPS \
 	|| (x) == VPSLLVD \
 	|| (x) == VPSRLVD \
+	|| (x) == VPANDD \
+	|| (x) == VPANDND \
+	|| (x) == VPORD \
+	|| (x) == VPXORD \
+	|| (x) == VMOVDQA \
+	|| (x) == VMOVDQU \
+	|| (x) == VPSRAVD \
+	|| (x) == KMOV \
+	|| (x) == KADD \
+	|| (x) == KAND \
+	|| (x) == KANDN \
+	|| (x) == KNOT \
+	|| (x) == KOR \
+	|| (x) == KORTEST \
+	|| (x) == KSHIFTL \
+	|| (x) == KSHIFTR \
+	|| (x) == KTEST \
+	|| (x) == KUNPCK \
+	|| (x) == KXNOR \
+	|| (x) == KXOR \
 )
 
 #define IS_NONVECTORIAL_SSEX(x) ( \
@@ -2536,7 +2590,8 @@ static mnemonic_t print_mnemonic(FILE* where, instruction_t* const target)
 __always_inline
 static udword print_register_V2(FILE* where, reg_t reg)
 {
-	DEBUG("PRINT REGISTER: %d\n", reg);
+	//DEBUG("-------------> %d %d #%d\n", reg, AVL_OP_K1, AVL_OP_ZMM1);
+
 	return fprintf(where, "%s", regs_v2[reg]);
 }
 
@@ -2672,17 +2727,51 @@ static reg_t get_addressing_reg_offset(instruction_t* const inst)
 {
 	reg_t offset = AVL_OP_RAX;
 
-	if (inst->mnemonic == VGATHERDPS || inst->mnemonic == VPGATHERDD || inst->mnemonic == VPGATHERQD)
+	if (*(udword*)inst->prefix & OP_EVEX_MASK)
 	{
-		if ((inst->vexxop[2] ? VEXXOP_L_GET(inst->vexxop) : VEXXOP2_L_GET(inst->vexxop))
-		&& !(inst->mnemonic == VGATHERDPS && *(udword*)inst->prefix & RP_REXW_MASK))
-		// vgatherpd always use [xmm]
-			offset = AVL_OP_YMM0;
-		else
-			offset = AVL_OP_XMM0;
+		if ((inst->mnemonic == VGATHERDPS || inst->mnemonic == VGATHERQPD
+		|| inst->mnemonic == VGATHERQPS || inst->mnemonic == VPGATHERDD
+		|| inst->mnemonic == VPGATHERQQ || inst->mnemonic == VPSCATTERDD
+		|| inst->mnemonic == VPSCATTERQD || inst->mnemonic == VPSCATTERQQ
+		|| inst->mnemonic == VSCATTERDPS || inst->mnemonic == VSCATTERQPS
+		|| inst->mnemonic == VSCATTERQPD))
+		{
+			if (EVEX_L2_GET(inst->vexxop))
+				offset = AVL_OP_ZMM0;
+			else if (EVEX_L_GET(inst->vexxop))
+				offset = AVL_OP_YMM0;
+			else
+				offset = AVL_OP_XMM0;
+		}
+		else if (inst->mnemonic == VGATHERDPD || inst->mnemonic == VPGATHERDQ
+		|| inst->mnemonic == VPSCATTERDQ || inst->mnemonic == VSCATTERDPD)
+		{
+			if (EVEX_L2_GET(inst->vexxop))
+				offset = AVL_OP_YMM0;
+			else
+				offset = AVL_OP_XMM0;
+		}
+		else if (inst->mnemonic == VPGATHERQD)
+		{
+			if (!EVEX_L2_GET(inst->vexxop) && !EVEX_L_GET(inst->vexxop))
+				offset = AVL_OP_XMM0;
+			else
+				offset = AVL_OP_ZMM0;
+		}
+	}
+	else
+	{
+		if (inst->mnemonic == VGATHERDPS || inst->mnemonic == VPGATHERDD || inst->mnemonic == VPGATHERQD)
+		{
+			if ((inst->vexxop[2] ? VEXXOP_L_GET(inst->vexxop) : VEXXOP2_L_GET(inst->vexxop))
+			&& !(inst->mnemonic == VGATHERDPS && *(udword*)inst->prefix & RP_REXW_MASK))
+			// vgatherpd always use [xmm]
+				offset = AVL_OP_YMM0;
+			else
+				offset = AVL_OP_XMM0;
+		}
 	}
 
-	DEBUG("OFFSET IS: %d (%d)\n", offset, AVL_OP_XMM0);
 
 	return offset;
 }
@@ -2831,6 +2920,11 @@ static ubyte print_operand(FILE* where, instruction_t* const inst, reg_t reg, ud
 	return l;
 }
 
+//TODO: Maybe add a flag in the engine rather than handling this here
+// #define HAS_NO_KMASK_EXCEPTION(x) ( 
+// 	(x) = VPCMPEQB 
+// 	|| (x) == 
+// )
 __always_inline
 static ubyte print_merge_zero_avx512(FILE* where, instruction_t* const target)
 {
@@ -2841,7 +2935,7 @@ static ubyte print_merge_zero_avx512(FILE* where, instruction_t* const target)
 		};
 
 		ubyte kindex = EVEX_K_GET(target->vexxop);
-		if (kindex)
+		if (kindex /* && HAS_NO_KMASK_EXCEPTION(target->mnemonic) */)
 			fprintf(where, " {%s}", regs_k[kindex]);
 
 		

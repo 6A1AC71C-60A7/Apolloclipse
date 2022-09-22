@@ -309,9 +309,9 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 
 		///TODO: Handle 512-bits too
 
-		// case OT_DQQ:
-		// 	found = get_zmm_register(index)
-		// 	break ;
+		case OT_DQQ:
+			found = get_zmm_register(index);
+			break ;
 
 		default:
 		{
@@ -427,6 +427,13 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 	(((x)->opcode[2] == 0x10 || (x)->opcode [2]== 0x11) && ((x)->mnemonic == VMOVSS || (x)->mnemonic == VMOVSD) && MODRM_MOD_GET((x)->mod_rm) != 0b11) \
 )
 
+#define IS_EVEX_AMH_EXCEPTION(x) ( \
+	(x)->mnemonic == VPGATHERDD \
+	|| (x)->mnemonic == VPGATHERDQ \
+	|| (x)->mnemonic == VPGATHERQD \
+	|| (x)->mnemonic == VPGATHERQQ \
+)
+
 static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, ubyte am, ubyte ot, ubyte* const skip)
 {
 	DEBUG("[DEBUG] RESOLVE OPERAND: AM: %d OT: %d\n", am, ot);
@@ -479,8 +486,16 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 
 				if ((inst->mnemonic == VCVTSI2SS || inst->mnemonic == MOVD || inst->mnemonic == VMOVD || inst->mnemonic == VCVTSI2SD || inst->mnemonic == VPINSRD || inst->mnemonic == VPEXTRD) && !(p & RP_REXW_MASK))
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);	
 					p |= OS_DWORD_MASK;
+				}
+				else if (p & OP_EVEX_MASK)
+				{
+					if (inst->mnemonic == VCVTUSI2SD || inst->mnemonic == VCVTUSI2SS)
+					{
+						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						p |= p & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+					}
 				}
 
 				if (modrm_mod == 0b11)
@@ -536,6 +551,15 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				{
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_DWORD_MASK;
+				}
+
+				else if (*(udword*)inst->prefix & OP_EVEX_MASK)
+				{
+					if (!EVEX_L_GET(inst->vexxop) && !EVEX_L2_GET(inst->vexxop) && inst->mnemonic == VSCATTERQPS)
+					{
+						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						p |= OS_QWORD_MASK;
+					}
 				}
 
 				*dest = get_memory(ot, p);
@@ -600,6 +624,23 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_DQWORD_MASK;
 				}
+				else if (p & OP_EVEX_MASK)
+				{
+					if (EVEX_L_GET(inst->vexxop) && (inst->mnemonic == VCVTPD2UDQ || inst->mnemonic == VCVTTPD2UDQ || inst->mnemonic == VCVTUQQ2PS
+					|| inst->mnemonic == VPSCATTERQD || inst->mnemonic == VSCATTERQPS))
+					{
+						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						p |= OS_DQWORD_MASK;
+					}
+					else if (EVEX_L2_GET(inst->vexxop) && (inst->mnemonic == VCVTPD2PS || inst->mnemonic == VCVTPD2DQ || inst->mnemonic == VCVTTPD2DQ
+					|| inst->mnemonic == VCVTPD2UDQ || inst->mnemonic == VCVTTPD2UDQ || inst->mnemonic == VCVTUQQ2PS || inst->mnemonic == VPSCATTERQD
+					|| inst->mnemonic == VSCATTERQPS))
+					{
+						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						p |= OS_QQWORD_MASK;
+					}
+
+				}
 
 				*dest = get_vector(modrm_reg, ot, p);
 				break ;
@@ -612,14 +653,45 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 				{
 					udword p = *(udword*)inst->prefix;
 
-					if ((inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTDQ2PD || inst->mnemonic == VCVTPH2PS
-					|| inst->mnemonic == VCVTPS2PH || inst->mnemonic == VPSLLW || inst->mnemonic == VPSLLD
-					|| inst->mnemonic == VPSLLQ || inst->mnemonic == VPSRLW || inst->mnemonic == VPSRLD
-					|| inst->mnemonic == VPSRLQ || inst->mnemonic == VPSRAW || inst->mnemonic == VPSRAD
-					|| inst->mnemonic == VBROADCASTSS || inst->mnemonic == VBROADCASTSD) && p & OS_QQWORD_MASK)
+					if (!(p & OP_EVEX_MASK))
 					{
-						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-						p |= OS_DQWORD_MASK;
+						if ((inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTDQ2PD || inst->mnemonic == VCVTPH2PS
+						|| inst->mnemonic == VCVTPS2PH || inst->mnemonic == VPSLLW || inst->mnemonic == VPSLLD
+						|| inst->mnemonic == VPSLLQ || inst->mnemonic == VPSRLW || inst->mnemonic == VPSRLD
+						|| inst->mnemonic == VPSRLQ || inst->mnemonic == VPSRAW || inst->mnemonic == VPSRAD
+						|| inst->mnemonic == VBROADCASTSS || inst->mnemonic == VBROADCASTSD) && p & OS_QQWORD_MASK)
+						{
+							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							p |= OS_DQWORD_MASK;
+						}
+					}
+					else
+					{
+						if (p & OS_QQWORD_MASK && (inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTPH2PS || inst->mnemonic == VCVTPS2PH
+						|| inst->mnemonic == VCVTUDQ2PD || inst->mnemonic == VCVTPS2UQQ || inst->mnemonic == VCVTTPS2QQ
+						|| inst->mnemonic == VCVTTPS2UQQ || inst->mnemonic == VPMOVSDW || inst->mnemonic == VPMOVUSDW
+						|| inst->mnemonic == VPMOVQD || inst->mnemonic == VPMOVSQD || inst->mnemonic == VPMOVUSQD
+						|| inst->mnemonic == VPMOVWB || inst->mnemonic == VPMOVSWB || inst->mnemonic == VPMOVUSWB))
+						{
+							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							p |= OS_DQWORD_MASK;
+						}
+
+						if (inst->mnemonic == VBROADCASTSD || inst->mnemonic == VBROADCASTF32X2 || inst->mnemonic == VBROADCASTSS)
+						{
+							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							p |= OS_DQWORD_MASK;
+						}
+
+						// EVEX_L2_GET(inst->vexxop) == p & OS_DQQWORD_MASK
+						if (EVEX_L2_GET(inst->vexxop) && (inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTPH2PS || inst->mnemonic == VCVTPS2PH
+						|| inst->mnemonic == VCVTUDQ2PD || inst->mnemonic == VCVTPS2UQQ || inst->mnemonic == VCVTTPS2QQ || inst->mnemonic == VCVTTPS2UQQ
+						|| inst->mnemonic == VPMOVSDW || inst->mnemonic == VPMOVUSDW || inst->mnemonic == VPMOVQD || inst->mnemonic == VPMOVSQD || inst->mnemonic == VPMOVUSQD
+						|| inst->mnemonic == VPMOVWB || inst->mnemonic == VPMOVSWB || inst->mnemonic == VPMOVUSWB))
+						{
+							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							p |= OS_QQWORD_MASK;
+						}
 					}
 
 					*dest = get_vector(modrm_rm, ot, p);
@@ -639,6 +711,60 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 							*dest = AVL_OP_MEM16;
 						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_8(inst->mnemonic))
 							*dest = *(udword*)inst->prefix & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
+					}
+					else if (*(udword*)inst->prefix & OP_EVEX_MASK)
+					{
+						if (EVEX_L2_GET(inst->vexxop) && (inst->mnemonic == VCVTPS2PD || inst->mnemonic == VCVTUDQ2PD))
+							*dest = AVL_OP_MEM256;
+						else if (EVEX_L_GET(inst->vexxop) && (inst->mnemonic == VCVTUDQ2PD))	
+							*dest = AVL_OP_MEM128;
+						else if (EVEX_L2_GET(inst->vexxop) && (inst->mnemonic == VCVTPS2PD))
+							*dest = AVL_OP_MEM128;
+						else if ((inst->mnemonic == VCVTPH2PS || inst->mnemonic == VCVTUDQ2PD || inst->mnemonic == VCVTPS2UQQ
+						|| inst->mnemonic == VCVTTPS2QQ  || inst->mnemonic == VCVTTPS2UQQ)
+						&& !EVEX_L_GET(inst->vexxop) && !EVEX_L2_GET(inst->vexxop))
+							*dest = AVL_OP_MEM64;
+						else if ((inst->mnemonic == VCVTSD2USI || inst->mnemonic == VCVTTSD2USI || inst->mnemonic == VGETEXPSD
+						|| inst->mnemonic == VGETMANTSD || inst->mnemonic == VRANGESD || inst->mnemonic == VRCP14SD
+						|| inst->mnemonic == VREDUCESD || inst->mnemonic == VRNDSCALESD || inst->mnemonic == VRSQRT14SD
+						|| inst->mnemonic == VSCALEFSD))
+							*dest = AVL_OP_MEM64;
+						else if ((inst->mnemonic == VCVTSS2USI || inst->mnemonic == VCVTTSS2USI || inst->mnemonic == VGETEXPSS
+						|| inst->mnemonic == VGETMANTSS || inst->mnemonic == VRANGESS || inst->mnemonic == VRCP14SS
+						|| inst->mnemonic == VREDUCESS || inst->mnemonic == VRNDSCALESS || inst->mnemonic == VRSQRT14SS
+						|| inst->mnemonic == VSCALEFSS))
+							*dest = AVL_OP_MEM32;
+				
+						else if (inst->mnemonic == VPMOVDB || inst->mnemonic == VPMOVSDB || inst->mnemonic == VPMOVUSDB
+						|| inst->mnemonic == VPMOVQW || inst->mnemonic == VPMOVSQW || inst->mnemonic == VPMOVUSQW)
+						{
+							if (EVEX_L2_GET(inst->vexxop))
+								*dest = AVL_OP_MEM128;
+							else if (EVEX_L_GET(inst->vexxop))
+								*dest = AVL_OP_MEM64;
+							else
+								*dest = AVL_OP_MEM32;
+						}
+						else if (inst->mnemonic == VPMOVDW || inst->mnemonic == VPMOVSDW || inst->mnemonic == VPMOVUSDW
+						|| inst->mnemonic == VPMOVQD || inst->mnemonic == VPMOVSQD || inst->mnemonic == VPMOVUSQD
+						|| inst->mnemonic == VPMOVWB || inst->mnemonic == VPMOVSWB || inst->mnemonic == VPMOVUSWB)
+						{
+							if (EVEX_L2_GET(inst->vexxop))
+								*dest = AVL_OP_MEM256;
+							else if (EVEX_L_GET(inst->vexxop))
+								*dest = AVL_OP_MEM128;
+							else
+								*dest = AVL_OP_MEM64;
+						}
+						else if (inst->mnemonic == VPMOVQB || inst->mnemonic == VPMOVSQB || inst->mnemonic == VPMOVUSQB)
+						{
+							if (EVEX_L2_GET(inst->vexxop))
+								*dest = AVL_OP_MEM64;
+							else if (EVEX_L_GET(inst->vexxop))
+								*dest = AVL_OP_MEM32;
+							else
+								*dest = AVL_OP_MEM16;
+						}
 					}
 					else
 					{
@@ -776,7 +902,7 @@ void	resolve_operands_v2(instruction_t* const dest, opfield_t instruction)
         resolve_operand_v2(dest, regs[i], ams[attr_index], ots[attr_index], &skip);
 
         /* Addressing Mode H ((E)VEX.VVVV) is ignored for instructions with no (E)VEX prefix. */
-        if (ams[attr_index] == AM_H && !(*(udword*)dest->prefix & OP_EVEX_MASK || (dest->vexxop[0] && !IS_VEX_AMH_EXCEPTION(dest))))
+        if (ams[attr_index] == AM_H && !((*(udword*)dest->prefix & OP_EVEX_MASK /*&& !IS_EVEX_AMH_EXCEPTION(dest)*/)|| (dest->vexxop[0] && !IS_VEX_AMH_EXCEPTION(dest))))
             i--;
 
         attr_index += skip + 0x1;
