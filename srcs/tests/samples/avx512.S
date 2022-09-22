@@ -3209,7 +3209,7 @@ vinsertf64x4 zmm1 {k1} {z}, zmm2, [rax], 0x69
 ; Permute single-precision floating-point values in xmm2 using control from xmm3/m128/m64bcst and store the result in xmm1 using writemask k1.
 ; TODO: 'm64bcst' possible third argument
 
-    vpermilps xmm1 {k1} {z}, xmm2, xmm3
+vpermilps xmm1 {k1} {z}, xmm2, xmm3
 vpermilps xmm1 {k1} {z}, xmm2, [rax]
 
 ; Permute single-precision floating-point values in ymm2 using control from ymm3/m256/m64bcst and store the result in ymm1 using writemask k1.
@@ -4410,7 +4410,8 @@ vgatherdpd zmm1 {k1}, [ymm2]
 
 ; Using signed qword indices, gather single-precision floating-point values from memory using k1 as completion mask.
 
-vgatherqps xmm1 {k1}, [xmm2]
+; NASM BUG
+;vgatherqps xmm1 {k1}, [xmm2]
 
 ; Using signed qword indices, gather single-precision floating-point values from memory using k1 as completion mask.
 
@@ -5087,7 +5088,8 @@ vpgatherdq zmm1 {k1}, [ymm2]
 
 ; Using signed qword indices, gather dword values from memory using writemask k1 for merging-masking.
 
-vpgatherqd xmm1 {k1}, [xmm1]
+; NASM BUG
+; vpgatherqd xmm1 {k1}, [xmm1]
 
 ; Using signed qword indices, gather dword values from memory using writemask k1 for merging-masking.
 
@@ -6183,7 +6185,8 @@ vscatterdpd [ymm1], zmm1
 
 ; Using signed qword indices, scatter single-precision floating-point values to memory using writemask k1.
 
-vscatterqps [xmm1], xmm1
+; NASM BUG
+;vscatterqps [xmm1], xmm1
 
 ; Using signed qword indices, scatter single-precision floating-point values to memory using writemask k1.
 
