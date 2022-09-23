@@ -142,11 +142,11 @@
 #define MODRM_MOD_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
 #define MODRM_RM_EXTENDED_GET(inst) (	\
-	(((*(udword*)(inst)->prefix & RP_REXB_MASK) != 0) << 3) | (((*(udword*)(inst)->prefix & OP_EVEX_MASK) && MODRM_MOD_GET((inst)->mod_rm) == 0b11 && !EVEX_X_GET((inst)->vexxop)) << 4) | MODRM_RM_GET((inst)->mod_rm) \
+	((((inst)->prefix & RP_REXB_MASK) != 0) << 3) | ((((inst)->prefix & OP_EVEX_MASK) && MODRM_MOD_GET((inst)->mod_rm) == 0b11 && !EVEX_X_GET((inst)->vexxop)) << 4) | MODRM_RM_GET((inst)->mod_rm) \
 )
 
 #define MODRM_REG_EXTENDED_GET(inst) (	\
-	(((*(udword*)(inst)->prefix & RP_REXR_MASK) != 0) << 3) | (((*(udword*)(inst)->prefix & OP_EVEX_MASK) && !EVEX_R2_GET((inst)->vexxop)) << 4) | MODRM_REG_GET((inst)->mod_rm) \
+	((((inst)->prefix & RP_REXR_MASK) != 0) << 3) | ((((inst)->prefix & OP_EVEX_MASK) && !EVEX_R2_GET((inst)->vexxop)) << 4) | MODRM_REG_GET((inst)->mod_rm) \
 )
 
 /*
@@ -161,16 +161,16 @@
 # define SIB_SCALE_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
 #define SIB_BASE_EXTENDED_GET(inst) (	\
-	((*(udword*)(inst)->prefix & RP_REXB_MASK) != 0) << 3 | SIB_BASE_GET((inst)->sib) \
+	(((inst)->prefix & RP_REXB_MASK) != 0) << 3 | SIB_BASE_GET((inst)->sib) \
 )
 
 #define SIB_INDEX_EXTENDED_GET(inst) (	\
-	((*(udword*)(inst)->prefix & RP_REXX_MASK) != 0) << 3 | SIB_INDEX_GET((inst)->sib) \
+	(((inst)->prefix & RP_REXX_MASK) != 0) << 3 | SIB_INDEX_GET((inst)->sib) \
 )
 
 typedef struct
 {
-	ubyte		prefix[4];
+	udword		prefix;
 	mnemonic_t	mnemonic;
 	ubyte		opcode[3];
 	ubyte		vexxop[3];

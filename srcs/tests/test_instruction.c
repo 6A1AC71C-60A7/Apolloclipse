@@ -8,13 +8,14 @@ static void test_instruction_prefixes(const ubyte *instruction_raw, instruction_
 {
     DEBUG(" *** START: TEST PREFIX ***\n");
 
-    if (get_instruction_prefixes(data, &instruction_raw) != SUCCESS)
-        DEBUG("WARNING: bad format legacy prefixes\n");
+    (void)instruction_raw;
+
+    // if (get_instruction_prefixes(data, &instruction_raw) != SUCCESS)
+    //     DEBUG("WARNING: bad format legacy prefixes\n");
     
-    udword* p = (udword*)data->prefix;
     udword y = 0;
     for (udword i = 1 ; i <= RP_REXW_MASK ; i <<= 1)
-        DEBUG("[%u] -> [%x]\n", y++, *p & i);
+        DEBUG("[%u] -> [%x]\n", y++, data->prefix & i);
     DEBUG(" *** END:  TEST PREFIX ***\n");
 }
 
@@ -45,14 +46,13 @@ void test_instruction(const ubyte *instruction_raw, instruction_t* answer)
 
 void fprint_info(FILE* where, instruction_t* target)
 {
-    const udword prefix = *(udword*)target->prefix;
     fprintf(where, "PREFIXES:\n - LOCK: %d\n - REPNX: %d\n - REPX: %d\n"
         " - FS: %d\n - GS: %d\n - NOBRANCH: %d\n - BRANCH: %d\n - OPERAND SZ: %d\n"
         " - ADDRESS SZ: %d\n - REX.B: %d\n - REX.X: %d\n - REX.R: %d\n - REX.W: %d\n - 0x66: %d\n- - -\n",
-        prefix & LP_LOCK_MASK, prefix & LP_LOCK_MASK, prefix & LP_REPX_MASK, 
-        prefix & LP_FS_MASK, prefix & LP_GS_MASK, prefix & LP_NOBRANCH_MASK, prefix & LP_BRANCH_MASK,
-        prefix & LP_OPSZ_MASK, prefix & LP_ADDRSZ_MASK, prefix & RP_REXB_MASK, prefix & RP_REXX_MASK, 
-        prefix & RP_REXR_MASK, prefix & RP_REXW_MASK, prefix & MP_0x66_MASK);
+        target->prefix & LP_LOCK_MASK, target->prefix & LP_LOCK_MASK, target->prefix & LP_REPX_MASK, 
+        target->prefix & LP_FS_MASK, target->prefix & LP_GS_MASK, target->prefix & LP_NOBRANCH_MASK, target->prefix & LP_BRANCH_MASK,
+        target->prefix & LP_OPSZ_MASK, target->prefix & LP_ADDRSZ_MASK, target->prefix & RP_REXB_MASK, target->prefix & RP_REXX_MASK, 
+        target->prefix & RP_REXR_MASK, target->prefix & RP_REXW_MASK, target->prefix & MP_0x66_MASK);
 
     fprintf(where, "MNEMONIC: [%d]\n- - -\n", target->mnemonic);
 

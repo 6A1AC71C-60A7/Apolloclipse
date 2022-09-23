@@ -9,7 +9,6 @@ $(addprefix includes/,\
 	d_mnemonic.h\
 	d_opcode.h\
 	d_portability.h\
-	d_register.h\
 	d_types.h\
 	d_utils.h\
 	tests.h\
@@ -23,12 +22,8 @@ $(addprefix includes/,\
 SRCS	=\
 $(addprefix srcs/,\
 	get_instruction_by_extension.c\
-	get_instruction.c\
-	get_instruction_prefixes.c\
-	handle_modrm.c\
 	instruction.c\
 	main.c\
-	resolve_operands.c\
 	resolve_operands_V2.c\
 	$(addprefix tests/,\
 		fprint_instruction.c\

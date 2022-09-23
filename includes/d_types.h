@@ -12,3 +12,5 @@ typedef uint8_t		ubyte;
 typedef uint16_t	uword;
 typedef uint32_t	udword;
 typedef uint64_t	uqword;
+
+typedef ubyte       reg_t;

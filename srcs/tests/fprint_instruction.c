@@ -267,261 +267,261 @@ static const char* const regs_v2[] = {
 	"k7",
 };
 
-static const char* const regs[] = {
-    "[ADDR]",
-    "rax",
-    "rcx",
-    "rdx",
-    "rbx",
-    "rsp",
-    "rbp",
-    "rsi",
-    "rdi",
-    "r8",
-    "r9",
-    "r10",
-    "r11",
-    "r12",
-    "r13",
-    "r14",
-    "r15",
-    "st0",
-    "st1",
-    "st2",
-    "st3",
-    "st4",
-    "st5",
-    "st6",
-    "st7",
-    "mmx0",
-    "mmx1",
-    "mmx2",
-    "mmx3",
-    "mmx4",
-    "mmx5",
-    "mmx6",
-    "mmx7",
-    "mmx0b",
-    "mmx1b",
-    "mmx2b",
-    "mmx3b",
-    "mmx4b",
-    "mmx5b",
-    "mmx6b",
-    "mmx7b",
-    "xmm0",
-    "xmm1",
-    "xmm2",
-    "xmm3",
-    "xmm4",
-    "xmm5",
-    "xmm6",
-    "xmm7",
-    "xmm8",
-    "xmm9",
-    "xmm10",
-    "xmm11",
-    "xmm12",
-    "xmm13",
-    "xmm14",
-    "xmm15",
-    "ymm0",
-    "ymm1",
-    "ymm2",
-    "ymm3",
-    "ymm4",
-    "ymm5",
-    "ymm6",
-    "ymm7",
-    "ymm8",
-    "ymm9",
-    "ymm10",
-    "ymm11",
-    "ymm12",
-    "ymm13",
-    "ymm14",
-    "ymm15",
-    "es",
-    "cs",
-    "ss",
-    "ds",
-    "fs",
-    "gs",
-    "esb",
-    "csb",
-    "ssb",
-    "dsb",
-    "fsb",
-    "gsb",
-    "cr0",
-    "cr1",
-    "cr2",
-    "cr3",
-    "cr4",
-    "cr5",
-    "cr6",
-    "cr7",
-    "cr8",
-    "cr9",
-    "cr10",
-    "cr11",
-    "cr12",
-    "cr13",
-    "cr14",
-    "cr15",
-    "dr0",
-    "dr1",
-    "dr2",
-    "dr3",
-    "dr4",
-    "dr5",
-    "dr6",
-    "dr7",
-    "dr8",
-    "dr9",
-    "dr10",
-    "dr11",
-    "dr12",
-    "dr13",
-    "dr14",
-    "dr15",
-    "rflags",
-    "ah",
-    "ch",
-    "dh",
-    "bh",
-	"xmm16",
-	"xmm17",
-	"xmm18",
-	"xmm19",
-	"xmm20",
-	"xmm21",
-	"xmm22",
-	"xmm23",
-	"xmm24",
-	"xmm25",
-	"xmm26",
-	"xmm27",
-	"xmm28",
-	"xmm29",
-	"xmm30",
-	"xmm31",
-	"ymm16",
-	"ymm17",
-	"ymm18",
-	"ymm19",
-	"ymm20",
-	"ymm21",
-	"ymm22",
-	"ymm23",
-	"ymm24",
-	"ymm25",
-	"ymm26",
-	"ymm27",
-	"ymm28",
-	"ymm29",
-	"ymm30",
-	"ymm31",
-	"zmm0",
-    "zmm1",
-    "zmm2",
-    "zmm3",
-    "zmm4",
-    "zmm5",
-    "zmm6",
-    "zmm7",
-    "zmm8",
-    "zmm9",
-    "zmm10",
-    "zmm11",
-    "zmm12",
-    "zmm13",
-    "zmm14",
-    "zmm15",
-	"zmm16",
-	"zmm17",
-	"zmm18",
-	"zmm19",
-	"zmm20",
-	"zmm21",
-	"zmm22",
-	"zmm23",
-	"zmm24",
-	"zmm25",
-	"zmm26",
-	"zmm27",
-	"zmm28",
-	"zmm29",
-	"zmm30",
-	"zmm31",
-	"k0",
-	"k1",
-	"k2",
-	"k3",
-	"k4",
-	"k5",
-	"k6",
-	"k7",
-	"ds:[rsi]",
-	"es:[rdi]",
-};
+// static const char* const regs[] = {
+//     "[ADDR]",
+//     "rax",
+//     "rcx",
+//     "rdx",
+//     "rbx",
+//     "rsp",
+//     "rbp",
+//     "rsi",
+//     "rdi",
+//     "r8",
+//     "r9",
+//     "r10",
+//     "r11",
+//     "r12",
+//     "r13",
+//     "r14",
+//     "r15",
+//     "st0",
+//     "st1",
+//     "st2",
+//     "st3",
+//     "st4",
+//     "st5",
+//     "st6",
+//     "st7",
+//     "mmx0",
+//     "mmx1",
+//     "mmx2",
+//     "mmx3",
+//     "mmx4",
+//     "mmx5",
+//     "mmx6",
+//     "mmx7",
+//     "mmx0b",
+//     "mmx1b",
+//     "mmx2b",
+//     "mmx3b",
+//     "mmx4b",
+//     "mmx5b",
+//     "mmx6b",
+//     "mmx7b",
+//     "xmm0",
+//     "xmm1",
+//     "xmm2",
+//     "xmm3",
+//     "xmm4",
+//     "xmm5",
+//     "xmm6",
+//     "xmm7",
+//     "xmm8",
+//     "xmm9",
+//     "xmm10",
+//     "xmm11",
+//     "xmm12",
+//     "xmm13",
+//     "xmm14",
+//     "xmm15",
+//     "ymm0",
+//     "ymm1",
+//     "ymm2",
+//     "ymm3",
+//     "ymm4",
+//     "ymm5",
+//     "ymm6",
+//     "ymm7",
+//     "ymm8",
+//     "ymm9",
+//     "ymm10",
+//     "ymm11",
+//     "ymm12",
+//     "ymm13",
+//     "ymm14",
+//     "ymm15",
+//     "es",
+//     "cs",
+//     "ss",
+//     "ds",
+//     "fs",
+//     "gs",
+//     "esb",
+//     "csb",
+//     "ssb",
+//     "dsb",
+//     "fsb",
+//     "gsb",
+//     "cr0",
+//     "cr1",
+//     "cr2",
+//     "cr3",
+//     "cr4",
+//     "cr5",
+//     "cr6",
+//     "cr7",
+//     "cr8",
+//     "cr9",
+//     "cr10",
+//     "cr11",
+//     "cr12",
+//     "cr13",
+//     "cr14",
+//     "cr15",
+//     "dr0",
+//     "dr1",
+//     "dr2",
+//     "dr3",
+//     "dr4",
+//     "dr5",
+//     "dr6",
+//     "dr7",
+//     "dr8",
+//     "dr9",
+//     "dr10",
+//     "dr11",
+//     "dr12",
+//     "dr13",
+//     "dr14",
+//     "dr15",
+//     "rflags",
+//     "ah",
+//     "ch",
+//     "dh",
+//     "bh",
+// 	"xmm16",
+// 	"xmm17",
+// 	"xmm18",
+// 	"xmm19",
+// 	"xmm20",
+// 	"xmm21",
+// 	"xmm22",
+// 	"xmm23",
+// 	"xmm24",
+// 	"xmm25",
+// 	"xmm26",
+// 	"xmm27",
+// 	"xmm28",
+// 	"xmm29",
+// 	"xmm30",
+// 	"xmm31",
+// 	"ymm16",
+// 	"ymm17",
+// 	"ymm18",
+// 	"ymm19",
+// 	"ymm20",
+// 	"ymm21",
+// 	"ymm22",
+// 	"ymm23",
+// 	"ymm24",
+// 	"ymm25",
+// 	"ymm26",
+// 	"ymm27",
+// 	"ymm28",
+// 	"ymm29",
+// 	"ymm30",
+// 	"ymm31",
+// 	"zmm0",
+//     "zmm1",
+//     "zmm2",
+//     "zmm3",
+//     "zmm4",
+//     "zmm5",
+//     "zmm6",
+//     "zmm7",
+//     "zmm8",
+//     "zmm9",
+//     "zmm10",
+//     "zmm11",
+//     "zmm12",
+//     "zmm13",
+//     "zmm14",
+//     "zmm15",
+// 	"zmm16",
+// 	"zmm17",
+// 	"zmm18",
+// 	"zmm19",
+// 	"zmm20",
+// 	"zmm21",
+// 	"zmm22",
+// 	"zmm23",
+// 	"zmm24",
+// 	"zmm25",
+// 	"zmm26",
+// 	"zmm27",
+// 	"zmm28",
+// 	"zmm29",
+// 	"zmm30",
+// 	"zmm31",
+// 	"k0",
+// 	"k1",
+// 	"k2",
+// 	"k3",
+// 	"k4",
+// 	"k5",
+// 	"k6",
+// 	"k7",
+// 	"ds:[rsi]",
+// 	"es:[rdi]",
+// };
 
-static const char* const gp_regs_32[] = {
-	"eax",
-	"ecx",
-	"edx",
-	"ebx",
-	"esp",
-	"ebp",
-	"esi",
-	"edi",
-	"r8d",
-	"r9d",
-	"r10d",
-	"r11d",
-	"r12d",
-	"r13d",
-	"r14d",
-	"r15d"
-};
+// static const char* const gp_regs_32[] = {
+// 	"eax",
+// 	"ecx",
+// 	"edx",
+// 	"ebx",
+// 	"esp",
+// 	"ebp",
+// 	"esi",
+// 	"edi",
+// 	"r8d",
+// 	"r9d",
+// 	"r10d",
+// 	"r11d",
+// 	"r12d",
+// 	"r13d",
+// 	"r14d",
+// 	"r15d"
+// };
 
-static const char* const gp_regs_16[] = {
-	"ax",
-	"cx",
-	"dx",
-	"bx",
-	"sp",
-	"bp",
-	"si",
-	"di",
-	"r8w",
-	"r9w",
-	"r10w",
-	"r11w",
-	"r12w",
-	"r13w",
-	"r14w",
-	"r15w"
-};
+// static const char* const gp_regs_16[] = {
+// 	"ax",
+// 	"cx",
+// 	"dx",
+// 	"bx",
+// 	"sp",
+// 	"bp",
+// 	"si",
+// 	"di",
+// 	"r8w",
+// 	"r9w",
+// 	"r10w",
+// 	"r11w",
+// 	"r12w",
+// 	"r13w",
+// 	"r14w",
+// 	"r15w"
+// };
 
-static const char* const gp_regs_8[] = {
-	"al",
-	"cl",
-	"dl",
-	"bl",
-	"spl",
-	"bpl",
-	"sil",
-	"dil",
-	"r8b",
-	"r9b",
-	"r10b",
-	"r11b",
-	"r12b",
-	"r13b",
-	"r14b",
-	"r15b"
-};
+// static const char* const gp_regs_8[] = {
+// 	"al",
+// 	"cl",
+// 	"dl",
+// 	"bl",
+// 	"spl",
+// 	"bpl",
+// 	"sil",
+// 	"dil",
+// 	"r8b",
+// 	"r9b",
+// 	"r10b",
+// 	"r11b",
+// 	"r12b",
+// 	"r13b",
+// 	"r14b",
+// 	"r15b"
+// };
 
 
 static const char* const mnemonics[] = {
@@ -2391,7 +2391,6 @@ static const char* const mnemonics[] = {
 __always_inline
 static void handle_exceptional_mnemonics(FILE* where, instruction_t* const target)
 {
-	const dword prefix = *(udword*)target->prefix;
 	const char*	addon = "";
 
 	// switch (target->mnemonic)
@@ -2399,33 +2398,33 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 	// 	case CMPS:
 		if (target->mnemonic == CMPS || target->mnemonic == LODS || target->mnemonic == MOVS || target->mnemonic == SCAS || target->mnemonic == STOS)
 		{
-			if (prefix & OS_WORD_MASK)
+			if (target->prefix & OS_WORD_MASK)
 				addon = "w";
-			else if (prefix & OS_DWORD_MASK)
+			else if (target->prefix & OS_DWORD_MASK)
 				addon = "d";
-			else if (prefix & OS_QWORD_MASK)
+			else if (target->prefix & OS_QWORD_MASK)
 				addon = "q";
 		}
 		else if (target->mnemonic == INS || target->mnemonic == OUTS)
 		{
-			if (prefix & OS_WORD_MASK)
+			if (target->prefix & OS_WORD_MASK)
 				addon = "w";
-			else if (prefix & OS_DWORD_MASK)
+			else if (target->prefix & OS_DWORD_MASK)
 				addon = "d";
 		}
 		else if (target->mnemonic == IRET)
 		{
-			if (prefix & OS_QWORD_MASK)
+			if (target->prefix & OS_QWORD_MASK)
 				addon = "q";
 		}
 		else if (target->mnemonic == XRSTOR || target->mnemonic == XRSTORS || target->mnemonic == XSAVE || target->mnemonic == XSAVEC || target->mnemonic == XSAVES || target->mnemonic == FXSAVE || target->mnemonic == FXRSTOR)
 		{
-			if (prefix & RP_REXW_MASK)
+			if (target->prefix & RP_REXW_MASK)
 				addon = "64";
 		}
 		else if (IS_FMA_MNEMONIC(target->mnemonic) || target->mnemonic == VGATHERDPS)
 		{
-			if (prefix & RP_REXW_MASK)
+			if (target->prefix & RP_REXW_MASK)
 				addon = "d";
 			else
 				addon = "s";
@@ -2434,14 +2433,14 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 		|| target->mnemonic == VPANDND || target->mnemonic == VPORD || target->mnemonic == VPXORD
 		|| target->mnemonic == VPSRAVD)
 		{
-			if (prefix & RP_REXW_MASK)
+			if (target->prefix & RP_REXW_MASK)
 				addon = "q";
 			else
 				addon = "d";
 		}
-		else if (prefix & OP_EVEX_MASK && (target->mnemonic == VMOVDQA || target->mnemonic == VMOVDQU))
+		else if (target->prefix & OP_EVEX_MASK && (target->mnemonic == VMOVDQA || target->mnemonic == VMOVDQU))
 		{
-			if (prefix & RP_REXW_MASK)
+			if (target->prefix & RP_REXW_MASK)
 				addon = "64";
 			else
 				addon = "32";
@@ -2451,22 +2450,22 @@ static void handle_exceptional_mnemonics(FILE* where, instruction_t* const targe
 		|| target->mnemonic == KSHIFTR || target->mnemonic == KTEST || target->mnemonic == KXNOR
 		|| target->mnemonic == KXOR)
 		{
-			if (prefix & OS_BYTE_MASK)
+			if (target->prefix & OS_BYTE_MASK)
 				addon = "b";
-			else if (prefix & OS_WORD_MASK)
+			else if (target->prefix & OS_WORD_MASK)
 				addon = "w";
-			else if (prefix & OS_DWORD_MASK)
+			else if (target->prefix & OS_DWORD_MASK)
 				addon = "d";
-			else if (prefix & OS_QWORD_MASK)
+			else if (target->prefix & OS_QWORD_MASK)
 				addon = "q";
 		}
 		else if (target->mnemonic == KUNPCK)
 		{
-			if (prefix & OS_WORD_MASK)
+			if (target->prefix & OS_WORD_MASK)
 				addon = "bw";
-			else if (prefix & OS_DWORD_MASK)
+			else if (target->prefix & OS_DWORD_MASK)
 				addon = "wd";
-			else if (prefix & OS_QWORD_MASK)
+			else if (target->prefix & OS_QWORD_MASK)
 				addon = "dq";
 		}
 
@@ -2597,25 +2596,27 @@ static udword print_register_V2(FILE* where, reg_t reg)
 
 static udword print_register(FILE* where, reg_t reg, udword prefix)
 {
+	(void)prefix;
+
 	return print_register_V2(where, reg);
 
-	ubyte l = 0;
+	//ubyte l = 0;
 
 	///TODO: Handle print 32-bit addressing
 
-	if (!(prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK)) && reg >= D_REG_RAX && reg <= D_REG_R15)
-	{
-		if (prefix & OS_BYTE_MASK)
-			l = fprintf(where, "%s", gp_regs_8[reg - 2]);
-		else if (prefix & OS_WORD_MASK)
-			l = fprintf(where, "%s", gp_regs_16[reg - 2]);
-		else if (prefix & OS_DWORD_MASK)
-			l = fprintf(where, "%s", gp_regs_32[reg - 2]);
-	}
-	else
-		l = fprintf(where, "%s", regs[reg - 1]);
+	// if (!(prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK)) && reg >= D_REG_RAX && reg <= D_REG_R15)
+	// {
+	// 	if (prefix & OS_BYTE_MASK)
+	// 		l = fprintf(where, "%s", gp_regs_8[reg - 2]);
+	// 	else if (prefix & OS_WORD_MASK)
+	// 		l = fprintf(where, "%s", gp_regs_16[reg - 2]);
+	// 	else if (prefix & OS_DWORD_MASK)
+	// 		l = fprintf(where, "%s", gp_regs_32[reg - 2]);
+	// }
+	// else
+	// 	l = fprintf(where, "%s", regs[reg - 1]);
 
-	return l;
+	//return l;
 }
 
 static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg_t addr_reg_offset)
@@ -2640,7 +2641,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg
 					/* [BASE] */
 
 					fprintf(where, "[");
-					print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
+					print_register(where, base + addr_reg_offset, inst->prefix);
 					fprintf(where, "]");
 				}
 				else
@@ -2648,9 +2649,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg
 					/* [BASE + (INDEX * SCALE)] */
 
 					fprintf(where, "[");
-					print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
+					print_register(where, base + addr_reg_offset, inst->prefix);
 					fprintf(where, " + (");
-					print_register(where, index + addr_reg_offset, *(udword*)inst->prefix);
+					print_register(where, index + addr_reg_offset, inst->prefix);
 					fprintf(where, " * %d)]", scale);
 				}
 			}
@@ -2667,7 +2668,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg
 					/* [(INDEX * SCALE) + DISP32] */
 
 					fprintf(where, "[(");
-					print_register(where, index + addr_reg_offset , *(udword*)inst->prefix);
+					print_register(where, index + addr_reg_offset , inst->prefix);
 					fprintf(where, " * %d) + %d]", scale, inst->displacement);
 				}
 			}
@@ -2681,7 +2682,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg
 				/* [BASE + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset , *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset , inst->prefix);
 				fprintf(where, " + %"PRIdd"]", inst->displacement);
 			}
 			else
@@ -2689,9 +2690,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg
 				/* [BASE + (INDEX * SCALE) + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset , *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset , inst->prefix);
 				fprintf(where, " + (");
-				print_register(where, index + addr_reg_offset , *(udword*)inst->prefix);
+				print_register(where, index + addr_reg_offset , inst->prefix);
 				fprintf(where, " * %d) + %"PRIdd"]", scale, inst->displacement);
 			}
 			break ;
@@ -2704,7 +2705,7 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg
 				/* [BASE + DISP32 ] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset, inst->prefix);
 				fprintf(where, " + %d]", inst->displacement);
 			}
 			else
@@ -2712,9 +2713,9 @@ static void print_sib(FILE* where, instruction_t* const inst, ubyte hasdisp, reg
 				/* [BASE + (INDEX * SCALE) + DISP32] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset, *(udword*)inst->prefix);
+				print_register(where, base + addr_reg_offset, inst->prefix);
 				fprintf(where, " + (");
-				print_register(where, index + addr_reg_offset, *(udword*)inst->prefix);
+				print_register(where, index + addr_reg_offset, inst->prefix);
 				fprintf(where, " * %d) + %d]", scale, inst->displacement);
 			}
 			break ;
@@ -2727,7 +2728,7 @@ static reg_t get_addressing_reg_offset(instruction_t* const inst)
 {
 	reg_t offset = AVL_OP_RAX;
 
-	if (*(udword*)inst->prefix & OP_EVEX_MASK)
+	if (inst->prefix & OP_EVEX_MASK)
 	{
 		if ((inst->mnemonic == VGATHERDPS || inst->mnemonic == VGATHERQPD
 		|| inst->mnemonic == VGATHERQPS || inst->mnemonic == VPGATHERDD
@@ -2764,7 +2765,7 @@ static reg_t get_addressing_reg_offset(instruction_t* const inst)
 		if (inst->mnemonic == VGATHERDPS || inst->mnemonic == VPGATHERDD || inst->mnemonic == VPGATHERQD)
 		{
 			if ((inst->vexxop[2] ? VEXXOP_L_GET(inst->vexxop) : VEXXOP2_L_GET(inst->vexxop))
-			&& !(inst->mnemonic == VGATHERDPS && *(udword*)inst->prefix & RP_REXW_MASK))
+			&& !(inst->mnemonic == VGATHERDPS && inst->prefix & RP_REXW_MASK))
 			// vgatherpd always use [xmm]
 				offset = AVL_OP_YMM0;
 			else
@@ -2845,7 +2846,7 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 		/* [R/M] */
 
 		fprintf(where, "[");
-		print_register(where, rm + addr_reg_offset, *(udword*)inst->prefix);
+		print_register(where, rm + addr_reg_offset, inst->prefix);
 		fprintf(where, "]");
 	}
 	else if (mod == 0b00)
@@ -2876,7 +2877,7 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 			/* [R/M + DISP8] */
 
 			fprintf(where, "[");
-			print_register(where, rm + addr_reg_offset, *(udword*)inst->prefix);
+			print_register(where, rm + addr_reg_offset, inst->prefix);
 			fprintf(where, " %s %"PRIdd"]", direction, inst->displacement);
 		}
 	}
@@ -2893,7 +2894,7 @@ static void print_address(FILE* where, instruction_t* const inst, reg_t reg, uby
 			/* [R/M + DISP32] */
 
 			fprintf(where, "[");
-			print_register(where, rm + addr_reg_offset, *(udword*)inst->prefix);
+			print_register(where, rm + addr_reg_offset, inst->prefix);
 			fprintf(where, " %s %d]", direction, inst->displacement);
 		}
 	}
@@ -2928,7 +2929,7 @@ static ubyte print_operand(FILE* where, instruction_t* const inst, reg_t reg, ud
 __always_inline
 static ubyte print_merge_zero_avx512(FILE* where, instruction_t* const target)
 {
-	if (*(udword*)target->prefix & OP_EVEX_MASK)
+	if (target->prefix & OP_EVEX_MASK)
 	{
 		static const char* const regs_k[] = {
 			"k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
@@ -2950,7 +2951,7 @@ static ubyte print_merge_zero_avx512(FILE* where, instruction_t* const target)
 __always_inline
 static ubyte print_operands(FILE* where, instruction_t* const target)
 {
-	const udword prefix = *(udword*)target->prefix;
+	const udword prefix = target->prefix;
 
 	return print_operand(where, target, target->reg1, prefix, 1)
 	+ print_merge_zero_avx512(where, target)
@@ -2964,7 +2965,7 @@ static ubyte print_operands(FILE* where, instruction_t* const target)
 __always_inline
 static void print_immediate(FILE* where, instruction_t* const target, ubyte has_operands)
 {
-	if (*(udword*)target->prefix & OP_IMMEDIATE_MASK)
+	if (target->prefix & OP_IMMEDIATE_MASK)
     {
 		if ((target->mnemonic >= JMP && target->mnemonic < RET) || target->mnemonic == XBEGIN)
 			target->immediate += IMMEDIATE_JMP_ADDON;
@@ -2974,7 +2975,7 @@ static void print_immediate(FILE* where, instruction_t* const target, ubyte has_
 		if ((target->mnemonic == VBLENDVPS || target->mnemonic == VBLENDVPD) && target->opcode[2] >= 0x4A && target->opcode[2] <= 0x4B)
 		{
 			///TODO: Imm seems to be empty
-			print_operand(where, target, target->immediate, *(udword*)target->prefix, 0);
+			print_operand(where, target, target->immediate, target->prefix, 0);
 		}
 		else
 		{
@@ -2990,7 +2991,7 @@ static void print_immediate(FILE* where, instruction_t* const target, ubyte has_
 __always_inline
 static void	handle_conversions(FILE* where, instruction_t* const target)
 {
-	const udword prefix = *(udword*)target->prefix;
+	const udword prefix = target->prefix;
 	const char* name;
 
 	if (target->mnemonic == CBW)
@@ -3020,7 +3021,7 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 	if (target->mnemonic == OUT)
 	{
 		print_immediate(where, target, 0);
-		print_operand(where, target, target->reg2, *(udword*)target->prefix, 0);
+		print_operand(where, target, target->reg2, target->prefix, 0);
 	}
 	else if (target->mnemonic == ENTER)
 	{
@@ -3028,9 +3029,9 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 		fprintf(where, "0x%"PRIXq"", (target->immediate & 0x00FF0000) >> 0x10);
 	}
 	else if (target->vexxop[0] == 0 && target->opcode[2] == 0xD9 && target->mod_rm >= 0xC0 && target->mod_rm <= 0xC7)
-		print_operand(where, target, target->reg2, *(udword*)target->prefix, 1);
+		print_operand(where, target, target->reg2, target->prefix, 1);
 	else if (target->vexxop[0] == 0 && target->opcode[2] == 0xDD && target->mod_rm >= 0xE0 && target->mod_rm <= 0xE7)
-		print_operand(where, target, target->reg1, *(udword*)target->prefix, 1);
+		print_operand(where, target, target->reg1, target->prefix, 1);
 }
 
 #define IS_CONVERSION_INST(x) ( \
@@ -3039,7 +3040,7 @@ static void	handle_exceptional_formats(FILE* where, instruction_t* const target)
 )
 
 #define IS_EXCEPTION_INST(x) ( \
-	((x)->mnemonic == OUT && *(udword*)((x)->prefix) & OP_IMMEDIATE_MASK) \
+	((x)->mnemonic == OUT && ((x)->prefix) & OP_IMMEDIATE_MASK) \
 	|| (x)->mnemonic == OUTS \
 	|| (x)->mnemonic == OUTSB \
 	|| (x)->mnemonic == ENTER \
