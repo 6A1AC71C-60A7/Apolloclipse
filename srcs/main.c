@@ -211,20 +211,33 @@
 
 // VCVTUDQ2PS
 
+int is_endof_insts(instruction_t* const inst)
+{
+    int amount = 0;
 
+    for (uqword i = 0 ; i < 8 ; i++)
+    {
+        if (inst->mnemonic == ADD && inst->opcode[2] == 0 && inst->mod_rm == 0)
+            amount++;
+    }
+    return amount == 8;
+}
 
 int main(int ac, const char* av[])
 {
     err_t st = SUCCESS;
 
-    (void)ac; (void)av;
+    if (ac != 2)
+        return 1;
 
     instruction_t dest[INST_NB] = {};
 
 #ifdef TEST_FILE
     ubyte iraw[BUFFSIZE] = {};
 
-    int fd = open(FILENAME, O_RDONLY);
+    int fd = open(av[1], O_RDONLY);
+    if (fd < 0)
+        return 1;
 
     read(fd, iraw, BUFFSIZE);
 #else
@@ -238,6 +251,8 @@ int main(int ac, const char* av[])
     //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
     for (uqword i = 0 ; i < INST_NB ; i++)
     {
+        if (i < INST_NB - 8 && is_endof_insts(&dest[i]))
+            break ;
         //fprint_info(stdout, &dest[i]);
         fprint_instruction(stdout, &dest[i]);
 #ifdef TEST_FILE
