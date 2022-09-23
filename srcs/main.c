@@ -3,6 +3,12 @@
 // Add an option to load the static data into the heap whether is possible
 //      Per explemple if EPO with jmp before exit (heap is no longer needed)
 
+// NEED DETERMINITICS REVERSIBLE ENGINE
+// BE ABLE TO 'ENCRYPT'/'DECRIPT' THE INPUT WITH A KEY
+// IT ALSO MUST WORK BY RANGE (E.G. [[1],[10]],[22],[34],... => ONLY WORKS FROM BYTE 1 T0 10 ...)
+// IT ALSO MUST HAVE A BLACKLIST FOR REGISTER PERMUTATION (USEFUL FOR THE FUTURE)
+//      (EXCEPTIONS ON REGISTERS WHICH WILL BE THE OUTPUT)
+
 #include <tests.h>
 #include <d_opcode.h>
 #include <d_register.h>
@@ -222,7 +228,7 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x62\xf1\x7d\x89\x79\xca";
+    const ubyte iraw[] = "\x62\xf1\xfc\x89\x5b\xca";
 #endif
 
     const ubyte* prt = iraw;
