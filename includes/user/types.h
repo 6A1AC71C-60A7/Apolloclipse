@@ -3,15 +3,14 @@
 
 #include "./prefix.h"
 
+#include <d_mnemonic.h>
+
 #include <stdint.h>
 
 typedef uint8_t		__AVL_SET_PREF(reg_t);
 
 ///TODO: Replce by the good one
-typedef enum TMP_MNEMONIC
-{
-	MEMBER,
-} __AVL_SET_PREF(TMP_MNEMONIC_t);
+typedef mnemonic_t __AVL_SET_PREF(TMP_MNEMONIC_t);
 
 /// Vector EXtension (VEX) 3-bytes prefix.
 typedef struct

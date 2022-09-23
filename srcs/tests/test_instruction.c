@@ -4,7 +4,7 @@
 #include <d_error.h>
 
 __always_inline
-static void test_instruction_prefixes(const ubyte *instruction_raw, instruction_t* const data)
+static void test_instruction_prefixes(const ubyte *instruction_raw, AVL_instruction_t* const data)
 {
     DEBUG(" *** START: TEST PREFIX ***\n");
 
@@ -15,7 +15,7 @@ static void test_instruction_prefixes(const ubyte *instruction_raw, instruction_
     
     udword y = 0;
     for (udword i = 1 ; i <= RP_REXW_MASK ; i <<= 1)
-        DEBUG("[%u] -> [%x]\n", y++, data->prefix & i);
+        DEBUG("[%u] -> [%x]\n", y++, data->i_flags & i);
     DEBUG(" *** END:  TEST PREFIX ***\n");
 }
 
@@ -35,40 +35,40 @@ uqword d_memcmp(void* restrict p1, void* restrict p2, uqword size)
     return 1;
 }
 
-void test_instruction(const ubyte *instruction_raw, instruction_t* answer)
+void test_instruction(const ubyte *instruction_raw, AVL_instruction_t* answer)
 {
-    instruction_t inst = {};
+    AVL_instruction_t inst = {};
     test_instruction_prefixes(instruction_raw, &inst);
 
     if (answer)
-        DEBUG("CONCLUSION: %s\n", d_memcmp(&inst, answer, sizeof(instruction_t)) == 0 ? "PASS" : "FAIL");
+        DEBUG("CONCLUSION: %s\n", d_memcmp(&inst, answer, sizeof(AVL_instruction_t)) == 0 ? "PASS" : "FAIL");
 }
 
-void fprint_info(FILE* where, instruction_t* target)
+void fprint_info(FILE* where, AVL_instruction_t* target)
 {
     fprintf(where, "PREFIXES:\n - LOCK: %d\n - REPNX: %d\n - REPX: %d\n"
         " - FS: %d\n - GS: %d\n - NOBRANCH: %d\n - BRANCH: %d\n - OPERAND SZ: %d\n"
         " - ADDRESS SZ: %d\n - REX.B: %d\n - REX.X: %d\n - REX.R: %d\n - REX.W: %d\n - 0x66: %d\n- - -\n",
-        target->prefix & LP_LOCK_MASK, target->prefix & LP_LOCK_MASK, target->prefix & LP_REPX_MASK, 
-        target->prefix & LP_FS_MASK, target->prefix & LP_GS_MASK, target->prefix & LP_NOBRANCH_MASK, target->prefix & LP_BRANCH_MASK,
-        target->prefix & LP_OPSZ_MASK, target->prefix & LP_ADDRSZ_MASK, target->prefix & RP_REXB_MASK, target->prefix & RP_REXX_MASK, 
-        target->prefix & RP_REXR_MASK, target->prefix & RP_REXW_MASK, target->prefix & MP_0x66_MASK);
+        target->i_flags & LP_LOCK_MASK, target->i_flags & LP_LOCK_MASK, target->i_flags & LP_REPX_MASK, 
+        target->i_flags & LP_FS_MASK, target->i_flags & LP_GS_MASK, target->i_flags & LP_NOBRANCH_MASK, target->i_flags & LP_BRANCH_MASK,
+        target->i_flags & LP_OPSZ_MASK, target->i_flags & LP_ADDRSZ_MASK, target->i_flags & RP_REXB_MASK, target->i_flags & RP_REXX_MASK, 
+        target->i_flags & RP_REXR_MASK, target->i_flags & RP_REXW_MASK, target->i_flags & MP_0x66_MASK);
 
-    fprintf(where, "MNEMONIC: [%d]\n- - -\n", target->mnemonic);
+    fprintf(where, "MNEMONIC: [%d]\n- - -\n", target->i_mnemonic);
 
-    fprintf(where, "OPCODE: [%X][%X][%X]\n- - -\n", target->opcode[0], target->opcode[1], target->opcode[2]);
+    fprintf(where, "OPCODE: [%X][%X][%X]\n- - -\n", target->i_opcode[0], target->i_opcode[1], target->i_opcode[2]);
 
     ///TODO: VEX 
 
     fprintf(where, "MODRM:\n - MOD: %d\n - REG: %d\n - RM: %d\n- - -\n",
-    MODRM_MOD_GET(target->mod_rm), MODRM_REG_GET(target->mod_rm), MODRM_RM_GET(target->mod_rm));
+    MODRM_MOD_GET(target->i_mod_rm), MODRM_REG_GET(target->i_mod_rm), MODRM_RM_GET(target->i_mod_rm));
 
     fprintf(where, "SIB:\n - BASE: %d\n - INDEX: %d\n - SCALE: %d\n- - -\n",
-    SIB_BASE_GET(target->sib), SIB_INDEX_GET(target->sib), SIB_SCALE_GET(target->sib));
+    SIB_BASE_GET(target->i_sib), SIB_INDEX_GET(target->i_sib), SIB_SCALE_GET(target->i_sib));
 
-    fprintf(where, "DISPLACEMENT: %d\n- - -\n", target->displacement);
+    fprintf(where, "DISPLACEMENT: %d\n- - -\n", target->i_disp);
 
-    fprintf(where, "SIZE: %d\n- - -\n", target->size);
+    fprintf(where, "SIZE: %d\n- - -\n", target->i_size);
 
-    fprintf(where, "IMMEDIATE: %llX\n- - -\n", (long long)target->immediate);
+    fprintf(where, "IMMEDIATE: %llX\n- - -\n", (long long)target->i_imm);
 }

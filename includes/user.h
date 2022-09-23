@@ -185,7 +185,7 @@
  * @brief Fetch and disassemble @p destlen instructions from @p *text to @p dest .
  * 
  * @param dest Array of 32-byte elements.
- * (PREFIX_instruction_t)
+ * (PREFIX_AVL_instruction_t)
  * @param destlen Amount of fetched instructions.
  * @param text Address where the instructions are fetched from.
  * Each call the address is increased to the begin of the next instruction.

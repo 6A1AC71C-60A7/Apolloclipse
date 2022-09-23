@@ -143,11 +143,11 @@
 #define MODRM_MOD_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
 #define MODRM_RM_EXTENDED_GET(inst) (	\
-	((((inst)->prefix & RP_REXB_MASK) != 0) << 3) | ((((inst)->prefix & OP_EVEX_MASK) && MODRM_MOD_GET((inst)->mod_rm) == 0b11 && !EVEX_X_GET((inst)->vexxop)) << 4) | MODRM_RM_GET((inst)->mod_rm) \
+	((((inst)->i_flags & RP_REXB_MASK) != 0) << 3) | ((((inst)->i_flags & OP_EVEX_MASK) && MODRM_MOD_GET((inst)->i_mod_rm) == 0b11 && !EVEX_X_GET((inst)->i_vp)) << 4) | MODRM_RM_GET((inst)->i_mod_rm) \
 )
 
 #define MODRM_REG_EXTENDED_GET(inst) (	\
-	((((inst)->prefix & RP_REXR_MASK) != 0) << 3) | ((((inst)->prefix & OP_EVEX_MASK) && !EVEX_R2_GET((inst)->vexxop)) << 4) | MODRM_REG_GET((inst)->mod_rm) \
+	((((inst)->i_flags & RP_REXR_MASK) != 0) << 3) | ((((inst)->i_flags & OP_EVEX_MASK) && !EVEX_R2_GET((inst)->i_vp)) << 4) | MODRM_REG_GET((inst)->i_mod_rm) \
 )
 
 /*
@@ -162,11 +162,11 @@
 # define SIB_SCALE_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
 #define SIB_BASE_EXTENDED_GET(inst) (	\
-	(((inst)->prefix & RP_REXB_MASK) != 0) << 3 | SIB_BASE_GET((inst)->sib) \
+	(((inst)->i_flags & RP_REXB_MASK) != 0) << 3 | SIB_BASE_GET((inst)->i_sib) \
 )
 
 #define SIB_INDEX_EXTENDED_GET(inst) (	\
-	(((inst)->prefix & RP_REXX_MASK) != 0) << 3 | SIB_INDEX_GET((inst)->sib) \
+	(((inst)->i_flags & RP_REXX_MASK) != 0) << 3 | SIB_INDEX_GET((inst)->i_sib) \
 )
 
 typedef struct
@@ -185,11 +185,11 @@ typedef struct
 	uqword		immediate;
 } instruction_t;
 
-err_t			get_instruction_prefixes(instruction_t* const inst, const ubyte** instruction_raw);
-void			handle_modrm(instruction_t* const inst, const ubyte** instruction_raw);
-err_t			get_instruction(instruction_t* const inst, const ubyte** instruction_raw);
+err_t			get_instruction_prefixes(AVL_instruction_t* const inst, const ubyte** instruction_raw);
+void			handle_modrm(AVL_instruction_t* const inst, const ubyte** instruction_raw);
+err_t			get_instruction(AVL_instruction_t* const inst, const ubyte** instruction_raw);
 opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found);
-extern void		resolve_operands(instruction_t* const dest, opfield_t instruction);
-extern void		resolve_operands_v2(instruction_t* const dest, opfield_t instruction);
+extern void		resolve_operands(AVL_instruction_t* const dest, opfield_t instruction);
+extern void		resolve_operands_v2(AVL_instruction_t* const dest, opfield_t instruction);
 
-void			get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw);
+void			get_instructions(AVL_instruction_t* const dest, uqword destlen, const ubyte** iraw);

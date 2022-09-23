@@ -210,13 +210,13 @@
 
 // VCVTUDQ2PS
 
-int is_endof_insts(instruction_t* const inst)
+int is_endof_insts(AVL_instruction_t* const inst)
 {
     int amount = 0;
 
     for (uqword i = 0 ; i < 8 ; i++)
     {
-        if (inst->mnemonic == ADD && inst->opcode[2] == 0 && inst->mod_rm == 0)
+        if (inst->i_mnemonic == ADD && inst->i_opcode[2] == 0 && inst->i_mod_rm == 0)
             amount++;
     }
     return amount == 8;
@@ -229,7 +229,7 @@ int main(int ac, const char* av[])
     if (ac != 2)
         return 1;
 
-    instruction_t dest[INST_NB] = {};
+    AVL_instruction_t dest[INST_NB] = {};
 
 #ifdef TEST_FILE
     ubyte iraw[BUFFSIZE] = {};
@@ -255,7 +255,7 @@ int main(int ac, const char* av[])
         //fprint_info(stdout, &dest[i]);
         fprint_instruction(stdout, &dest[i]);
 #ifdef TEST_FILE
-        if (i < INST_NB - 1 && dest[i].mnemonic != dest[i + 1].mnemonic)
+        if (i < INST_NB - 1 && dest[i].i_mnemonic != dest[i + 1].i_mnemonic)
             fprintf(stdout, "\n");
 #endif
     }

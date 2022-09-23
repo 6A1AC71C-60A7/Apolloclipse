@@ -155,91 +155,91 @@ end:
 	return err;
 }
 
-#define TEST_VEX_REX(rex, vexxop) ( \
-	VEXXOP_##rex##_GET(vexxop) \
+#define TEST_VEX_REX(rex, vp) ( \
+	VEXXOP_##rex##_GET(vp) \
 )
 
 __always_inline
-static void get_vex_prefixes(instruction_t* const inst, const ubyte** iraw)
+static void get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 {
 	ubyte opp;
 
-	*(uword*)inst->vexxop = *((*(uword**)iraw)++);
+	*(uword*)inst->i_vp = *((*(uword**)iraw)++);
 
-	if (inst->vexxop[0] != 0xC5)
+	if (inst->i_vp[0] != 0xC5)
 	{
-		inst->vexxop[2] = *((*iraw)++);
-		inst->prefix |= !TEST_VEX_REX(R, inst->vexxop) ? RP_REXR_MASK : 0x0;
-		inst->prefix |= !TEST_VEX_REX(X, inst->vexxop) ? RP_REXX_MASK : 0x0;
-		inst->prefix |= !TEST_VEX_REX(B, inst->vexxop) ? RP_REXB_MASK : 0x0;
-		inst->prefix |= TEST_VEX_REX(WE, inst->vexxop) ? RP_REXW_MASK : 0x0;
-		opp = VEXXOP_PP_GET(inst->vexxop);
+		inst->i_vp[2] = *((*iraw)++);
+		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? RP_REXR_MASK : 0x0;
+		inst->i_flags |= !TEST_VEX_REX(X, inst->i_vp) ? RP_REXX_MASK : 0x0;
+		inst->i_flags |= !TEST_VEX_REX(B, inst->i_vp) ? RP_REXB_MASK : 0x0;
+		inst->i_flags |= TEST_VEX_REX(WE, inst->i_vp) ? RP_REXW_MASK : 0x0;
+		opp = VEXXOP_PP_GET(inst->i_vp);
 	}
 	else
 	{
-		inst->prefix |= !TEST_VEX_REX(R, inst->vexxop) ? RP_REXR_MASK : 0x0;
-		opp = VEXXOP2_PP_GET(inst->vexxop);
+		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? RP_REXR_MASK : 0x0;
+		opp = VEXXOP2_PP_GET(inst->i_vp);
 	}
 
 	switch (opp)
 	{
 		case 0x1:
-			inst->prefix |= MP_0x66_MASK;
+			inst->i_flags |= MP_0x66_MASK;
 			break ;
 		case 0x2:
-			inst->prefix |= MP_0xF3_MASK;
+			inst->i_flags |= MP_0xF3_MASK;
 			break ;
 		case 0x3:
-			inst->prefix |= MP_0xF2_MASK;
+			inst->i_flags |= MP_0xF2_MASK;
 			break ;
 	}
 
 		/// debug
 	DEBUG("OPP IS: %d\n", opp);
-	if (inst->prefix & RP_REXR_MASK)
+	if (inst->i_flags & RP_REXR_MASK)
 		DEBUG("-> VEX: HAS REX.R\n");
-	if (inst->prefix & RP_REXB_MASK)
+	if (inst->i_flags & RP_REXB_MASK)
 		DEBUG("-> VEX: HAS REX.B\n");
-	if (inst->prefix & RP_REXX_MASK)
+	if (inst->i_flags & RP_REXX_MASK)
 		DEBUG("-> VEX: HAS REX.X\n");
-	if (inst->prefix & RP_REXW_MASK)
+	if (inst->i_flags & RP_REXW_MASK)
 		DEBUG("-> VEX: HAS REX.W\n");
 }
 
 __always_inline
-static void get_evex_prefixes(instruction_t* const inst, const ubyte** iraw)
+static void get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 {
 	(*iraw)++;
-	inst->prefix |= OP_EVEX_MASK;
+	inst->i_flags |= OP_EVEX_MASK;
 
-	*(uword*)inst->vexxop = *((*(uword**)iraw)++);
-	inst->vexxop[2] = *((*iraw)++);
+	*(uword*)inst->i_vp = *((*(uword**)iraw)++);
+	inst->i_vp[2] = *((*iraw)++);
 
-	inst->prefix |= !EVEX_R_GET(inst->vexxop) || !EVEX_R2_GET(inst->vexxop) ? RP_REXR_MASK : 0x0;
-	inst->prefix |= !EVEX_X_GET(inst->vexxop) ? RP_REXX_MASK : 0x0;
-	inst->prefix |= !EVEX_B_GET(inst->vexxop) ? RP_REXB_MASK : 0x0;
-	inst->prefix |= EVEX_W_GET(inst->vexxop) ? RP_REXW_MASK : 0x0;
+	inst->i_flags |= !EVEX_R_GET(inst->i_vp) || !EVEX_R2_GET(inst->i_vp) ? RP_REXR_MASK : 0x0;
+	inst->i_flags |= !EVEX_X_GET(inst->i_vp) ? RP_REXX_MASK : 0x0;
+	inst->i_flags |= !EVEX_B_GET(inst->i_vp) ? RP_REXB_MASK : 0x0;
+	inst->i_flags |= EVEX_W_GET(inst->i_vp) ? RP_REXW_MASK : 0x0;
 
-	switch (EVEX_P_GET(inst->vexxop))
+	switch (EVEX_P_GET(inst->i_vp))
 	{
 		case 0x1:
-			inst->prefix |= MP_0x66_MASK;
+			inst->i_flags |= MP_0x66_MASK;
 			break ;
 		case 0x2:
-			inst->prefix |= MP_0xF3_MASK;
+			inst->i_flags |= MP_0xF3_MASK;
 			break ;
 		case 0x3:
-			inst->prefix |= MP_0xF2_MASK;
+			inst->i_flags |= MP_0xF2_MASK;
 			break ;
 	}
 
-	if (inst->prefix & RP_REXR_MASK)
+	if (inst->i_flags & RP_REXR_MASK)
 		DEBUG("-> VEX: HAS REX.R\n");
-	if (inst->prefix & RP_REXB_MASK)
+	if (inst->i_flags & RP_REXB_MASK)
 		DEBUG("-> VEX: HAS REX.B\n");
-	if (inst->prefix & RP_REXX_MASK)
+	if (inst->i_flags & RP_REXX_MASK)
 		DEBUG("-> VEX: HAS REX.X\n");
-	if (inst->prefix & RP_REXW_MASK)
+	if (inst->i_flags & RP_REXW_MASK)
 		DEBUG("-> VEX: HAS REX.W\n");
 }
 
@@ -282,19 +282,19 @@ static const opfield_t* get_map_vex(ubyte* const vex, ubyte isevex)
 }
 
 __always_inline
-static const opfield_t*	get_map_legacy(instruction_t* const inst)
+static const opfield_t*	get_map_legacy(AVL_instruction_t* const inst)
 {
 	const opfield_t* map;
 
-	if (IS_GPM_ESCAPE(inst->opcode[0]))
+	if (IS_GPM_ESCAPE(inst->i_opcode[0]))
 	{
 		map = lt_two_byte_opmap;
-		if (IS_GPM_ESCAPE2_0x38(inst->opcode[1]))
+		if (IS_GPM_ESCAPE2_0x38(inst->i_opcode[1]))
 		{
 			DEBUG("DEBUG: IS 0x38 OPCODE MAP\n");
 			map = lt_three_byte_0x38_opmap;
 		}
-		else if (IS_GPM_ESCAPE2_0x3A(inst->opcode[1]))
+		else if (IS_GPM_ESCAPE2_0x3A(inst->i_opcode[1]))
 		{
 			DEBUG("DEBUG: IS 0x3A OPCODE MAP\n");
 			map = lt_three_byte_0x3A_opmap;
@@ -311,54 +311,54 @@ static const opfield_t*	get_map_legacy(instruction_t* const inst)
 	return map;
 }
 
-static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw);
+static void		get_immediate(opfield_t opfield, AVL_instruction_t* const dest, const ubyte** iraw);
 
 __always_inline
-static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte** iraw)
+static opfield_t	handle_x87_instructions(AVL_instruction_t* const inst, const ubyte** iraw)
 {
 	const opfield_t*	map;
 	uqword				map_index;
 	opfield_t			found;
 
-	inst->mod_rm = *((*iraw)++);
+	inst->i_mod_rm = *((*iraw)++);
 
-	DEBUG("DEBUG x87: MODRM IS 0x%02X\n", inst->mod_rm);
+	DEBUG("DEBUG x87: MODRM IS 0x%02X\n", inst->i_mod_rm);
 
 	/* Documentation's map starts at 0xC0 (fields from 0x0 to 0x0 are zeroed), so I've stripped those in mine */
-	map_index = inst->mod_rm > 0xBF ? GET_MAP_INDEX(inst->mod_rm) - 0XC0 : MODRM_REG_GET(inst->mod_rm);
+	map_index = inst->i_mod_rm > 0xBF ? GET_MAP_INDEX(inst->i_mod_rm) - 0XC0 : MODRM_REG_GET(inst->i_mod_rm);
 
-	switch (inst->opcode[2])
+	switch (inst->i_opcode[2])
 	{
 		case 0xD8:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xD8_outside_modrm_opmap : lt_escape_0xD8_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xD8_outside_modrm_opmap : lt_escape_0xD8_within_modrm_opmap;
 			break ;
 
 		case 0xD9:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xD9_outside_modrm_opmap : lt_escape_0xD9_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xD9_outside_modrm_opmap : lt_escape_0xD9_within_modrm_opmap;
 			break ;
 
 		case 0xDA:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xDA_outside_modrm_opmap : lt_escape_0xDA_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xDA_outside_modrm_opmap : lt_escape_0xDA_within_modrm_opmap;
 			break ;
 
 		case 0xDB:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xDB_outside_modrm_opmap : lt_escape_0xDB_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xDB_outside_modrm_opmap : lt_escape_0xDB_within_modrm_opmap;
 			break ;
 
 		case 0xDC:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xDC_outside_modrm_opmap : lt_escape_0xDC_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xDC_outside_modrm_opmap : lt_escape_0xDC_within_modrm_opmap;
 			break ;
 
 		case 0xDD:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xDD_outside_modrm_opmap : lt_escape_0xDD_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xDD_outside_modrm_opmap : lt_escape_0xDD_within_modrm_opmap;
 			break ;
 
 		case 0xDE:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xDE_outside_modrm_opmap : lt_escape_0xDE_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xDE_outside_modrm_opmap : lt_escape_0xDE_within_modrm_opmap;
 			break ;
 
 		case 0xDF:
-			map = inst->mod_rm > 0xBF ? lt_escape_0xDF_outside_modrm_opmap : lt_escape_0xDF_within_modrm_opmap;
+			map = inst->i_mod_rm > 0xBF ? lt_escape_0xDF_outside_modrm_opmap : lt_escape_0xDF_within_modrm_opmap;
 			break ;
 	}
 
@@ -368,9 +368,9 @@ static opfield_t	handle_x87_instructions(instruction_t* const inst, const ubyte*
 
 	found = map[map_index];
 
-	inst->mnemonic = found.mnemonic;
+	inst->i_mnemonic = found.mnemonic;
 
-	DEBUG("DEBUG x87: MNEMONIC IS: %d\n", inst->mnemonic);
+	DEBUG("DEBUG x87: MNEMONIC IS: %d\n", inst->i_mnemonic);
 
 	return found;
 }
@@ -656,9 +656,9 @@ static void handle_ambigious_instructions_0x0F_opmap(opfield_t* const found, uby
 	/*|| ((p) & MP_0x66_MASK && (x) == 0x72)*/ \
 )
 
-///TODO: Change arguments and add an instruction_t instead
+///TODO: Change arguments and add an AVL_instruction_t instead
 __always_inline
-static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, ubyte opcode, ubyte* pvex, instruction_t* const inst)
+static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, ubyte opcode, ubyte* pvex, AVL_instruction_t* const inst)
 {
 	uqword scale = 0;
 	ubyte no_overwrite = 0;
@@ -667,13 +667,13 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	{
 		const ubyte line = (opcode & 0xF0) >> 4;
 	
-		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, inst->prefix & MP_0x66_MASK);
+		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, inst->i_flags & MP_0x66_MASK);
 
-		if (inst->prefix & MP_0x66_MASK && !(line >= 0x9 && line <= 0xB))
+		if (inst->i_flags & MP_0x66_MASK && !(line >= 0x9 && line <= 0xB))
 			scale = 1;
-		if (inst->prefix & MP_0xF3_MASK)
+		if (inst->i_flags & MP_0xF3_MASK)
 			scale = 2;
-		if (inst->prefix & MP_0xF2_MASK)
+		if (inst->i_flags & MP_0xF2_MASK)
 			scale = 3;
 
 		DEBUG("--> INDEX IS %"PRId64"\n", found->mnemonic + (0x76 * scale));
@@ -683,7 +683,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 		// Just overwrite for the moment
 
-		if (inst->prefix & OP_EVEX_MASK)
+		if (inst->i_flags & OP_EVEX_MASK)
 		{
 			switch (found->mnemonic)
 			{
@@ -720,27 +720,27 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case VCVTUDQ2PD:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VCVTUQQ2PD;
 					break ;
 
 				case VCVTUDQ2PS:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VCVTUQQ2PS;
 					break ;
 
 				case VCVTPD2UQQ:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VCVTPS2UQQ;
 					break ;
 
 				case VCVTTPD2QQ:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VCVTTPS2QQ;
 					break ;
 
 				case VCVTTPD2UQQ:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VCVTTPS2UQQ;
 					break ;
 
@@ -752,17 +752,17 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					// fall through
 				case VCVTTSD2USI:
 					// fall through
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->ot1 = OT_D;
 					break ;
 
 				case VPSRAD:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VPSRAQ;
 					break ;
 
 				case VCVTDQ2PD:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VCVTQQ2PD;
 					break ;
 
@@ -771,19 +771,19 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
-		if (inst->prefix & (MP_0xF2_MASK | MP_0xF3_MASK))
+		if (inst->i_flags & (MP_0xF2_MASK | MP_0xF3_MASK))
 		{
 			if (opcode >= 0xF0 && opcode < 0xF8)
-				handle_rare_prefixes_0x38_opmap(found, opcode, inst->prefix);
-			else if (inst->prefix & OP_EVEX_MASK)
-				handle_evex_addons_0x38_opmap(found, opcode, inst->prefix);
+				handle_rare_prefixes_0x38_opmap(found, opcode, inst->i_flags);
+			else if (inst->i_flags & OP_EVEX_MASK)
+				handle_evex_addons_0x38_opmap(found, opcode, inst->i_flags);
 		}
 		else
 		{
-			if (inst->prefix & MP_0x66_MASK)
+			if (inst->i_flags & MP_0x66_MASK)
 			{
 				scale = 1;
-				if (inst->prefix & OP_EVEX_MASK)
+				if (inst->i_flags & OP_EVEX_MASK)
 				{
 					switch (opcode)
 					{
@@ -797,7 +797,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 						case 0x14:
 							*found = (opfield_t){ .mnemonic = VPRORVD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
-							if (inst->prefix & RP_REXW_MASK)
+							if (inst->i_flags & RP_REXW_MASK)
 								found->mnemonic = VPRORVQ;
 							no_overwrite = 1;
 							break ;
@@ -837,7 +837,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 				*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * scale)];
 			DEBUG("[DEBUG INDEXING MAP 0x0F38] INDEX IS [%ld] (mnemonic='%d')\n", GET_MAP_INDEX(opcode) + (0x100 * scale), found->mnemonic);
 
-			if (inst->prefix & OP_EVEX_MASK)
+			if (inst->i_flags & OP_EVEX_MASK)
 			{
 				switch (found->mnemonic)
 				{	
@@ -848,7 +848,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VBROADCASTF128:
-						found->mnemonic = (inst->prefix & RP_REXW_MASK) ? VBROADCASTF64X2 : VBROADCASTF32X4;
+						found->mnemonic = (inst->i_flags & RP_REXW_MASK) ? VBROADCASTF64X2 : VBROADCASTF32X4;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
 						// if (MODRM_MOD_GET(modrm) != 0b11)
@@ -856,7 +856,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VBROADCASTSD:
-						if (!(inst->prefix & inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VBROADCASTF32X2;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
@@ -865,7 +865,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VBROADCASTF32X8:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VBROADCASTF64X4;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
@@ -874,7 +874,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VGATHERQPS:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VGATHERQPD;
 						else if (EVEX_L2_GET(pvex))
 						{
@@ -891,7 +891,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						// fall through
 					case VGATHERDPS:
 						// because strange swtich witout break "found->mnemonic == VGATHERDPS"
-						if (found->mnemonic == VGATHERDPS && inst->prefix & RP_REXW_MASK)	
+						if (found->mnemonic == VGATHERDPS && inst->i_flags & RP_REXW_MASK)	
 							found->mnemonic = VGATHERDPD;
 						// fall through
 					case VGATHERQPD:
@@ -900,14 +900,14 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VPGATHERDD:
-						if (inst->prefix & RP_REXW_MASK)	
+						if (inst->i_flags & RP_REXW_MASK)	
 							found->mnemonic = VPGATHERDQ;
 						///TODO: This is AM_H exception (can be handled diferently)
 						found->am3 = 0;
 						break ;
 
 					case VPGATHERQD:
-						if (inst->prefix & RP_REXW_MASK)	
+						if (inst->i_flags & RP_REXW_MASK)	
 							found->mnemonic = VPGATHERQQ;
 						else
 						{
@@ -924,47 +924,47 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VSCATTERDPD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VSCATTERDPS;
 						break ;
 
 					case VSCATTERQPD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VSCATTERQPS;
 						break ;
 
 					case VPSCATTERDD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPSCATTERDQ;
 						break ;
 
 					case VPSCATTERQD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPSCATTERQQ;
 						break ;
 
 					case VGETEXPPD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VGETEXPPS;
 						break ;
 
 					case VGETEXPSD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VGETEXPSS;
 						break ;
 
 					case VPBLENDMB:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPBLENDMW;
 						break ;
 
 					case VPBLENDMD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPBLENDMQ;
 						break ;
 
 					case VPBROADCASTD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 						{
 							found->mnemonic = VPBROADCASTQ;
 							found->ot2 = OT_Q;
@@ -972,147 +972,147 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VPCOMPRESSD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPCOMPRESSQ;
 						break ;
 					
 					case VPCONFLICTD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPCONFLICTQ;
 						break ;
 
 					case VPERMI2B:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPERMI2W;
 						break ;
 
 					case VPERMI2D:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPERMI2Q;
 						break ;
 
 					case VPERMI2PD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VPERMI2PS;
 						break ;
 
 					case VPERMT2B:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPERMT2W;
 						break ;
 
 					case VPERMT2D:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPERMT2Q;
 						break ;
 
 					case VPERMT2PD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VPERMT2PS;
 						break ;
 
 					case VPEXPANDD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPEXPANDQ;
 						break ;
 					
 					case VPLZCNTD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPLZCNTQ;
 						break ;
 
 					case VPROLVD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPROLVQ;
 						break ;
 
 					case VPTESTMB:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPTESTMW;
 						break ;
 
 					case VPTESTMD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPTESTMQ;
 						break ;
 
 					case VRCP14PD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VRCP14PS;
 						break ;
 
 					case VRCP14SD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VRCP14SS;
 						break ;
 
 					case VRSQRT14PD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VRSQRT14PS;
 						break ;
 
 					case VRSQRT14SD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VRSQRT14SS;
 						break ;
 
 					case VSCALEFPD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VSCALEFPS;
 						break ;
 
 					case VSCALEFSD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VSCALEFSS;
 						break ;
 
 					case VPMAXSD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPMAXSQ;
 						break ;
 
 					case VPMULLD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPMULLQ;
 						break ;
 
 					case VPMINUD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPMINUQ;
 						break ;
 
 					case VPMINSD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPMINSQ;
 						break ;
 
 					case VPMAXUD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPMAXUQ;
 						break ;
 
 					case VPERMB:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPERMW;
 						break ;
 
 					case VPERMPS:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPERMPD;
 						break ;
 
 					case VPERMD:
-						if (inst->prefix & RP_REXW_MASK)
+						if (inst->i_flags & RP_REXW_MASK)
 							found->mnemonic = VPERMQ;
 						break ;
 
 					case VBLENDMPD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VBLENDMPS;
 						break ;
 
 					case VEXPANDPD:
-						if (!(inst->prefix & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VEXPANDPS;
 						break ;
 				}
@@ -1125,14 +1125,14 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		/// Most of them are not checked because there's only
 		/// one ambigious instruction. I have to check them validation.
 
-		if (opcode == 0x0F && inst->prefix & MP_0x66_MASK)
+		if (opcode == 0x0F && inst->i_flags & MP_0x66_MASK)
 			found->mnemonic = AMB_VPALIGNR_INDEX;
 		*found = lt_tree_byte_0x3A_ambigious_opmap[found->mnemonic];
 
 		///TODO: Handle ambigiousness otherway (create a single function)
 		/// Temporary solution (cause i doesn't know the amount and all  kinds of ambigiousness)
 
-		if (inst->prefix & OP_EVEX_MASK)
+		if (inst->i_flags & OP_EVEX_MASK)
 		{
 			switch (opcode)
 			{
@@ -1157,7 +1157,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case 0x18:
-					found->mnemonic = (inst->prefix & RP_REXW_MASK) ? VINSERTF64X2 : VINSERTF32X4;
+					found->mnemonic = (inst->i_flags & RP_REXW_MASK) ? VINSERTF64X2 : VINSERTF32X4;
 					if (EVEX_L2_GET(pvex))
 					{
 						found->ot1 = OT_DQQ;
@@ -1166,7 +1166,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case 0x1A:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VINSERTF64X4;
 					found->ot1 = OT_DQQ;
 					found->ot2 = OT_DQQ;
@@ -1177,92 +1177,92 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case 0x26:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VGETMANTPS;
 					break ;
 				
 				case 0x27:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VGETMANTSS;
 					break ;
 
 				case 0x3E:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VPCMPUW;
 					break ;
 
 				case 0x3F:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VPCMPW;
 					break ;
 
 				case 0x1E:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VPCMPUQ;
 					break ;
 
 				case 0x1F:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VPCMPQ;
 					break ;
 
 				case 0x25:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VPTERNLOGQ;
 					break ;
 
 				case 0x50:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VRANGEPS;
 					break ;
 
 				case 0x51:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VRANGESS;
 					break ;
 
 				case 0x56:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VREDUCEPS;
 					break ;
 
 				case 0x57:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VREDUCESS;
 					break ;
 
 				case 0x23:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VSHUFF64X2;
 					break ;
 
 				case 0x43:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VSHUFI64X2;
 					break ;
 
 				case 0x54:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VFIXUPIMMPS;
 					break ;
 				
 				case 0x55:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VFIXUPIMMSS;
 					break ;
 
 				case 0x66:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VFPCLASSPS;
 					break ;
 
 				case 0x67:
-					if (!(inst->prefix & RP_REXW_MASK))
+					if (!(inst->i_flags & RP_REXW_MASK))
 						found->mnemonic = VFPCLASSSS;
 					break ;
 
 				case 0x03:
-					if (inst->prefix & RP_REXW_MASK)
+					if (inst->i_flags & RP_REXW_MASK)
 						found->mnemonic = VALIGNQ;
 					break ;
 
@@ -1277,9 +1277,9 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 			///TODO: Need the prefix here as pointer !! (change areguments)
 
 			if (opcode == 0x30 || opcode == 0x32)
-				inst->prefix |= inst->prefix & RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
+				inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
 			else if (opcode == 0x31 || opcode == 0x33)
-				inst->prefix |= inst->prefix & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+				inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
 		}
 	}
 	else
@@ -1348,17 +1348,17 @@ static ubyte	get_opcode_attributes(mnemonic_t* const mnemonic, opfield_t opfield
 //#define IS_RM_EXTENDED(rex_b, vexxop) ((rex_b) || (((vexxop)[0] == 0xC4 || (vexxop)[0] == 0x8F) && VEXXOP_B_GET(vexxop)))
 
 __always_inline
-static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
+static ubyte	get_modrm(AVL_instruction_t* const inst, const ubyte** iraw)
 {
 	///TODO: Redo define 'IS_ESCAPE_FX87'
 	/* If is x87 instruction, the modR/M is already parsed */
-	if (inst->vexxop[0] || inst->opcode[0] || !IS_ESCAPE_FX87(inst->opcode[2]))
-		inst->mod_rm = *((*iraw)++);
+	if (inst->i_vp[0] || inst->i_opcode[0] || !IS_ESCAPE_FX87(inst->i_opcode[2]))
+		inst->i_mod_rm = *((*iraw)++);
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
 		(RM[3] is extended from REX.B/VEX.~B/XOP.~B */
 	const ubyte rm =  MODRM_RM_EXTENDED_GET(inst);
-	const ubyte index = (MODRM_MOD_GET(inst->mod_rm) << 0x4) | rm;
+	const ubyte index = (MODRM_MOD_GET(inst->i_mod_rm) << 0x4) | rm;
 
 	DEBUG("DEBUG: MODRM INDEX IS %d\n", index);
 
@@ -1366,11 +1366,11 @@ static ubyte	get_modrm(instruction_t* const inst, const ubyte** iraw)
 }
 
 __always_inline
-static ubyte	get_sib(instruction_t* const inst, const ubyte** iraw)
+static ubyte	get_sib(AVL_instruction_t* const inst, const ubyte** iraw)
 {
-	inst->sib = *((*iraw)++);
+	inst->i_sib = *((*iraw)++);
 
-	const ubyte mod = MODRM_MOD_GET(inst->mod_rm);
+	const ubyte mod = MODRM_MOD_GET(inst->i_mod_rm);
 	const ubyte index = SIB_INDEX_EXTENDED_GET(inst);
 	const ubyte base = SIB_BASE_EXTENDED_GET(inst);
 
@@ -1394,9 +1394,9 @@ static void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbi
 }
 
 __always_inline
-static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t* map, instruction_t* const inst)
+static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t* map, AVL_instruction_t* const inst)
 {
-	const ubyte opcode = inst->opcode[2];
+	const ubyte opcode = inst->i_opcode[2];
 
 	///TODO: Preform (move) the ambigiousness handling in group extensions here ?
 	/// MMM parse is a lot more complex, i don't think so (seems not worth)
@@ -1405,16 +1405,16 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	{
 		if (opcode == 0x90)
 		{
-			if ((inst->prefix & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) == 0
-			&& inst->prefix & (RP_REXB_MASK | RP_REXW_MASK))
+			if ((inst->i_flags & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) == 0
+			&& inst->i_flags & (RP_REXB_MASK | RP_REXW_MASK))
 				*found = (opfield_t){ .mnemonic = XCHG,	.am1 = DR_R8,	.ot1 = DRS_64,	.am2 = DR_RAX,	.ot2 = DRS_64,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
-			else if (inst->prefix & MP_0xF3_MASK)
+			else if (inst->i_flags & MP_0xF3_MASK)
 				found->mnemonic = PAUSE;
 		}	
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
-		if (inst->prefix & MP_0x66_MASK && MODRM_MOD_GET(inst->mod_rm) != 0b11)
+		if (inst->i_flags & MP_0x66_MASK && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
 		{
 			switch (opcode)
 			{
@@ -1482,7 +1482,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
 	{
-		if (inst->prefix & MP_0x66_MASK && MODRM_MOD_GET(inst->mod_rm) != 0b11)
+		if (inst->i_flags & MP_0x66_MASK && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
 		{
 			switch (opcode)
 			{
@@ -1508,33 +1508,33 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 			}
 		}
 
-		if (opcode == 0x22 && inst->prefix & RP_REXW_MASK)
+		if (opcode == 0x22 && inst->i_flags & RP_REXW_MASK)
 			found->mnemonic = VPINSRQ;
-		else if (opcode == 0x16 && inst->prefix & RP_REXW_MASK)
+		else if (opcode == 0x16 && inst->i_flags & RP_REXW_MASK)
 			found->mnemonic = VPEXTRQ;
 
 	}
 	else if (map == lt_two_byte_opmap)
 	{
-		if (MODRM_MOD_GET(inst->mod_rm) != 0b11)
+		if (MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
 		{
-			if (inst->prefix & MP_0x66_MASK)
+			if (inst->i_flags & MP_0x66_MASK)
 			{
 				if (opcode == 0xC4)
 				{
-					if (inst->mnemonic == PINSRW)
+					if (inst->i_mnemonic == PINSRW)
 					{
 						found->am2 = AM_M;
 						found->ot2 = OT_W;
 					}
-					else if (inst->mnemonic == VPINSRW)
+					else if (inst->i_mnemonic == VPINSRW)
 					{
 						found->am3 = AM_M;
 						found->ot3 = OT_W;
 					}
 				}
 			}
-			else if ((inst->prefix & (MP_0x66_MASK | MP_0xF3_MASK | MP_0xF2_MASK)) == 0)
+			else if ((inst->i_flags & (MP_0x66_MASK | MP_0xF3_MASK | MP_0xF2_MASK)) == 0)
 			{
 				switch (opcode)
 				{
@@ -1554,9 +1554,9 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 						break ;
 
 					case 0x77:
-						if (inst->vexxop[0])
+						if (inst->i_vp[0])
 						{
-							if (inst->vexxop[2] ? VEXXOP_L_GET(inst->vexxop) : VEXXOP2_L_GET(inst->vexxop))
+							if (inst->i_vp[2] ? VEXXOP_L_GET(inst->i_vp) : VEXXOP2_L_GET(inst->i_vp))
 								found->mnemonic = VZEROALL;
 							else
 								found->mnemonic = VZEROUPPER;
@@ -1569,36 +1569,36 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 			if (opcode == 0x6E || opcode == 0x7E)
 			{
 				
-				if (inst->prefix & RP_REXW_MASK)
+				if (inst->i_flags & RP_REXW_MASK)
 				{
-					if (inst->mnemonic == MOVD)
+					if (inst->i_mnemonic == MOVD)
 						found->mnemonic = MOVQ;
-					else if (inst->mnemonic == VMOVD)
+					else if (inst->i_mnemonic == VMOVD)
 						found->mnemonic = VMOVQ;
 				}
 			}
-			else if (opcode >= 0x74 && opcode <= 0x76 && inst->prefix & MP_0x66_MASK)
+			else if (opcode >= 0x74 && opcode <= 0x76 && inst->i_flags & MP_0x66_MASK)
 			{
-				if (inst->prefix & OP_EVEX_MASK)
+				if (inst->i_flags & OP_EVEX_MASK)
 					found->am1 = AM_KR;
 			}
 		}
 	}
 
-	inst->mnemonic = found->mnemonic;
+	inst->i_mnemonic = found->mnemonic;
 }
 
-#define ISDFT64_CALL(x) (!(x)->opcode[0] && (x)->opcode[2] == 0xFF && (x)->mnemonic == CALL)
-#define ISDFT64_JMP(x) (!(x)->opcode[0] && (x)->opcode[2] == 0xFF && (x)->mnemonic == JMP)
-#define ISDFT64_LGTD(x) ((x)->mnemonic == LGDT)
-#define ISDFT64_LIDT(x) ((x)->mnemonic == LIDT)
-#define ISDFT64_LLTD(x) ((x)->mnemonic == LLDT)
-#define ISDFT64_POP(x) (!(x)->opcode[0] && (((x)->opcode[2] >= 0x58 && (x)->opcode[2] <= 0x5F) || (x)->opcode[2] == 0x8F))
-#define ISDFT64_PUSH(x) ((!(x)->opcode[0] && ((x)->opcode[2] == 0x50 || (x)->opcode[2] == 0x6A || (x)->opcode[2] == 0x68)))
-#define ISDFT64_PREFETCHW(x) ((x)->mnemonic == PREFETCHW)
-#define ISDFT64_MOVCRDR(x) ((x)->opcode[0] && !(x)->opcode[1] && (x)->opcode[2] >= 0x20 && (x)->opcode[2] <= 0x23)
+#define ISDFT64_CALL(x) (!(x)->i_opcode[0] && (x)->i_opcode[2] == 0xFF && (x)->i_mnemonic == CALL)
+#define ISDFT64_JMP(x) (!(x)->i_opcode[0] && (x)->i_opcode[2] == 0xFF && (x)->i_mnemonic == JMP)
+#define ISDFT64_LGTD(x) ((x)->i_mnemonic == LGDT)
+#define ISDFT64_LIDT(x) ((x)->i_mnemonic == LIDT)
+#define ISDFT64_LLTD(x) ((x)->i_mnemonic == LLDT)
+#define ISDFT64_POP(x) (!(x)->i_opcode[0] && (((x)->i_opcode[2] >= 0x58 && (x)->i_opcode[2] <= 0x5F) || (x)->i_opcode[2] == 0x8F))
+#define ISDFT64_PUSH(x) ((!(x)->i_opcode[0] && ((x)->i_opcode[2] == 0x50 || (x)->i_opcode[2] == 0x6A || (x)->i_opcode[2] == 0x68)))
+#define ISDFT64_PREFETCHW(x) ((x)->i_mnemonic == PREFETCHW)
+#define ISDFT64_MOVCRDR(x) ((x)->i_opcode[0] && !(x)->i_opcode[1] && (x)->i_opcode[2] >= 0x20 && (x)->i_opcode[2] <= 0x23)
 
-static ubyte	is_mnemonic_default_64_bits(instruction_t* const inst)
+static ubyte	is_mnemonic_default_64_bits(AVL_instruction_t* const inst)
 {
 
 	///TODO: Only CALL near JMP near and RET near ?!?!
@@ -1628,25 +1628,25 @@ static ubyte	is_mnemonic_default_64_bits(instruction_t* const inst)
 #define IS_0x3A_NONVEX_SIMD(x, p) (!((x) == 0x0F && !((p) & MP_0x66_MASK)) && !((x) == 0xF0 && (p) & MP_0xF2_MASK))
 
 __always_inline
-static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
+static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found)
 {
 	(void)found;
 
 	///TODO: REDO THIS WITHOUT TRIPLE RETURN 
-	if (dest->prefix & OP_EVEX_MASK)
+	if (dest->i_flags & OP_EVEX_MASK)
 	{
-		if (EVEX_L2_GET(dest->vexxop))
-			dest->prefix |= OS_DQQWORD_MASK;
-		else if (EVEX_L_GET(dest->vexxop))
-			dest->prefix |= OS_QQWORD_MASK;
+		if (EVEX_L2_GET(dest->i_vp))
+			dest->i_flags |= OS_DQQWORD_MASK;
+		else if (EVEX_L_GET(dest->i_vp))
+			dest->i_flags |= OS_QQWORD_MASK;
 		else
-			dest->prefix |= OS_DQWORD_MASK;
+			dest->i_flags |= OS_DQWORD_MASK;
 		return ;
 	}
-	else if (dest->vexxop[0])
+	else if (dest->i_vp[0])
 	{
-		const ubyte is256os = dest->vexxop[2] ? VEXXOP_L_GET(dest->vexxop) : VEXXOP2_L_GET(dest->vexxop);
-		dest->prefix |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
+		const ubyte is256os = dest->i_vp[2] ? VEXXOP_L_GET(dest->i_vp) : VEXXOP2_L_GET(dest->i_vp);
+		dest->i_flags |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
 		return ;
 
 		///TODO: if (IS_K*()) { handle k mnemonics operand size }
@@ -1656,20 +1656,20 @@ static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
 
 		///TODO: For the future: if is EVEX the size also could be 512bits
 	}
-	else if ((dest->opcode[0] && !dest->opcode[1] && 
+	else if ((dest->i_opcode[0] && !dest->i_opcode[1] && 
 		/* IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) */
-		IS_TWO_BYTE_NONVEX_SIMD_V2(dest->opcode[2]))
+		IS_TWO_BYTE_NONVEX_SIMD_V2(dest->i_opcode[2]))
 		 || 
 		 /*(dest->opcode[1] == 0x38 && ((((dest->opcode[2] >> 4) & 0xF) == 0x8 && (dest->opcode[2] & 0xF) >= 0x8) || ((dest->opcode[2] >> 4) & 0xF) < 0xF )) */
-		(dest->opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->opcode[2]))
-		|| (dest->opcode[1] == 0x3A && IS_0x3A_NONVEX_SIMD(dest->opcode[2], dest->prefix)))
+		(dest->i_opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->i_opcode[2]))
+		|| (dest->i_opcode[1] == 0x3A && IS_0x3A_NONVEX_SIMD(dest->i_opcode[2], dest->i_flags)))
 	{
-		DEBUG("[DEBUG] COND1: %d COND2: %d\n", (dest->opcode[0] && !dest->opcode[1]
+		DEBUG("[DEBUG] COND1: %d COND2: %d\n", (dest->i_opcode[0] && !dest->i_opcode[1]
 			 && /* IS_TWO_BYTE_NONVEX_SIMD((dest->opcode[2] >> 4) & 0xF)) */
-			IS_TWO_BYTE_NONVEX_SIMD_V2(dest->opcode[2]))
-			, (dest->opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->opcode[2])));
+			IS_TWO_BYTE_NONVEX_SIMD_V2(dest->i_opcode[2]))
+			, (dest->i_opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->i_opcode[2])));
 
-		dest->prefix |= OS_DQWORD_MASK;
+		dest->i_flags |= OS_DQWORD_MASK;
 
 		// if (dest->vexxop[0] == 0)
 		// {
@@ -1722,7 +1722,7 @@ static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
 	/* Set to default operand size */
 
 	if (is_mnemonic_default_64_bits(dest))
-		dest->prefix |= OS_QWORD_MASK;
+		dest->i_flags |= OS_QWORD_MASK;
 	// else if (IS_DEFAULT_REGISTER(found.am1))
 	// {
 	// 	isreg = 0x1;
@@ -1740,21 +1740,21 @@ static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
 	// 		*prefix |= OS_DWORD_MASK;
 	// }
 	else
-		dest->prefix |= OS_DWORD_MASK;
+		dest->i_flags |= OS_DWORD_MASK;
 
 	/* Overwrite with prefixes */
 
 	// if (*prefix & OS_DWORD_MASK)
 	// {
-		if (dest->prefix & MP_0x66_MASK && !(dest->opcode[1] == 0x38 && ((dest->opcode[2] >> 4) & 0xF) == 0xF))
+		if (dest->i_flags & MP_0x66_MASK && !(dest->i_opcode[1] == 0x38 && ((dest->i_opcode[2] >> 4) & 0xF) == 0xF))
 		{
-			OS_RESET(dest->prefix);
-			dest->prefix |= OS_WORD_MASK;
+			OS_RESET(dest->i_flags);
+			dest->i_flags |= OS_WORD_MASK;
 		}
-		else if (dest->prefix & RP_REXW_MASK)
+		else if (dest->i_flags & RP_REXW_MASK)
 		{
-			OS_RESET(dest->prefix);
-			dest->prefix |= OS_QWORD_MASK;
+			OS_RESET(dest->i_flags);
+			dest->i_flags |= OS_QWORD_MASK;
 		// }
 	}
 
@@ -1788,35 +1788,35 @@ static void		get_operand_size(instruction_t* const dest, opfield_t* const found)
 		is DWORD when the documentation is followed ... 
 		OPERATION: mov WORD [], segment_register
 		[ ONLY WHEN IS ADDRESSING ] */
-	if (!dest->opcode[0] && dest->opcode[2] == 0x8C && (dest->mod_rm & 0b11000000) != 0b11000000)
+	if (!dest->i_opcode[0] && dest->i_opcode[2] == 0x8C && (dest->i_mod_rm & 0b11000000) != 0b11000000)
 	{
-		OS_RESET(dest->prefix);
-		dest->prefix |= OS_WORD_MASK;
+		OS_RESET(dest->i_flags);
+		dest->i_flags |= OS_WORD_MASK;
 	}
 	/* More exceptions ... */
-	else if (dest->mnemonic == CMPXCHG8B && dest->prefix & RP_REXW_MASK)
+	else if (dest->i_mnemonic == CMPXCHG8B && dest->i_flags & RP_REXW_MASK)
 	{
-		dest->mnemonic = CMPXCHG16B;
-		OS_RESET(dest->prefix);
-		dest->prefix |= OS_DQWORD_MASK;
+		dest->i_mnemonic = CMPXCHG16B;
+		OS_RESET(dest->i_flags);
+		dest->i_flags |= OS_DQWORD_MASK;
 		found->ot1 = OT_DQ;
 	}
-	else if (dest->mnemonic == UMONITOR && !(dest->prefix & LP_ADDRSZ_MASK))
+	else if (dest->i_mnemonic == UMONITOR && !(dest->i_flags & LP_ADDRSZ_MASK))
 	{
-		OS_RESET(dest->prefix);
-		dest->prefix |= OS_QWORD_MASK;
+		OS_RESET(dest->i_flags);
+		dest->i_flags |= OS_QWORD_MASK;
 	}
 
 	const char* __size;
-	if (dest->prefix & OS_BYTE_MASK)
+	if (dest->i_flags & OS_BYTE_MASK)
 		__size = "BYTE";
-	else if (dest->prefix & OS_WORD_MASK)
+	else if (dest->i_flags & OS_WORD_MASK)
 		__size = "WORD";
-	else if (dest->prefix & OS_DWORD_MASK)
+	else if (dest->i_flags & OS_DWORD_MASK)
 		__size = "DWORD";
-	else if (dest->prefix & OS_QWORD_MASK)
+	else if (dest->i_flags & OS_QWORD_MASK)
 		__size = "QWORD";
-	else if (dest->prefix & OS_DQWORD_MASK)
+	else if (dest->i_flags & OS_DQWORD_MASK)
 		__size = "DQWORD";
 	DEBUG("---------> Operand size is %s\n", __size);
 }
@@ -1851,88 +1851,88 @@ static ubyte	get_immediate_operand_type(opfield_t opfield)
 }
 
 __always_inline
-static void		get_immediate(opfield_t opfield, instruction_t* const dest, const ubyte** iraw)
+static void		get_immediate(opfield_t opfield, AVL_instruction_t* const dest, const ubyte** iraw)
 {
 	const ubyte ot = get_immediate_operand_type(opfield);
 
 	///TODO: Not 100% sure but i think if is AM_L the immediate value is always 8-bits.
 
-	dest->prefix |= OP_IMMEDIATE_MASK;
+	dest->i_flags |= OP_IMMEDIATE_MASK;
 
 	DEBUG("[DEBUG][OT OF IMMEDIATE]: %d (**iraw='%X')\n", ot, **iraw);
 
 	switch (ot)
 	{
 		case OT_B:
-			dest->immediate = *((*iraw)++);
+			dest->i_imm = *((*iraw)++);
 			break ;
 
 		case OT_W:
-			dest->immediate = *((*(uword**)iraw)++);
+			dest->i_imm = *((*(uword**)iraw)++);
 			break ;
 
 		case OT_D:
-			dest->immediate = *((*(udword**)iraw)++);
+			dest->i_imm = *((*(udword**)iraw)++);
 			break ;
 
 		case OT_Q:
-			dest->immediate = *((*(uqword**)iraw)++);
+			dest->i_imm = *((*(uqword**)iraw)++);
 			break ;
 
 		default:
 		{
-			if (dest->prefix & RP_REXW_MASK && IS_OT_UNRANGED(ot))
-				dest->immediate = *((*(uqword**)iraw)++);
+			if (dest->i_flags & RP_REXW_MASK && IS_OT_UNRANGED(ot))
+				dest->i_imm = *((*(uqword**)iraw)++);
 			else
 			{
 				switch (ot)
 				{
 					case OT_C:
-						if ((dest->prefix & OS_BYTE_MASK) != 0)
-							dest->immediate = *((*(uword**)iraw)++);
+						if ((dest->i_flags & OS_BYTE_MASK) != 0)
+							dest->i_imm = *((*(uword**)iraw)++);
 						else
-							dest->immediate = *((*iraw)++);
+							dest->i_imm = *((*iraw)++);
 						break ;
 
 					case OT_V:
-							if (dest->prefix & OS_WORD_MASK)
-								dest->immediate = *((*(uword**)iraw)++);
-							else if (dest->prefix & OS_DWORD_MASK)
-								dest->immediate = *((*(udword**)iraw)++);
-							else if (dest->prefix & OS_QWORD_MASK)
-								dest->immediate = *((*(uqword**)iraw)++);
+							if (dest->i_flags & OS_WORD_MASK)
+								dest->i_imm = *((*(uword**)iraw)++);
+							else if (dest->i_flags & OS_DWORD_MASK)
+								dest->i_imm = *((*(udword**)iraw)++);
+							else if (dest->i_flags & OS_QWORD_MASK)
+								dest->i_imm = *((*(uqword**)iraw)++);
 						break ;
 
 					case OT_Y:
-						if (dest->prefix & OS_QWORD_MASK)
-							dest->immediate = *((*(udword**)iraw)++);
+						if (dest->i_flags & OS_QWORD_MASK)
+							dest->i_imm = *((*(udword**)iraw)++);
 						else
-							dest->immediate = *((*(uqword**)iraw)++);
+							dest->i_imm = *((*(uqword**)iraw)++);
 						break ;
 
 					case OT_Z:
-						if (dest->prefix & OS_WORD_MASK)
-							dest->immediate = *((*(uword**)iraw)++);
-						else if ((dest->prefix & (OS_BYTE_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK)) == 0)
-							dest->immediate = *((*(udword**)iraw)++);
+						if (dest->i_flags & OS_WORD_MASK)
+							dest->i_imm = *((*(uword**)iraw)++);
+						else if ((dest->i_flags & (OS_BYTE_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK)) == 0)
+							dest->i_imm = *((*(udword**)iraw)++);
 						break ;
 					default:
-						dest->immediate = *((*iraw)++);
+						dest->i_imm = *((*iraw)++);
 
 				}
 			}
 		}
 	}
 
-	if (dest->mnemonic == ENTER)
-		dest->immediate |= (*((*iraw)++) << 0x10);
+	if (dest->i_mnemonic == ENTER)
+		dest->i_imm |= (*((*iraw)++) << 0x10);
 
-	DEBUG("IMMEDIATE IS: %lX\n", dest->immediate);
+	DEBUG("IMMEDIATE IS: %lX\n", dest->i_imm);
 }
 
 #define HAS_GROUP_EXTENTION(x) ((x == S_1A))
 
-err_t	get_instruction_V2(instruction_t* const dest, const ubyte** iraw)
+err_t	get_instruction_V2(AVL_instruction_t* const dest, const ubyte** iraw)
 {
 	err_t		st = SUCCESS;
 
@@ -1989,20 +1989,20 @@ opcode_check:
 	if ((isvex | isescape) == 0 && (isrex = IS_REXBYTE(**iraw)))
 	{
 		DEBUG("---> HAS REX BYTE <---\n");
-		get_rex_prefix(&dest->prefix, iraw);
+		get_rex_prefix(&dest->i_flags, iraw);
 		skip_duplicated(iraw, 0xF0);
 	}
 
 	DEBUG("::::: AFTER: %02X\n", **iraw);
 
-	if (dest->opcode[0] == 0 && (isescape = IS_GPM_ESCAPE(**iraw)))
+	if (dest->i_opcode[0] == 0 && (isescape = IS_GPM_ESCAPE(**iraw)))
 	{
-		dest->opcode[0] = **iraw;
+		dest->i_opcode[0] = **iraw;
 		(*iraw)++;
 
 		if (IS_GPM_ESCAPE2(**iraw))
 		{
-			dest->opcode[1] = **iraw;
+			dest->i_opcode[1] = **iraw;
 			(*iraw)++;
 		}
 	}
@@ -2017,29 +2017,29 @@ opcode_check:
 	if (skip_pref)
 		goto skip_prefix_check;
 
-	if ((isescape & isrex) == 0x0 && !dest->opcode[0])
+	if ((isescape & isrex) == 0x0 && !dest->i_opcode[0])
 	{
 		if ((isvex = IS_EVEX_PREFIX(**iraw)))
 		{
 			get_evex_prefixes(dest, iraw);
-			DEBUG("DEBUG: EVEX: [62][%02X][%02X][%02X]\n", dest->vexxop[0], dest->vexxop[1], dest->vexxop[2]);
+			DEBUG("DEBUG: EVEX: [62][%02X][%02X][%02X]\n", dest->i_vp[0], dest->i_vp[1], dest->i_vp[2]);
 		}
 		else if ((isvex = IS_VEX_PREFIX(**iraw)))
 		{
 			get_vex_prefixes(dest, iraw);
-			DEBUG("DEBUG: VEX: [%02X][%02X][%02X]\n", dest->vexxop[0], dest->vexxop[1], dest->vexxop[2]);
+			DEBUG("DEBUG: VEX: [%02X][%02X][%02X]\n", dest->i_vp[0], dest->i_vp[1], dest->i_vp[2]);
 		}
-		else if (*(uword*)dest->opcode == 0x0)
+		else if (*(uword*)dest->i_opcode == 0x0)
 		{
-			get_legacy_prefixes(&dest->prefix, iraw);
+			get_legacy_prefixes(&dest->i_flags, iraw);
 
 			///TODO: Useful error check but for instructions which have have 2 prefixes fails
 			/// They're always exceptions ... (0f 38 F0)
 			/// Opcode values isn't parsed yet so is difucult to know whether or not is an exception ...
-			if (0 && (st = err_handle_legacy_prefixes(&dest->prefix)) != SUCCESS)
+			if (0 && (st = err_handle_legacy_prefixes(&dest->i_flags)) != SUCCESS)
 				goto error;
 
-			DEBUG("[DEBUG] PREFIX AFTER: %d\n", dest->prefix & MP_0xF2_MASK);
+			DEBUG("[DEBUG] PREFIX AFTER: %d\n", dest->i_flags & MP_0xF2_MASK);
 			DEBUG("[DEBUG] VALUE (**iraw) AFTER: %02X\n", **iraw);
 		}		
 	}
@@ -2052,98 +2052,98 @@ opcode_check:
 
 skip_prefix_check:
 
-	dest->opcode[2] = *((*iraw)++);
+	dest->i_opcode[2] = *((*iraw)++);
 
-	DEBUG("DEBUG: OPCODE IS [%02X][%02X][%02X]\n", dest->opcode[0], dest->opcode[1], dest->opcode[2]);
+	DEBUG("DEBUG: OPCODE IS [%02X][%02X][%02X]\n", dest->i_opcode[0], dest->i_opcode[1], dest->i_opcode[2]);
 
 	opfield_t 			found = {};
 	const opfield_t*	map = 0;
 
-	if (dest->vexxop[0] == 0 && dest->opcode[0] == 0 && IS_ESCAPE_FX87(dest->opcode[2]))
+	if (dest->i_vp[0] == 0 && dest->i_opcode[0] == 0 && IS_ESCAPE_FX87(dest->i_opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
 	else
 	{
-		map = !dest->vexxop[0] ? get_map_legacy(dest) : get_map_vex(dest->vexxop, (dest->prefix & OP_EVEX_MASK) != 0);
+		map = !dest->i_vp[0] ? get_map_legacy(dest) : get_map_vex(dest->i_vp, (dest->i_flags & OP_EVEX_MASK) != 0);
 
 		///TODO: Improve syntax using more defines for conditions
 
-		const ubyte line = (dest->opcode[2] & 0xF0) >> 4;
+		const ubyte line = (dest->i_opcode[2] & 0xF0) >> 4;
 	
 		/* This is because AVX-512 K instructions use the same opcode than other
 			opcodes (within 0x0F opcode map) but a diferent prefix (VEX) */
-		if (map == lt_two_byte_opmap && (line == 0x4 || line == 0x9) && dest->vexxop[0])
+		if (map == lt_two_byte_opmap && (line == 0x4 || line == 0x9) && dest->i_vp[0])
 		{
-			handle_ambigious_instructions_0x0F_opmap(&found, dest->opcode[2]);
+			handle_ambigious_instructions_0x0F_opmap(&found, dest->i_opcode[2]);
 
-			if ((dest->opcode[2] >= 0x41 || dest->opcode[2] <= 0x47) || (dest->opcode[2] >= 0x90 && dest->opcode[2] <= 0x99)
-			|| dest->opcode[2] == 0x4A || dest->opcode[2] == 0x4B) 
+			if ((dest->i_opcode[2] >= 0x41 || dest->i_opcode[2] <= 0x47) || (dest->i_opcode[2] >= 0x90 && dest->i_opcode[2] <= 0x99)
+			|| dest->i_opcode[2] == 0x4A || dest->i_opcode[2] == 0x4B) 
 			{
-				OS_RESET(dest->prefix);
+				OS_RESET(dest->i_flags);
 
 				///TODO: Refrctor using ranges
-				if (dest->opcode[2] == 0x90 || dest->opcode[2] == 0x91 || dest->opcode[2] == 0x4A
-				|| dest->opcode[2] == 0x41 || dest->opcode[2] == 0x42 || dest->opcode[2] == 0x44
-				|| dest->opcode[2] == 0x45 || dest->opcode[2] == 0x98
-				|| dest->opcode[2] == 0x99 || dest->opcode[2] == 0x46
-				|| dest->opcode[2] == 0x47)
+				if (dest->i_opcode[2] == 0x90 || dest->i_opcode[2] == 0x91 || dest->i_opcode[2] == 0x4A
+				|| dest->i_opcode[2] == 0x41 || dest->i_opcode[2] == 0x42 || dest->i_opcode[2] == 0x44
+				|| dest->i_opcode[2] == 0x45 || dest->i_opcode[2] == 0x98
+				|| dest->i_opcode[2] == 0x99 || dest->i_opcode[2] == 0x46
+				|| dest->i_opcode[2] == 0x47)
 				{
-					if (dest->prefix & RP_REXW_MASK)
+					if (dest->i_flags & RP_REXW_MASK)
 					{
-						if (dest->prefix & MP_0x66_MASK)
-							dest->prefix |= OS_DWORD_MASK;
+						if (dest->i_flags & MP_0x66_MASK)
+							dest->i_flags |= OS_DWORD_MASK;
 						else
-							dest->prefix |= OS_QWORD_MASK;
+							dest->i_flags |= OS_QWORD_MASK;
 					}
 					else
 					{
-						if (dest->prefix & MP_0x66_MASK)
-							dest->prefix |= OS_BYTE_MASK;
+						if (dest->i_flags & MP_0x66_MASK)
+							dest->i_flags |= OS_BYTE_MASK;
 						else
-							dest->prefix |= OS_WORD_MASK;
+							dest->i_flags |= OS_WORD_MASK;
 					}
 				}
-				else if (dest->opcode[2] == 0x92 || dest->opcode[2] == 0x93)
+				else if (dest->i_opcode[2] == 0x92 || dest->i_opcode[2] == 0x93)
 				{
-					if (dest->prefix & MP_0xF2_MASK)
+					if (dest->i_flags & MP_0xF2_MASK)
 					{
-						if (dest->prefix & RP_REXW_MASK)
-							dest->prefix |= OS_QWORD_MASK;
+						if (dest->i_flags & RP_REXW_MASK)
+							dest->i_flags |= OS_QWORD_MASK;
 						else
-							dest->prefix |= OS_DWORD_MASK;
+							dest->i_flags |= OS_DWORD_MASK;
 					}
 					else
 					{
-						if (dest->prefix & MP_0x66_MASK)
-							dest->prefix |= OS_BYTE_MASK;
+						if (dest->i_flags & MP_0x66_MASK)
+							dest->i_flags |= OS_BYTE_MASK;
 						else
-							dest->prefix |= OS_WORD_MASK;
+							dest->i_flags |= OS_WORD_MASK;
 					}
 				}
-				else if (dest->opcode[2] == 0x4B)
+				else if (dest->i_opcode[2] == 0x4B)
 				{
-					if (dest->prefix & RP_REXW_MASK)
-						dest->prefix |= OS_QWORD_MASK;
-					else if (dest->prefix & MP_0x66_MASK)
-						dest->prefix |= OS_WORD_MASK;
+					if (dest->i_flags & RP_REXW_MASK)
+						dest->i_flags |= OS_QWORD_MASK;
+					else if (dest->i_flags & MP_0x66_MASK)
+						dest->i_flags |= OS_WORD_MASK;
 					else
-						dest->prefix |= OS_DWORD_MASK;
+						dest->i_flags |= OS_DWORD_MASK;
 				}
 
-				if (dest->opcode[2] == 0x92 && !(dest->prefix & OS_QWORD_MASK))
+				if (dest->i_opcode[2] == 0x92 && !(dest->i_flags & OS_QWORD_MASK))
 					found.ot2 = OT_D;
-				else if (dest->opcode[2] == 0x93 && !(dest->prefix & OS_QWORD_MASK))
+				else if (dest->i_opcode[2] == 0x93 && !(dest->i_flags & OS_QWORD_MASK))
 					found.ot1 = OT_D;
 			}
 		}
 		
 		/* This is because AVX-512 EVEX instructions use the same opcode than other
 			opcodes without EVEX prefix (within 0x0F opcode map) */
-		else if (map == lt_two_byte_opmap && dest->prefix & OP_EVEX_MASK && IS_EVEX_COLISION_0x0F(dest->opcode[2], dest->prefix))
-			handle_evex_addons_0x0F_opmap(&found, dest->opcode[2], dest->prefix);
+		else if (map == lt_two_byte_opmap && dest->i_flags & OP_EVEX_MASK && IS_EVEX_COLISION_0x0F(dest->i_opcode[2], dest->i_flags))
+			handle_evex_addons_0x0F_opmap(&found, dest->i_opcode[2], dest->i_flags);
 		else if (found.mnemonic == 0)
-			found = map[GET_MAP_INDEX(dest->opcode[2])];
+			found = map[GET_MAP_INDEX(dest->i_opcode[2])];
 
-		DEBUG("DEBUG: MAP INDEX: %d\n", GET_MAP_INDEX(dest->opcode[2]));
+		DEBUG("DEBUG: MAP INDEX: %d\n", GET_MAP_INDEX(dest->i_opcode[2]));
 		//DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
 		DEBUG("2 ADDR MODE: [%d] [%d]\n", found.am1, found.am2);
 		DEBUG("2 OPERAND TYPE: [%d %d]\n", found.ot1, found.ot2);
@@ -2151,7 +2151,7 @@ skip_prefix_check:
 		if (HAS_GROUP_EXTENTION(found.symbol))
 		{
 			DEBUG("HAS EXTENSION\n");
-			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, **iraw, dest->prefix, found);
+			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, **iraw, dest->i_flags, found);
 
 			if (found.am1 == 0 || HAS_IMMEDIATE(found.am1))
 				(*iraw)++;
@@ -2159,14 +2159,14 @@ skip_prefix_check:
 
 		if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
 		{
-			DEBUG("IS INDEXING: %02X\n", dest->opcode[2]);
-			redirect_indexing_opfield(map, &found, dest->opcode[2], dest->vexxop, dest);
+			DEBUG("IS INDEXING: %02X\n", dest->i_opcode[2]);
+			redirect_indexing_opfield(map, &found, dest->i_opcode[2], dest->i_vp, dest);
 		}
 	}
 
 	DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
 
-	opattr = get_opcode_attributes(&dest->mnemonic, found);
+	opattr = get_opcode_attributes(&dest->i_mnemonic, found);
 
 	if (opattr & HAS_ATTR_MODRM)
 		opattr |= get_modrm(dest, iraw);
@@ -2175,7 +2175,7 @@ skip_prefix_check:
 		opattr |= get_sib(dest, iraw);
 	DEBUG("OPATTR IS (sib): %d\n", opattr);
 	if (HAS_ATTR_DISP(opattr))
-		get_displacement(&dest->displacement, iraw, GET_DISP_LENGHT(opattr));
+		get_displacement(&dest->i_disp, iraw, GET_DISP_LENGHT(opattr));
 
 	handle_ambigious_arguments(&found, map, dest);
 	get_operand_size(dest, &found);
@@ -2188,7 +2188,7 @@ skip_prefix_check:
 	//resolve_operands(dest, found);
 	resolve_operands_v2(dest, found);
 
-	dest->size = *iraw - istart;
+	dest->i_size = *iraw - istart;
 
 error:
 	DEBUG("IRAW AT THE END: %02X\n", **iraw);
@@ -2196,7 +2196,7 @@ error:
 	return st;
 }
 
-void	get_instructions(instruction_t* const dest, uqword destlen, const ubyte** iraw)
+void	get_instructions(AVL_instruction_t* const dest, uqword destlen, const ubyte** iraw)
 {
 	for (uqword i = 0 ; i < destlen ; i++)
 		get_instruction_V2(&dest[i], iraw);
