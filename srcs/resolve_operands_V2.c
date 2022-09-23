@@ -421,6 +421,8 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 	/*|| (x) == VCVTPS2PD*/ \
 	|| (x) == VCVTSS2SD \
 	|| (x) == VROUNDSS \
+	|| (x) == VPGATHERDD \
+	|| (x) == VPGATHERQD \
 )
 
 #define IS_VEX_AMH_EXCEPTION(x) ( \
@@ -619,7 +621,8 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 			{
 				udword p = *(udword*)inst->prefix;
 
-				if ((inst->mnemonic == VCVTPD2PS || inst->mnemonic == VCVTPD2DQ || inst->mnemonic == VCVTTPD2DQ) && p & OS_QQWORD_MASK)
+				if ((inst->mnemonic == VCVTPD2PS || inst->mnemonic == VCVTPD2DQ || inst->mnemonic == VCVTTPD2DQ
+				|| inst->mnemonic == VPGATHERQD) && p & OS_QQWORD_MASK)
 				{
 					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					p |= OS_DQWORD_MASK;
@@ -792,6 +795,8 @@ static void resolve_operand_v2(instruction_t* const inst, reg_t* const dest, uby
 						else if (0 /* 16 bit exception */)
 							*dest = AVL_OP_MEM16;
 						else if (0 /* 32 - 64 exception */)
+							*dest = *(udword*)inst->prefix & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
+						else if (inst->mnemonic == VGATHERDPS)
 							*dest = *(udword*)inst->prefix & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
 					}
 				}
