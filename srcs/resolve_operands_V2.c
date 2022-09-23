@@ -1,7 +1,6 @@
 
 #include <d_portability.h>
 #include <d_instruction.h>
-#include <d_register.h>
 #include <d_opcode.h>
 #include <d_utils.h>
 

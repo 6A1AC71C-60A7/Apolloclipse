@@ -11,7 +11,6 @@
 
 #include <tests.h>
 #include <d_opcode.h>
-#include <d_register.h>
 
 #include <user/register.h>
 

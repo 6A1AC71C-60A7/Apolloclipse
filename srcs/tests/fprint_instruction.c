@@ -1,7 +1,6 @@
 
 #include <d_portability.h>
 #include <d_instruction.h>
-#include <d_register.h>
 #include <d_error.h>
 
 #define KEYWORD_PTR

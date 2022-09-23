@@ -5,7 +5,8 @@
 #include <d_error.h>
 #include <d_mnemonic.h>
 #include <d_opcode.h>
-#include <d_register.h>
+
+#include <user/types.h>
 
 
 /*
