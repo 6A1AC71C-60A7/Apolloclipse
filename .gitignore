@@ -2,6 +2,7 @@
 #Executable files
 disassembler
 test
+tests
 a.out
 
 #Relocatable objects files
