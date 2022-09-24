@@ -428,7 +428,7 @@ static reg_t	get_vector(uqword index, ubyte ot, udword flags)
 )
 
 #define IS_VEX_AMH_EXCEPTION(x) ( \
-	(((x)->i_opcode[2] == 0x10 || (x)->i_opcode [2]== 0x11) && ((x)->i_mnemonic == VMOVSS || (x)->i_mnemonic == VMOVSD) && MODRM_MOD_GET((x)->i_mod_rm) != 0b11) \
+	(((x)->i_opcode[2] == 0x10 || (x)->i_opcode [2]== 0x11) && ((x)->i_mnemonic == VMOVSS || (x)->i_mnemonic == VMOVSD) && AVL_GET_MODRM_MOD((x)->i_mod_rm) != 0b11) \
 )
 
 #define IS_EVEX_AMH_EXCEPTION(x) ( \
@@ -448,9 +448,9 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
     /* ModR/M 'reg' field is extended by 1 bit by REX.R prefix or by VEX.~R.
         ModR/M 'rm' field is extended by 1 bit by REX.B prefix or by VEX.~B. */
 
-    const ubyte modrm_mod = MODRM_MOD_GET(inst->i_mod_rm);
-    const ubyte modrm_reg = MODRM_REG_EXTENDED_GET(inst);
-    ubyte modrm_rm = MODRM_RM_EXTENDED_GET(inst);
+    const ubyte modrm_mod = AVL_GET_MODRM_MOD(inst->i_mod_rm);
+    const ubyte modrm_reg = AVL_GET_MODRM_REG(inst);
+    ubyte modrm_rm = AVL_GET_MODRM_RM(inst);
 
     ubyte vex_vvvv;
 

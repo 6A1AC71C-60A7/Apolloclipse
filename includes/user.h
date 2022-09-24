@@ -156,19 +156,19 @@
 
 #define AVL_GET_MODRM_MOD(modrm) (uint8_t)(((modrm) >> 0x6) & 0x3)
 
-#define __AVL_GET_MODRM_RM_BASE(modrm) (uint8_t)((modrm) & 0xF)
-#define __AVL_GET_MODRM_REG_BASE(modrm) (uint8_t)(((modrm) >> 0x3) & 0xF)
+#define __AVL_GET_MODRM_RM_BASE(modrm) (uint8_t)((modrm) & 0x7)
+#define __AVL_GET_MODRM_REG_BASE(modrm) (uint8_t)(((modrm) >> 0x3) & 0x7)
 
 #define AVL_GET_MODRM_RM(inst) ( \
-    ((AVL_HAS_REXB_PFX((inst).__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
-    | ((AVL_HAS_OP_EVEX_PFX((inst).__AVL_SET_INST_PREF(flags)) && AVL_GET_MODRM_MOD((inst)..__AVL_SET_INST_PREF(mod_rm)) == 0b11 && (!(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(rexx))) << 0x4) \
-    | __AVL_GET_MODRM_RM_BASE((inst).__AVL_SET_INST_PREF(mod_rm)) \
+    ((AVL_HAS_REXB_PFX((inst)->__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
+    | ((AVL_HAS_OP_EVEX_PFX((inst)->__AVL_SET_INST_PREF(flags)) && AVL_GET_MODRM_MOD((inst)->__AVL_SET_INST_PREF(mod_rm)) == 0b11 && (!(*(AVL_evex_t*)((inst)->__AVL_SET_INST_PREF(vp))).__AVL_SET_EVEX_PREF(rexx))) << 0x4) \
+    | __AVL_GET_MODRM_RM_BASE((inst)->__AVL_SET_INST_PREF(mod_rm)) \
 )
 
 #define AVL_GET_MODRM_REG(inst) ( \
-    ((AVL_HAS_REXR_PFX((inst).__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
-    | ((AVL_HAS_OP_EVEX_PFX((inst).__AVL_SET_INST_PREF(flags)) && (!(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(rexr2))) << 0x4) \
-    | __AVL_GET_MODRM_REG_BASE((inst).__AVL_SET_INST_PREF(mod_rm)) \
+    ((AVL_HAS_REXR_PFX((inst)->__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
+    | ((AVL_HAS_OP_EVEX_PFX((inst)->__AVL_SET_INST_PREF(flags)) && (!(*(AVL_evex_t*)((inst)->__AVL_SET_INST_PREF(vp))).__AVL_SET_EVEX_PREF(rexr2))) << 0x4) \
+    | __AVL_GET_MODRM_REG_BASE((inst)->__AVL_SET_INST_PREF(mod_rm)) \
 )
 
 ///TODO: Maybe EVEX extends also SIB
@@ -179,13 +179,13 @@
 #define __AVL_GET_SIB_INDEX_BASE(modrm) (uint8_t)(((modrm) >> 0x3) & 0xF)
 
 #define AVL_GET_SIB_BASE(inst) ( \
-    ((AVL_HAS_REXB_PFX((inst).__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
-    | __AVL_GET_SIB_BASE_BASE((inst).__AVL_SET_INST_PREF(sib)) \
+    ((AVL_HAS_REXB_PFX((inst)->__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
+    | __AVL_GET_SIB_BASE_BASE((inst)->__AVL_SET_INST_PREF(sib)) \
 )
 
 #define AVL_GET_SIB_INDEX(inst) ( \
-    ((AVL_HAS_REXX_PFX((inst).__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
-    | __AVL_GET_SIB_INDEX_BASE((inst).__AVL_SET_INST_PREF(sib)) \
+    ((AVL_HAS_REXX_PFX((inst)->__AVL_SET_INST_PREF(flags)) != 0) << 0x3) \
+    | __AVL_GET_SIB_INDEX_BASE((inst)->__AVL_SET_INST_PREF(sib)) \
 )
 
 /**

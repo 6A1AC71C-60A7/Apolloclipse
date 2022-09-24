@@ -853,7 +853,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						found->mnemonic = AVL_HAS_REXW_PFX(inst->i_flags) ? VBROADCASTF64X2 : VBROADCASTF32X4;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
-						// if (MODRM_MOD_GET(modrm) != 0b11)
+						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
 						break ;
 
@@ -862,7 +862,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 							found->mnemonic = VBROADCASTF32X2;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
-						// if (MODRM_MOD_GET(modrm) != 0b11)
+						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
 						break ;
 
@@ -871,7 +871,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 							found->mnemonic = VBROADCASTF64X4;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
-						// if (MODRM_MOD_GET(modrm) != 0b11)
+						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
 						break ;
 
@@ -1365,8 +1365,8 @@ static ubyte	get_modrm(AVL_instruction_t* const inst, const ubyte** iraw)
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }
 		(RM[3] is extended from REX.B/VEX.~B/XOP.~B */
-	const ubyte rm =  MODRM_RM_EXTENDED_GET(inst);
-	const ubyte index = (MODRM_MOD_GET(inst->i_mod_rm) << 0x4) | rm;
+	const ubyte rm =  AVL_GET_MODRM_RM(inst);
+	const ubyte index = (AVL_GET_MODRM_MOD(inst->i_mod_rm) << 0x4) | rm;
 
 	DEBUG("DEBUG: MODRM INDEX IS %d\n", index);
 
@@ -1378,9 +1378,9 @@ static ubyte	get_sib(AVL_instruction_t* const inst, const ubyte** iraw)
 {
 	inst->i_sib = *((*iraw)++);
 
-	const ubyte mod = MODRM_MOD_GET(inst->i_mod_rm);
-	const ubyte index = SIB_INDEX_EXTENDED_GET(inst);
-	const ubyte base = SIB_BASE_EXTENDED_GET(inst);
+	const ubyte mod = AVL_GET_MODRM_MOD(inst->i_mod_rm);
+	const ubyte index = AVL_GET_SIB_INDEX(inst);
+	const ubyte base = AVL_GET_SIB_BASE(inst);
 
 	/* WORD: bits: { 0, 0, 0, 0, 0, 0, MOD[1], MOD[0], INDEX[3], INDEX[2], INDEX[1], INDEX[0], BASE[3], BASE[2], BASE[1], BASE[0] }
 		(INDEX[4] is extended from REX.X/VEX.~X/XOP.~X
@@ -1422,7 +1422,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
-		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
+		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && AVL_GET_MODRM_MOD(inst->i_mod_rm) != 0b11)
 		{
 			switch (opcode)
 			{
@@ -1490,7 +1490,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
 	{
-		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
+		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && AVL_GET_MODRM_MOD(inst->i_mod_rm) != 0b11)
 		{
 			switch (opcode)
 			{
@@ -1524,7 +1524,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	}
 	else if (map == lt_two_byte_opmap)
 	{
-		if (MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
+		if (AVL_GET_MODRM_MOD(inst->i_mod_rm) != 0b11)
 		{
 			if (AVL_HAS_MP_0x66_PFX(inst->i_flags))
 			{

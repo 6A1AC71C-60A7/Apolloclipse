@@ -263,7 +263,7 @@ int main(int ac, const char* av[])
     }
     //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
 
-    // AVL_instruction_t test = {};
+    AVL_instruction_t test = {};
 
     // AVL_SET_OPSZ(test.i_flags, AVL_OPSZ_DQWORD);
     // if (AVL_OPSZ_IS_QWORD(test.i_flags))
@@ -274,6 +274,9 @@ int main(int ac, const char* av[])
     // else if AVL_OPSZ_IS_DWORD(test.i_flags)
     //     fprintf(stderr, "IS DWORD!\n");
 
+    test.i_mod_rm = 0b00101110;
+    
+    fprintf(stderr, "[TEST] RM: %d REG: %d\n", AVL_GET_MODRM_RM(&test), AVL_GET_MODRM_REG(&test));
 
     return st;
 }

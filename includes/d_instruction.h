@@ -142,15 +142,15 @@
 #define MODRM_REG_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
 /// In general, when this field is 0b11, then register-direct addressing mode is used;
 ///		otherwise register-indirect addressing mode is used. 
-#define MODRM_MOD_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
+//#define MODRM_MOD_GET(x) AVL_GET_MODRM_MOD(x) // (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
-#define MODRM_RM_EXTENDED_GET(inst) (	\
+/*#define MODRM_RM_EXTENDED_GET(inst) AVL_GET_MODRM_RM(inst)  (	\
 	((AVL_HAS_REXB_PFX((inst)->i_flags) != 0) << 3) | ((((inst)->i_flags & AVL_OP_EVEX_MASK) && MODRM_MOD_GET((inst)->i_mod_rm) == 0b11 && !EVEX_X_GET((inst)->i_vp)) << 4) | MODRM_RM_GET((inst)->i_mod_rm) \
-)
+)*/
 
-#define MODRM_REG_EXTENDED_GET(inst) (	\
+/* #define MODRM_REG_EXTENDED_GET(inst) AVL_GET_MODRM_REG(inst) (	\
 	((AVL_HAS_REXR_PFX((inst)->i_flags) != 0) << 3) | ((((inst)->i_flags & AVL_OP_EVEX_MASK) && !EVEX_R2_GET((inst)->i_vp)) << 4) | MODRM_REG_GET((inst)->i_mod_rm) \
-)
+)*/
 
 /*
 ** SIB member values
@@ -161,31 +161,31 @@
 /// The index register to use. Can be extented by 1 bit.
 # define SIB_INDEX_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
 /// The base register to use. Can be extented by 1 bit.
-# define SIB_SCALE_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
+//# define SIB_SCALE_GET(x) AVL_GET_SIB_SCALE(x) // (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
-#define SIB_BASE_EXTENDED_GET(inst) (	\
+/*#define SIB_BASE_EXTENDED_GET(inst) AVL_GET_SIB_BASE(inst) (	\
 	(AVL_HAS_REXB_PFX((inst)->i_flags) != 0) << 3 | SIB_BASE_GET((inst)->i_sib) \
-)
+)*/
 
-#define SIB_INDEX_EXTENDED_GET(inst) (	\
+/*#define SIB_INDEX_EXTENDED_GET(inst) AVL_GET_SIB_INDEX(inst) (	\
 	(AVL_HAS_REXX_PFX((inst)->i_flags) != 0) << 3 | SIB_INDEX_GET((inst)->i_sib) \
-)
+)*/
 
-typedef struct
-{
-	udword		prefix;
-	mnemonic_t	mnemonic;
-	ubyte		opcode[3];
-	ubyte		vexxop[3];
-	ubyte		mod_rm;
-	ubyte		sib;
-	udword		displacement;
-	ubyte		size;
-	reg_t		reg1;
-	reg_t		reg2;
-	reg_t		reg3;
-	uqword		immediate;
-} instruction_t;
+// typedef struct
+// {
+// 	udword		prefix;
+// 	mnemonic_t	mnemonic;
+// 	ubyte		opcode[3];
+// 	ubyte		vexxop[3];
+// 	ubyte		mod_rm;
+// 	ubyte		sib;
+// 	udword		displacement;
+// 	ubyte		size;
+// 	reg_t		reg1;
+// 	reg_t		reg2;
+// 	reg_t		reg3;
+// 	uqword		immediate;
+// } instruction_t;
 
 err_t			get_instruction_prefixes(AVL_instruction_t* const inst, const ubyte** instruction_raw);
 void			handle_modrm(AVL_instruction_t* const inst, const ubyte** instruction_raw);

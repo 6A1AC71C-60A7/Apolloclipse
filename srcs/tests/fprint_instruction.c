@@ -2628,10 +2628,10 @@ static void print_sib(FILE* where, AVL_instruction_t* const inst, ubyte hasdisp,
 	/// I don't think so, i've only parsed 1 displacement
 	(void)hasdisp;
 
-	const ubyte mod = MODRM_MOD_GET(inst->i_mod_rm);
-	const ubyte scale = 0x1 << SIB_SCALE_GET(inst->i_sib);
-	const ubyte index = SIB_INDEX_EXTENDED_GET(inst);
-	const ubyte base = SIB_BASE_EXTENDED_GET(inst);
+	const ubyte mod = AVL_GET_MODRM_MOD(inst->i_mod_rm);
+	const ubyte scale = 0x1 << AVL_GET_SIB_SCALE(inst->i_sib);
+	const ubyte index = AVL_GET_SIB_INDEX(inst);
+	const ubyte base = AVL_GET_SIB_BASE(inst);
 	
 	switch (mod)
 	{
@@ -2783,8 +2783,8 @@ static reg_t get_addressing_reg_offset(AVL_instruction_t* const inst)
 __always_inline
 static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg, ubyte isfirst)
 {
-	const ubyte mod = MODRM_MOD_GET(inst->i_mod_rm);
-	const ubyte rm = MODRM_RM_EXTENDED_GET(inst);
+	const ubyte mod = AVL_GET_MODRM_MOD(inst->i_mod_rm);
+	const ubyte rm = AVL_GET_MODRM_RM(inst);
 
 	//DEBUG("PRINT ADDRESS: MOD=%d, RM=%d\n", mod, rm);
 
