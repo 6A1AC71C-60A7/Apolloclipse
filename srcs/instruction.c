@@ -4,6 +4,8 @@
 #include <d_lookup_tables.h>
 #include <d_utils.h>
 
+#include <user.h>
+
 // 1) Check for REX | [{66, f2, f3}], 0f
 // 2) If multiple REX, {66, f2, f3} or 0f skip and ignore
 // 3) If ((1)) check for opcode
@@ -856,7 +858,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VBROADCASTSD:
-						if (!(inst->i_flags & inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & RP_REXW_MASK))
 							found->mnemonic = VBROADCASTF32X2;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
@@ -1277,9 +1279,15 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 			///TODO: Need the prefix here as pointer !! (change areguments)
 
 			if (opcode == 0x30 || opcode == 0x32)
-				inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
+			{
+				//inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
+				AVL_SET_OPSZ(inst->i_flags, inst->i_flags & RP_REXW_MASK ? AVL_OPSZ_WORD : AVL_OPSZ_BYTE);
+			}
 			else if (opcode == 0x31 || opcode == 0x33)
-				inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+			{
+				//inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+				AVL_SET_OPSZ(inst->i_flags, inst->i_flags & RP_REXW_MASK ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
+			}
 		}
 	}
 	else
@@ -1636,17 +1644,24 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 	if (dest->i_flags & OP_EVEX_MASK)
 	{
 		if (EVEX_L2_GET(dest->i_vp))
-			dest->i_flags |= OS_DQQWORD_MASK;
+		{
+			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DQQWORD);
+		}
 		else if (EVEX_L_GET(dest->i_vp))
-			dest->i_flags |= OS_QQWORD_MASK;
+		{
+			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QQWORD);
+		}
 		else
-			dest->i_flags |= OS_DQWORD_MASK;
+		{
+			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DQWORD);
+		}
 		return ;
 	}
 	else if (dest->i_vp[0])
 	{
 		const ubyte is256os = dest->i_vp[2] ? VEXXOP_L_GET(dest->i_vp) : VEXXOP2_L_GET(dest->i_vp);
-		dest->i_flags |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
+		//dest->i_flags |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
+		AVL_SET_OPSZ(dest->i_flags, is256os ? AVL_OPSZ_QQWORD : AVL_OPSZ_DQWORD);
 		return ;
 
 		///TODO: if (IS_K*()) { handle k mnemonics operand size }
@@ -1669,7 +1684,8 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 			IS_TWO_BYTE_NONVEX_SIMD_V2(dest->i_opcode[2]))
 			, (dest->i_opcode[1] == 0x38 && IS_0x38_NONVEX_SIMD(dest->i_opcode[2])));
 
-		dest->i_flags |= OS_DQWORD_MASK;
+		//dest->i_flags |= OS_DQWORD_MASK;
+		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DQWORD);
 
 		// if (dest->vexxop[0] == 0)
 		// {
@@ -1722,7 +1738,11 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 	/* Set to default operand size */
 
 	if (is_mnemonic_default_64_bits(dest))
-		dest->i_flags |= OS_QWORD_MASK;
+	{
+		//dest->i_flags |= OS_QWORD_MASK;
+		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
+	}
+		
 	// else if (IS_DEFAULT_REGISTER(found.am1))
 	// {
 	// 	isreg = 0x1;
@@ -1740,7 +1760,10 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 	// 		*prefix |= OS_DWORD_MASK;
 	// }
 	else
-		dest->i_flags |= OS_DWORD_MASK;
+	{
+		//dest->i_flags |= OS_DWORD_MASK;
+		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
+	}
 
 	/* Overwrite with prefixes */
 
@@ -1748,13 +1771,15 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 	// {
 		if (dest->i_flags & MP_0x66_MASK && !(dest->i_opcode[1] == 0x38 && ((dest->i_opcode[2] >> 4) & 0xF) == 0xF))
 		{
-			OS_RESET(dest->i_flags);
-			dest->i_flags |= OS_WORD_MASK;
+			// OS_RESET(dest->i_flags);
+			// dest->i_flags |= OS_WORD_MASK;
+			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
 		}
 		else if (dest->i_flags & RP_REXW_MASK)
 		{
-			OS_RESET(dest->i_flags);
-			dest->i_flags |= OS_QWORD_MASK;
+			// OS_RESET(dest->i_flags);
+			// dest->i_flags |= OS_QWORD_MASK;
+			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
 		// }
 	}
 
@@ -1790,33 +1815,36 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 		[ ONLY WHEN IS ADDRESSING ] */
 	if (!dest->i_opcode[0] && dest->i_opcode[2] == 0x8C && (dest->i_mod_rm & 0b11000000) != 0b11000000)
 	{
-		OS_RESET(dest->i_flags);
-		dest->i_flags |= OS_WORD_MASK;
+		// OS_RESET(dest->i_flags);
+		// dest->i_flags |= OS_WORD_MASK;
+		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
 	}
 	/* More exceptions ... */
 	else if (dest->i_mnemonic == CMPXCHG8B && dest->i_flags & RP_REXW_MASK)
 	{
 		dest->i_mnemonic = CMPXCHG16B;
-		OS_RESET(dest->i_flags);
-		dest->i_flags |= OS_DQWORD_MASK;
+		// OS_RESET(dest->i_flags);
+		// dest->i_flags |= OS_DQWORD_MASK;
+		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DQWORD);
 		found->ot1 = OT_DQ;
 	}
 	else if (dest->i_mnemonic == UMONITOR && !(dest->i_flags & LP_ADDRSZ_MASK))
 	{
-		OS_RESET(dest->i_flags);
-		dest->i_flags |= OS_QWORD_MASK;
+		// OS_RESET(dest->i_flags);
+		// dest->i_flags |= OS_QWORD_MASK;
+		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
 	}
 
 	const char* __size;
-	if (dest->i_flags & OS_BYTE_MASK)
+	if (AVL_OPSZ_IS_BYTE(dest->i_flags))
 		__size = "BYTE";
-	else if (dest->i_flags & OS_WORD_MASK)
+	else if (AVL_OPSZ_IS_WORD(dest->i_flags))
 		__size = "WORD";
-	else if (dest->i_flags & OS_DWORD_MASK)
+	else if (AVL_OPSZ_IS_DWORD(dest->i_flags))
 		__size = "DWORD";
-	else if (dest->i_flags & OS_QWORD_MASK)
+	else if (AVL_OPSZ_IS_QWORD(dest->i_flags))
 		__size = "QWORD";
-	else if (dest->i_flags & OS_DQWORD_MASK)
+	else if (AVL_OPSZ_IS_DQWORD(dest->i_flags))
 		__size = "DQWORD";
 	DEBUG("---------> Operand size is %s\n", __size);
 }
@@ -1888,32 +1916,33 @@ static void		get_immediate(opfield_t opfield, AVL_instruction_t* const dest, con
 				switch (ot)
 				{
 					case OT_C:
-						if ((dest->i_flags & OS_BYTE_MASK) != 0)
+						if ((AVL_OPSZ_IS_BYTE(dest->i_flags)) != 0)
 							dest->i_imm = *((*(uword**)iraw)++);
 						else
 							dest->i_imm = *((*iraw)++);
 						break ;
 
 					case OT_V:
-							if (dest->i_flags & OS_WORD_MASK)
+							if (AVL_OPSZ_IS_WORD(dest->i_flags))
 								dest->i_imm = *((*(uword**)iraw)++);
-							else if (dest->i_flags & OS_DWORD_MASK)
+							else if (AVL_OPSZ_IS_DWORD(dest->i_flags))
 								dest->i_imm = *((*(udword**)iraw)++);
-							else if (dest->i_flags & OS_QWORD_MASK)
+							else if (AVL_OPSZ_IS_QWORD(dest->i_flags))
 								dest->i_imm = *((*(uqword**)iraw)++);
 						break ;
 
 					case OT_Y:
-						if (dest->i_flags & OS_QWORD_MASK)
+						if (AVL_OPSZ_IS_QWORD(dest->i_flags))
 							dest->i_imm = *((*(udword**)iraw)++);
 						else
 							dest->i_imm = *((*(uqword**)iraw)++);
 						break ;
 
 					case OT_Z:
-						if (dest->i_flags & OS_WORD_MASK)
+						if (AVL_OPSZ_IS_WORD(dest->i_flags))
 							dest->i_imm = *((*(uword**)iraw)++);
-						else if ((dest->i_flags & (OS_BYTE_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK)) == 0)
+						//else if ((dest->i_flags & (OS_BYTE_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK)) == 0)
+						else if (!AVL_OPSZ_IS_BYTE(dest->i_flags) && !AVL_OPSZ_IS_DQWORD(dest->i_flags) && !AVL_OPSZ_IS_QQWORD(dest->i_flags))
 							dest->i_imm = *((*(udword**)iraw)++);
 						break ;
 					default:
@@ -2058,6 +2087,7 @@ skip_prefix_check:
 
 	opfield_t 			found = {};
 	const opfield_t*	map = 0;
+	ubyte not_overwrite = 0;
 
 	if (dest->i_vp[0] == 0 && dest->i_opcode[0] == 0 && IS_ESCAPE_FX87(dest->i_opcode[2]))
 		found = handle_x87_instructions(dest, iraw);
@@ -2074,11 +2104,12 @@ skip_prefix_check:
 		if (map == lt_two_byte_opmap && (line == 0x4 || line == 0x9) && dest->i_vp[0])
 		{
 			handle_ambigious_instructions_0x0F_opmap(&found, dest->i_opcode[2]);
-
+			
 			if ((dest->i_opcode[2] >= 0x41 || dest->i_opcode[2] <= 0x47) || (dest->i_opcode[2] >= 0x90 && dest->i_opcode[2] <= 0x99)
 			|| dest->i_opcode[2] == 0x4A || dest->i_opcode[2] == 0x4B) 
 			{
-				OS_RESET(dest->i_flags);
+				not_overwrite = 1;
+				//OS_RESET(dest->i_flags);
 
 				///TODO: Refrctor using ranges
 				if (dest->i_opcode[2] == 0x90 || dest->i_opcode[2] == 0x91 || dest->i_opcode[2] == 0x4A
@@ -2087,19 +2118,32 @@ skip_prefix_check:
 				|| dest->i_opcode[2] == 0x99 || dest->i_opcode[2] == 0x46
 				|| dest->i_opcode[2] == 0x47)
 				{
+					
 					if (dest->i_flags & RP_REXW_MASK)
 					{
 						if (dest->i_flags & MP_0x66_MASK)
-							dest->i_flags |= OS_DWORD_MASK;
+						{
+							//dest->i_flags |= OS_DWORD_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
+						}
 						else
-							dest->i_flags |= OS_QWORD_MASK;
+						{
+							//dest->i_flags |= OS_QWORD_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
+						}
 					}
 					else
 					{
 						if (dest->i_flags & MP_0x66_MASK)
-							dest->i_flags |= OS_BYTE_MASK;
+						{
+							//dest->i_flags |= OS_BYTE_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_BYTE);
+						}
 						else
-							dest->i_flags |= OS_WORD_MASK;
+						{
+							//dest->i_flags |= OS_WORD_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
+						}
 					}
 				}
 				else if (dest->i_opcode[2] == 0x92 || dest->i_opcode[2] == 0x93)
@@ -2107,31 +2151,52 @@ skip_prefix_check:
 					if (dest->i_flags & MP_0xF2_MASK)
 					{
 						if (dest->i_flags & RP_REXW_MASK)
-							dest->i_flags |= OS_QWORD_MASK;
+						{
+							//dest->i_flags |= OS_QWORD_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
+						}
 						else
-							dest->i_flags |= OS_DWORD_MASK;
+						{
+							//dest->i_flags |= OS_DWORD_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
+						}
 					}
 					else
 					{
 						if (dest->i_flags & MP_0x66_MASK)
-							dest->i_flags |= OS_BYTE_MASK;
+						{
+							//dest->i_flags |= OS_BYTE_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_BYTE);
+						}
 						else
-							dest->i_flags |= OS_WORD_MASK;
+						{
+							//dest->i_flags |= OS_WORD_MASK;
+							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
+						}
 					}
 				}
 				else if (dest->i_opcode[2] == 0x4B)
 				{
 					if (dest->i_flags & RP_REXW_MASK)
-						dest->i_flags |= OS_QWORD_MASK;
+					{
+						//dest->i_flags |= OS_QWORD_MASK;
+						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
+					}
 					else if (dest->i_flags & MP_0x66_MASK)
-						dest->i_flags |= OS_WORD_MASK;
+					{
+						//dest->i_flags |= OS_WORD_MASK;
+						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
+					}
 					else
-						dest->i_flags |= OS_DWORD_MASK;
+					{
+						//dest->i_flags |= OS_DWORD_MASK;
+						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
+					}
 				}
 
-				if (dest->i_opcode[2] == 0x92 && !(dest->i_flags & OS_QWORD_MASK))
+				if (dest->i_opcode[2] == 0x92 && !AVL_OPSZ_IS_QWORD(dest->i_flags))
 					found.ot2 = OT_D;
-				else if (dest->i_opcode[2] == 0x93 && !(dest->i_flags & OS_QWORD_MASK))
+				else if (dest->i_opcode[2] == 0x93 && !AVL_OPSZ_IS_QWORD(dest->i_flags))
 					found.ot1 = OT_D;
 			}
 		}
@@ -2178,7 +2243,8 @@ skip_prefix_check:
 		get_displacement(&dest->i_disp, iraw, GET_DISP_LENGHT(opattr));
 
 	handle_ambigious_arguments(&found, map, dest);
-	get_operand_size(dest, &found);
+	if (!not_overwrite && dest->i_mnemonic != KSHIFTL && dest->i_mnemonic != KSHIFTR)
+		get_operand_size(dest, &found);
 
 	if (has_immediate(found))
 		get_immediate(found, dest, iraw);

@@ -140,6 +140,9 @@
 #define AVL_OPSZ_IS_QQWORD(x) (AVL_GET_OPERAND_SZ(x) == AVL_OPSZ_QQWORD)
 #define AVL_OPSZ_IS_DQQWORD(x) (AVL_GET_OPERAND_SZ(x) == AVL_OPSZ_DQQWORD)
 
+#define AVL_CLEAR_OPSZ(flags) ((flags) &= ~((1 << __AVL_OPERAND_SZ_SHIFT_AMOUNT) | (1 << (__AVL_OPERAND_SZ_SHIFT_AMOUNT + 1)) | (1 << (__AVL_OPERAND_SZ_SHIFT_AMOUNT + 2))))
+#define AVL_SET_OPSZ(flags, opsz) AVL_CLEAR_OPSZ(flags) ; ( (flags) |= (((opsz) & 0x7) << __AVL_OPERAND_SZ_SHIFT_AMOUNT))
+
 /*
 ** TODO: NAME OF SECTION
 */

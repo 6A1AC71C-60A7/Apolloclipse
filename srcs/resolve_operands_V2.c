@@ -6,6 +6,8 @@
 
 #include <user/register.h>
 
+#include <user.h>
+
 static const reg_t gpr8[] = {
 	AVL_OP_AL,   AVL_OP_BL,   AVL_OP_CL,   AVL_OP_DL,
 	AVL_OP_SIL,  AVL_OP_DIL,  AVL_OP_SPL,  AVL_OP_BPL,
@@ -34,7 +36,7 @@ static const reg_t gpr64[] = {
 	AVL_OP_R12,  AVL_OP_R13,  AVL_OP_R14,  AVL_OP_R15
 };
 
-static reg_t	get_general_purpose_register(uqword index, ubyte ot, udword prefix)
+static reg_t	get_general_purpose_register(uqword index, ubyte ot, udword flags)
 {
 	reg_t found = AVL_OP_NONE;
 
@@ -57,33 +59,34 @@ static reg_t	get_general_purpose_register(uqword index, ubyte ot, udword prefix)
 			break ;
 
 		case OT_C:
-			if (prefix & OS_BYTE_MASK)
+			if (AVL_OPSZ_IS_BYTE(flags))
 				found = gpr8[index];
 			else
 				found = gpr16[index];
 			break ;
 
 		case OT_Y:
-			if (prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
+			//if (flags & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
+			if (AVL_GET_OPERAND_SZ(flags) >= AVL_OPSZ_QWORD)
 				found = gpr64[index];
 			else
 				found = gpr32[index];
 			break ;
 
 		case OT_Z:
-			if (prefix & OS_WORD_MASK)
+			if (AVL_OPSZ_IS_WORD(flags))
 				found = gpr16[index];
-			else if (!(prefix & OS_BYTE_MASK))
+			else if (!AVL_OPSZ_IS_BYTE(flags))
 				found = gpr32[index];
 			break ;
 
 		default:
 		{
-			if (prefix & OS_BYTE_MASK)
+			if (AVL_OPSZ_IS_BYTE(flags))
 				found = gpr8[index];
-			else if (prefix & OS_WORD_MASK)
+			else if (AVL_OPSZ_IS_WORD(flags))
 				found = gpr16[index];
-			else if (prefix & OS_DWORD_MASK)
+			else if (AVL_OPSZ_IS_DWORD(flags))
 				found = gpr32[index];
 			else/* if (prefix & OS_QWORD_MASK)*/
 				found = gpr64[index];
@@ -93,7 +96,7 @@ static reg_t	get_general_purpose_register(uqword index, ubyte ot, udword prefix)
 	return found;
 }
 
-static reg_t	get_memory(ubyte ot, udword prefix)
+static reg_t	get_memory(ubyte ot, udword flags)
 {
 	reg_t found = AVL_OP_NONE;
 
@@ -142,23 +145,24 @@ static reg_t	get_memory(ubyte ot, udword prefix)
 			break ;
 
 		case OT_C:
-			if (prefix & OS_BYTE_MASK)
+			if (AVL_OPSZ_IS_BYTE(flags))
 				found = AVL_OP_MEM8;
 			else
 				found = AVL_OP_MEM16;
 			break ;
 
 		case OT_Y:
-			if (prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
+			//if (flags & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
+			if (AVL_GET_OPERAND_SZ(flags) >= AVL_OPSZ_QWORD)
 				found = AVL_OP_MEM64;
 			else
 				found = AVL_OP_MEM32;
 			break ;
 
 		case OT_Z:
-			if (prefix & OS_WORD_MASK)
+			if (AVL_OPSZ_IS_WORD(flags))
 				found = AVL_OP_MEM16;
-			else if (!(prefix & OS_BYTE_MASK))
+			else if (!AVL_OPSZ_IS_BYTE(flags))
 				found = AVL_OP_MEM32;
 			break ;
 
@@ -166,19 +170,20 @@ static reg_t	get_memory(ubyte ot, udword prefix)
 		{
 			///TODO: Handle OT_P (and maybe more)
 
-			if (prefix & OS_BYTE_MASK)
+			///TODO: switch case for optimization
+			if (AVL_OPSZ_IS_BYTE(flags))
 				found = AVL_OP_MEM8;
-			else if (prefix & OS_WORD_MASK)
+			else if (AVL_OPSZ_IS_WORD(flags))
 				found = AVL_OP_MEM16;
-			else if (prefix & OS_DWORD_MASK)
+			else if (AVL_OPSZ_IS_DWORD(flags))
 				found = AVL_OP_MEM32;
-			else if (prefix & OS_QWORD_MASK)
+			else if (AVL_OPSZ_IS_QWORD(flags))
 				found = AVL_OP_MEM64;
-			else if (prefix & OS_DQWORD_MASK)
+			else if (AVL_OPSZ_IS_DQWORD(flags))
 				found = AVL_OP_MEM128;
-			else if (prefix & OS_QQWORD_MASK)
+			else if (AVL_OPSZ_IS_QQWORD(flags))
 				found = AVL_OP_MEM256;
-			else if (prefix & OS_DQQWORD_MASK)
+			else if (AVL_OPSZ_IS_DQQWORD(flags))
 				found = AVL_OP_MEM512;
 		}
 	}
@@ -292,7 +297,7 @@ static reg_t	get_k_register(uqword index)
 	return kr[index];
 }
 
-static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
+static reg_t	get_vector(uqword index, ubyte ot, udword flags)
 {
 	reg_t found = AVL_OP_NONE;
 
@@ -306,19 +311,17 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 			found = get_ymm_register(index);
 			break ;
 
-		///TODO: Handle 512-bits too
-
 		case OT_DQQ:
 			found = get_zmm_register(index);
 			break ;
 
 		default:
 		{
-			if (prefix & OS_DQWORD_MASK)
+			if (AVL_OPSZ_IS_DQWORD(flags))
                 found = get_xmm_register(index);
-            else if (prefix & OS_QQWORD_MASK)
+            else if (AVL_OPSZ_IS_QQWORD(flags))
                 found = get_ymm_register(index);
-            else if (prefix & OS_DQQWORD_MASK)
+            else if (AVL_OPSZ_IS_DQQWORD(flags))
                 found = get_zmm_register(index);
 		}
 	}
@@ -328,7 +331,7 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 
 #define IS_AMBIGIOUS(x) ((x) >= OR_8 && (x) <= OR_512)
 
-#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(x, p) ( \
+#define IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(x) ( \
 	(x) == MOVQ \
 	|| (x) == VMOVSD \
 	|| (x) == VADDSD \
@@ -395,14 +398,14 @@ static reg_t	get_vector(uqword index, ubyte ot, udword prefix)
 	|| (x) == VCOMISD \
 	|| (x) == VUCOMISD \
 	|| (x) == VCVTSD2SS \
-	|| ((x) == VCVTDQ2PD && !((p) & OS_QQWORD_MASK)) \
+	|| ((x) == VCVTDQ2PD && !AVL_OPSZ_IS_QQWORD(p)) \
 	|| (x) == VCVTSD2SI \
 	|| (x) == VCVTTSD2SI \
 	|| (x) == VROUNDSD \
-	|| ((x) == VCVTPH2PS && !((p) & OS_QQWORD_MASK)) \
-	|| ((x) == VCVTPS2PH && !((p) & OS_QQWORD_MASK)) \
-	|| ((x) == VCVTPS2PD && !((p) & OS_QQWORD_MASK)) \
-	|| ((x) == VMOVDDUP && !((p) & OS_QQWORD_MASK)) \
+	|| ((x) == VCVTPH2PS && !AVL_OPSZ_IS_QQWORD(p)) \
+	|| ((x) == VCVTPS2PH && !AVL_OPSZ_IS_QQWORD(p)) \
+	|| ((x) == VCVTPS2PD && !AVL_OPSZ_IS_QQWORD(p)) \
+	|| ((x) == VMOVDDUP && !AVL_OPSZ_IS_QQWORD(p)) \
 )
 
 #define IS_VOSMEMEXTENTED_EXCEPTION_NONVEC_32(x) ( \
@@ -487,15 +490,18 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 				if ((inst->i_mnemonic == VCVTSI2SS || inst->i_mnemonic == MOVD || inst->i_mnemonic == VMOVD || inst->i_mnemonic == VCVTSI2SD || inst->i_mnemonic == VPINSRD || inst->i_mnemonic == VPEXTRD) && !(p & RP_REXW_MASK))
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);	
-					p |= OS_DWORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);	
+					// p |= OS_DWORD_MASK;
+					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 				else if (p & OP_EVEX_MASK)
 				{
 					if (inst->i_mnemonic == VCVTUSI2SD || inst->i_mnemonic == VCVTUSI2SS)
 					{
-						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-						p |= p & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						// p |= p & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+
+						AVL_SET_OPSZ(p, p & RP_REXW_MASK ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
 					}
 				}
 
@@ -516,8 +522,10 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 				if ((inst->i_mnemonic == VCVTSS2SI || inst->i_mnemonic == VCVTTSS2SI || inst->i_mnemonic == VPEXTRW || inst->i_mnemonic == VCVTSD2SI || inst->i_mnemonic == VCVTTSD2SI || inst->i_mnemonic == VMOVMSKPS || inst->i_mnemonic == VMOVMSKPD) && !(p & RP_REXW_MASK))
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-					p |= OS_DWORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					// p |= OS_DWORD_MASK;
+
+					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 
 				*dest = get_general_purpose_register(modrm_reg, ot, p);
@@ -538,28 +546,36 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 				if (inst->i_mnemonic == PINSRW)
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-					p |= OS_WORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					// p |= OS_WORD_MASK;
+
+					AVL_SET_OPSZ(p, AVL_OPSZ_WORD);
 				}
 
 				else if (inst->i_vp[0] && (inst->i_mnemonic == VMOVLPS || inst->i_mnemonic == VMOVHPS || inst->i_mnemonic == VMOVLPD || inst->i_mnemonic == VMOVHPD))
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-					p |= OS_QWORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					// p |= OS_QWORD_MASK;
+
+					AVL_SET_OPSZ(p, AVL_OPSZ_QWORD);
 				}
 
-				else if (inst->i_vp[0] && (inst->i_mnemonic == VLDMXCSR|| inst->i_mnemonic == VSTMXCSR))
+				else if (inst->i_vp[0] && (inst->i_mnemonic == VLDMXCSR || inst->i_mnemonic == VSTMXCSR))
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-					p |= OS_DWORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					// p |= OS_DWORD_MASK;
+
+					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 
 				else if (inst->i_flags & OP_EVEX_MASK)
 				{
 					if (!EVEX_L_GET(inst->i_vp) && !EVEX_L2_GET(inst->i_vp) && inst->i_mnemonic == VSCATTERQPS)
 					{
-						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-						p |= OS_QWORD_MASK;
+						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						// p |= OS_QWORD_MASK;
+
+						AVL_SET_OPSZ(p, AVL_OPSZ_QWORD);
 					}
 				}
 
@@ -592,13 +608,17 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 				if (inst->i_mnemonic == PINSRW)
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-					p |= OS_WORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					// p |= OS_WORD_MASK;
+
+					AVL_SET_OPSZ(p, AVL_OPSZ_WORD);
 				}
 				else if (inst->i_mnemonic == VPINSRW && !(p & RP_REXW_MASK))
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-					p |= OS_DWORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					// p |= OS_DWORD_MASK;
+
+					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 
 				*dest = get_general_purpose_register(modrm_rm, ot, p);
@@ -621,25 +641,31 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 				udword p = inst->i_flags;
 
 				if ((inst->i_mnemonic == VCVTPD2PS || inst->i_mnemonic == VCVTPD2DQ || inst->i_mnemonic == VCVTTPD2DQ
-				|| inst->i_mnemonic == VPGATHERQD) && p & OS_QQWORD_MASK)
+				|| inst->i_mnemonic == VPGATHERQD) && AVL_OPSZ_IS_QQWORD(p))
 				{
-					p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-					p |= OS_DQWORD_MASK;
+					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+					// p |= OS_DQWORD_MASK;
+
+					AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 				}
 				else if (p & OP_EVEX_MASK)
 				{
 					if (EVEX_L_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPD2UDQ || inst->i_mnemonic == VCVTTPD2UDQ || inst->i_mnemonic == VCVTUQQ2PS
 					|| inst->i_mnemonic == VPSCATTERQD || inst->i_mnemonic == VSCATTERQPS || inst->i_mnemonic == VCVTQQ2PS))
 					{
-						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-						p |= OS_DQWORD_MASK;
+						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						// p |= OS_DQWORD_MASK;
+
+						AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 					}
 					else if (EVEX_L2_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPD2PS || inst->i_mnemonic == VCVTPD2DQ || inst->i_mnemonic == VCVTTPD2DQ
 					|| inst->i_mnemonic == VCVTPD2UDQ || inst->i_mnemonic == VCVTTPD2UDQ || inst->i_mnemonic == VCVTUQQ2PS || inst->i_mnemonic == VPSCATTERQD
 					|| inst->i_mnemonic == VSCATTERQPS || inst->i_mnemonic == VCVTQQ2PS))
 					{
-						p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-						p |= OS_QQWORD_MASK;
+						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+						// p |= OS_QQWORD_MASK;
+
+						AVL_SET_OPSZ(p, AVL_OPSZ_QQWORD);
 					}
 
 				}
@@ -661,29 +687,35 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						|| inst->i_mnemonic == VCVTPS2PH || inst->i_mnemonic == VPSLLW || inst->i_mnemonic == VPSLLD
 						|| inst->i_mnemonic == VPSLLQ || inst->i_mnemonic == VPSRLW || inst->i_mnemonic == VPSRLD
 						|| inst->i_mnemonic == VPSRLQ || inst->i_mnemonic == VPSRAW || inst->i_mnemonic == VPSRAD
-						|| inst->i_mnemonic == VBROADCASTSS || inst->i_mnemonic == VBROADCASTSD) && p & OS_QQWORD_MASK)
+						|| inst->i_mnemonic == VBROADCASTSS || inst->i_mnemonic == VBROADCASTSD) && AVL_OPSZ_IS_QQWORD(p))
 						{
-							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-							p |= OS_DQWORD_MASK;
+							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							// p |= OS_DQWORD_MASK;
+
+							AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 						}
 					}
 					else
 					{
-						if (p & OS_QQWORD_MASK && (inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTPS2PH
+						if (AVL_OPSZ_IS_QQWORD(p) && (inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTPS2PH
 						|| inst->i_mnemonic == VCVTUDQ2PD || inst->i_mnemonic == VCVTPS2UQQ || inst->i_mnemonic == VCVTTPS2QQ
 						|| inst->i_mnemonic == VCVTTPS2UQQ || inst->i_mnemonic == VPMOVSDW || inst->i_mnemonic == VPMOVUSDW
 						|| inst->i_mnemonic == VPMOVQD || inst->i_mnemonic == VPMOVSQD || inst->i_mnemonic == VPMOVUSQD
 						|| inst->i_mnemonic == VPMOVWB || inst->i_mnemonic == VPMOVSWB || inst->i_mnemonic == VPMOVUSWB
 						|| inst->i_mnemonic == VCVTDQ2PD))
 						{
-							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-							p |= OS_DQWORD_MASK;
+							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							// p |= OS_DQWORD_MASK;
+
+							AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 						}
 
 						if (inst->i_mnemonic == VBROADCASTSD || inst->i_mnemonic == VBROADCASTF32X2 || inst->i_mnemonic == VBROADCASTSS)
 						{
-							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-							p |= OS_DQWORD_MASK;
+							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							// p |= OS_DQWORD_MASK;
+
+							AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 						}
 
 						// EVEX_L2_GET(inst->vexxop) == p & OS_DQQWORD_MASK
@@ -692,8 +724,10 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						|| inst->i_mnemonic == VPMOVSDW || inst->i_mnemonic == VPMOVUSDW || inst->i_mnemonic == VPMOVQD || inst->i_mnemonic == VPMOVSQD || inst->i_mnemonic == VPMOVUSQD
 						|| inst->i_mnemonic == VPMOVWB || inst->i_mnemonic == VPMOVSWB || inst->i_mnemonic == VPMOVUSWB || inst->i_mnemonic == VCVTDQ2PD))
 						{
-							p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-							p |= OS_QQWORD_MASK;
+							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
+							// p |= OS_QQWORD_MASK;
+
+							AVL_SET_OPSZ(p, AVL_OPSZ_QQWORD);
 						}
 					}
 
@@ -706,7 +740,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 					if (inst->i_vp[0] == 0)
 					{
-						if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(inst->i_mnemonic, inst->i_flags))
+						if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_64(inst->i_mnemonic))
 							*dest = AVL_OP_MEM64;
 						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_32(inst->i_mnemonic))
 							*dest = AVL_OP_MEM32;
@@ -853,7 +887,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 				case OR_32:
 					// fall throught
 				case DRS_32:
-					if (inst->i_flags & OS_WORD_MASK)
+					if (AVL_OPSZ_IS_WORD(inst->i_flags))
 						*dest = gpr16[am - DR_RAX];
 					else
 						*dest = gpr32[am - DR_RAX];
@@ -862,9 +896,9 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 				case OR_64:
 					// fall throught
 				case DRS_64:
-					if (inst->i_flags & OS_WORD_MASK)
+					if (AVL_OPSZ_IS_WORD(inst->i_flags))
 						*dest = gpr16[am - DR_RAX];
-					else if (inst->i_flags & OS_DWORD_MASK)
+					else if (AVL_OPSZ_IS_DWORD(inst->i_flags))
 						*dest = gpr32[am - DR_RAX];
 					else
 						*dest = gpr64[am - DR_RAX];

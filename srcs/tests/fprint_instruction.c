@@ -5,6 +5,8 @@
 
 #include <user/types.h>
 
+#include <user.h>
+
 #define KEYWORD_PTR
 #undef KEYWORD_PTR
 
@@ -2399,23 +2401,23 @@ static void handle_exceptional_mnemonics(FILE* where, AVL_instruction_t* const t
 	// 	case CMPS:
 		if (target->i_mnemonic == CMPS || target->i_mnemonic == LODS || target->i_mnemonic == MOVS || target->i_mnemonic == SCAS || target->i_mnemonic == STOS)
 		{
-			if (target->i_flags & OS_WORD_MASK)
+			if (AVL_OPSZ_IS_WORD(target->i_flags))
 				addon = "w";
-			else if (target->i_flags & OS_DWORD_MASK)
+			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
 				addon = "d";
-			else if (target->i_flags & OS_QWORD_MASK)
+			else if (AVL_OPSZ_IS_QWORD(target->i_flags))
 				addon = "q";
 		}
 		else if (target->i_mnemonic == INS || target->i_mnemonic == OUTS)
 		{
-			if (target->i_flags & OS_WORD_MASK)
+			if (AVL_OPSZ_IS_WORD(target->i_flags))
 				addon = "w";
-			else if (target->i_flags & OS_DWORD_MASK)
+			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
 				addon = "d";
 		}
 		else if (target->i_mnemonic == IRET)
 		{
-			if (target->i_flags & OS_QWORD_MASK)
+			if (AVL_OPSZ_IS_QWORD(target->i_flags))
 				addon = "q";
 		}
 		else if (target->i_mnemonic == XRSTOR || target->i_mnemonic == XRSTORS || target->i_mnemonic == XSAVE || target->i_mnemonic == XSAVEC || target->i_mnemonic == XSAVES || target->i_mnemonic == FXSAVE || target->i_mnemonic == FXRSTOR)
@@ -2451,22 +2453,22 @@ static void handle_exceptional_mnemonics(FILE* where, AVL_instruction_t* const t
 		|| target->i_mnemonic == KSHIFTR || target->i_mnemonic == KTEST || target->i_mnemonic == KXNOR
 		|| target->i_mnemonic == KXOR)
 		{
-			if (target->i_flags & OS_BYTE_MASK)
+			if (AVL_OPSZ_IS_BYTE(target->i_flags))
 				addon = "b";
-			else if (target->i_flags & OS_WORD_MASK)
+			else if (AVL_OPSZ_IS_WORD(target->i_flags))
 				addon = "w";
-			else if (target->i_flags & OS_DWORD_MASK)
+			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
 				addon = "d";
-			else if (target->i_flags & OS_QWORD_MASK)
+			else if (AVL_OPSZ_IS_QWORD(target->i_flags))
 				addon = "q";
 		}
 		else if (target->i_mnemonic == KUNPCK)
 		{
-			if (target->i_flags & OS_WORD_MASK)
+			if (AVL_OPSZ_IS_WORD(target->i_flags))
 				addon = "bw";
-			else if (target->i_flags & OS_DWORD_MASK)
+			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
 				addon = "wd";
-			else if (target->i_flags & OS_QWORD_MASK)
+			else if (AVL_OPSZ_IS_QWORD(target->i_flags))
 				addon = "dq";
 		}
 
@@ -2968,6 +2970,7 @@ static void print_immediate(FILE* where, AVL_instruction_t* const target, ubyte 
 {
 	if (target->i_flags & OP_IMMEDIATE_MASK)
     {
+		///TODO: This 'addon' is the size of the instruction !!!
 		if ((target->i_mnemonic >= JMP && target->i_mnemonic < RET) || target->i_mnemonic == XBEGIN)
 			target->i_imm += IMMEDIATE_JMP_ADDON;
 		else if (target->i_mnemonic >= LOOP && target->i_mnemonic <= LOOPNE)
@@ -2996,20 +2999,20 @@ static void	handle_conversions(FILE* where, AVL_instruction_t* const target)
 
 	if (target->i_mnemonic == CBW)
 	{
-		if (target->i_flags & OS_WORD_MASK)
+		if (AVL_OPSZ_IS_WORD(target->i_flags))
 			name = "cbw";
-		else if (target->i_flags & OS_DWORD_MASK)
+		else if (AVL_OPSZ_IS_DWORD(target->i_flags))
 			name = "cwde";
-		else if (target->i_flags & OS_QWORD_MASK)
+		else if (AVL_OPSZ_IS_QWORD(target->i_flags))
 			name = "cdqe";
 	}
 	else if (target->i_mnemonic == CWD)
 	{
-		if (target->i_flags & OS_WORD_MASK)
+		if (AVL_OPSZ_IS_WORD(target->i_flags))
 			name = "cwd";
-		else if (target->i_flags & OS_DWORD_MASK)
+		else if (AVL_OPSZ_IS_DWORD(target->i_flags))
 			name = "cdq";
-		else if (target->i_flags & OS_QWORD_MASK)
+		else if (AVL_OPSZ_IS_QWORD(target->i_flags))
 			name = "cqo";
 	}
 	fprintf(where, "%s ", name);

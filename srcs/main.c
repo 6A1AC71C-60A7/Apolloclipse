@@ -226,12 +226,12 @@ int main(int ac, const char* av[])
 {
     err_t st = SUCCESS;
 
-    if (ac != 2)
-        return 1;
-
     AVL_instruction_t dest[INST_NB] = {};
 
 #ifdef TEST_FILE
+    if (ac != 2)
+        return 1;
+
     ubyte iraw[BUFFSIZE] = {};
 
     int fd = open(av[1], O_RDONLY);
@@ -240,7 +240,9 @@ int main(int ac, const char* av[])
 
     read(fd, iraw, BUFFSIZE);
 #else
-    const ubyte iraw[] = "\x62\xf1\xfc\x89\x5b\xca";
+    (void)av; (void)ac;
+
+    const ubyte iraw[] = "\xc4\xe3\x79\x32\xca\x69";
 #endif
 
     const ubyte* prt = iraw;
@@ -250,7 +252,7 @@ int main(int ac, const char* av[])
     //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
     for (uqword i = 0 ; i < INST_NB ; i++)
     {
-        if (i < INST_NB - 8 && is_endof_insts(&dest[i]))
+        if (i < (uqword)INST_NB - 8 && is_endof_insts(&dest[i]))
             break ;
         //fprint_info(stdout, &dest[i]);
         fprint_instruction(stdout, &dest[i]);
@@ -260,6 +262,18 @@ int main(int ac, const char* av[])
 #endif
     }
     //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
+
+    // AVL_instruction_t test = {};
+
+    // AVL_SET_OPSZ(test.i_flags, AVL_OPSZ_DQWORD);
+    // if (AVL_OPSZ_IS_QWORD(test.i_flags))
+    //     fprintf(stderr, "IS QWORD 1!\n");
+    // AVL_SET_OPSZ(test.i_flags, AVL_OPSZ_DWORD);
+    // if (AVL_OPSZ_IS_QWORD(test.i_flags))
+    //     fprintf(stderr, "IS QWORD 2!\n");
+    // else if AVL_OPSZ_IS_DWORD(test.i_flags)
+    //     fprintf(stderr, "IS DWORD!\n");
+
 
     return st;
 }
