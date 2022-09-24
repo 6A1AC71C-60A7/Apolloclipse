@@ -2422,12 +2422,12 @@ static void handle_exceptional_mnemonics(FILE* where, AVL_instruction_t* const t
 		}
 		else if (target->i_mnemonic == XRSTOR || target->i_mnemonic == XRSTORS || target->i_mnemonic == XSAVE || target->i_mnemonic == XSAVEC || target->i_mnemonic == XSAVES || target->i_mnemonic == FXSAVE || target->i_mnemonic == FXRSTOR)
 		{
-			if (target->i_flags & RP_REXW_MASK)
+			if (AVL_HAS_REXW_PFX(target->i_flags))
 				addon = "64";
 		}
 		else if (IS_FMA_MNEMONIC(target->i_mnemonic) || target->i_mnemonic == VGATHERDPS)
 		{
-			if (target->i_flags & RP_REXW_MASK)
+			if (AVL_HAS_REXW_PFX(target->i_flags))
 				addon = "d";
 			else
 				addon = "s";
@@ -2436,14 +2436,14 @@ static void handle_exceptional_mnemonics(FILE* where, AVL_instruction_t* const t
 		|| target->i_mnemonic == VPANDND || target->i_mnemonic == VPORD || target->i_mnemonic == VPXORD
 		|| target->i_mnemonic == VPSRAVD)
 		{
-			if (target->i_flags & RP_REXW_MASK)
+			if (AVL_HAS_REXW_PFX(target->i_flags))
 				addon = "q";
 			else
 				addon = "d";
 		}
-		else if (target->i_flags & OP_EVEX_MASK && (target->i_mnemonic == VMOVDQA || target->i_mnemonic == VMOVDQU))
+		else if (AVL_HAS_OP_EVEX_PFX(target->i_flags) && (target->i_mnemonic == VMOVDQA || target->i_mnemonic == VMOVDQU))
 		{
-			if (target->i_flags & RP_REXW_MASK)
+			if (AVL_HAS_REXW_PFX(target->i_flags))
 				addon = "64";
 			else
 				addon = "32";
@@ -2731,7 +2731,7 @@ static reg_t get_addressing_reg_offset(AVL_instruction_t* const inst)
 {
 	reg_t offset = AVL_OP_RAX;
 
-	if (inst->i_flags & OP_EVEX_MASK)
+	if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 	{
 		if ((inst->i_mnemonic == VGATHERDPS || inst->i_mnemonic == VGATHERQPD
 		|| inst->i_mnemonic == VGATHERQPS || inst->i_mnemonic == VPGATHERDD
@@ -2768,7 +2768,7 @@ static reg_t get_addressing_reg_offset(AVL_instruction_t* const inst)
 		if (inst->i_mnemonic == VGATHERDPS || inst->i_mnemonic == VPGATHERDD || inst->i_mnemonic == VPGATHERQD)
 		{
 			if ((inst->i_vp[2] ? VEXXOP_L_GET(inst->i_vp) : VEXXOP2_L_GET(inst->i_vp))
-			&& !(inst->i_mnemonic == VGATHERDPS && inst->i_flags & RP_REXW_MASK))
+			&& !(inst->i_mnemonic == VGATHERDPS && AVL_HAS_REXW_PFX(inst->i_flags)))
 			// vgatherpd always use [xmm]
 				offset = AVL_OP_YMM0;
 			else
@@ -2932,7 +2932,7 @@ static ubyte print_operand(FILE* where, AVL_instruction_t* const inst, reg_t reg
 __always_inline
 static ubyte print_merge_zero_avx512(FILE* where, AVL_instruction_t* const target)
 {
-	if (target->i_flags & OP_EVEX_MASK)
+	if (AVL_HAS_OP_EVEX_PFX(target->i_flags))
 	{
 		static const char* const regs_k[] = {
 			"k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
@@ -2968,7 +2968,7 @@ static ubyte print_operands(FILE* where, AVL_instruction_t* const target)
 __always_inline
 static void print_immediate(FILE* where, AVL_instruction_t* const target, ubyte has_operands)
 {
-	if (target->i_flags & OP_IMMEDIATE_MASK)
+	if (AVL_HAS_OP_IMM_PFX(target->i_flags))
     {
 		///TODO: This 'addon' is the size of the instruction !!!
 		if ((target->i_mnemonic >= JMP && target->i_mnemonic < RET) || target->i_mnemonic == XBEGIN)
@@ -3043,7 +3043,7 @@ static void	handle_exceptional_formats(FILE* where, AVL_instruction_t* const tar
 )
 
 #define IS_EXCEPTION_INST(x) ( \
-	((x)->i_mnemonic == OUT && ((x)->i_flags) & OP_IMMEDIATE_MASK) \
+	((x)->i_mnemonic == OUT && AVL_HAS_OP_IMM_PFX((x)->i_flags)) \
 	|| (x)->i_mnemonic == OUTS \
 	|| (x)->i_mnemonic == OUTSB \
 	|| (x)->i_mnemonic == ENTER \

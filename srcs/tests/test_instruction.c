@@ -14,7 +14,7 @@ static void test_instruction_prefixes(const ubyte *instruction_raw, AVL_instruct
     //     DEBUG("WARNING: bad format legacy prefixes\n");
     
     udword y = 0;
-    for (udword i = 1 ; i <= RP_REXW_MASK ; i <<= 1)
+    for (udword i = 1 ; i <= AVL_RP_REXW_MASK ; i <<= 1)
         DEBUG("[%u] -> [%x]\n", y++, data->i_flags & i);
     DEBUG(" *** END:  TEST PREFIX ***\n");
 }
@@ -49,10 +49,10 @@ void fprint_info(FILE* where, AVL_instruction_t* target)
     fprintf(where, "PREFIXES:\n - LOCK: %d\n - REPNX: %d\n - REPX: %d\n"
         " - FS: %d\n - GS: %d\n - NOBRANCH: %d\n - BRANCH: %d\n - OPERAND SZ: %d\n"
         " - ADDRESS SZ: %d\n - REX.B: %d\n - REX.X: %d\n - REX.R: %d\n - REX.W: %d\n - 0x66: %d\n- - -\n",
-        target->i_flags & LP_LOCK_MASK, target->i_flags & LP_LOCK_MASK, target->i_flags & LP_REPX_MASK, 
-        target->i_flags & LP_FS_MASK, target->i_flags & LP_GS_MASK, target->i_flags & LP_NOBRANCH_MASK, target->i_flags & LP_BRANCH_MASK,
-        target->i_flags & LP_OPSZ_MASK, target->i_flags & LP_ADDRSZ_MASK, target->i_flags & RP_REXB_MASK, target->i_flags & RP_REXX_MASK, 
-        target->i_flags & RP_REXR_MASK, target->i_flags & RP_REXW_MASK, target->i_flags & MP_0x66_MASK);
+        target->i_flags & AVL_LP_LOCK_MASK, target->i_flags & AVL_LP_LOCK_MASK, target->i_flags & AVL_LP_REPX_MASK, 
+        target->i_flags & AVL_LP_FS_MASK, target->i_flags & AVL_LP_GS_MASK, target->i_flags & AVL_LP_NOBRANCH_MASK, target->i_flags & AVL_LP_BRANCH_MASK,
+        target->i_flags & AVL_LP_OPSZ_MASK, target->i_flags & AVL_LP_ADDRSZ_MASK, target->i_flags & AVL_RP_REXB_MASK, target->i_flags & AVL_RP_REXX_MASK, 
+        target->i_flags & AVL_RP_REXR_MASK, target->i_flags & AVL_RP_REXW_MASK, target->i_flags & AVL_MP_0x66_MASK);
 
     fprintf(where, "MNEMONIC: [%d]\n- - -\n", target->i_mnemonic);
 

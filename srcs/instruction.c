@@ -62,7 +62,7 @@ static void get_rex_prefix(udword* const dest, const ubyte** iraw)
 	for (udword count = 0; count <= 3 ; count++)
 	{
 		if (**iraw & (1 << count))
-			*dest |= RP_REXB_MASK << count;
+			*dest |= AVL_RP_REXB_MASK << count;
 	}
 }
 
@@ -90,7 +90,7 @@ static void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 		{
 			if (lt_legacy_prefixes[prefix_it] == **iraw)
 			{
-				*dest |= LP_LOCK_MASK << prefix_it;
+				*dest |= AVL_LP_LOCK_MASK << prefix_it;
 				DEBUG("[DEBUG] FOUND PREFIX: %02X\n", **iraw);
 #ifndef LP_STOP_IF_REPEATED
 				found = 1;
@@ -111,7 +111,7 @@ static void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 #endif
 
 	///TODO: FIRST OF ALL TO FIX THIS REMOVE THE F2 AND F3 PREFIXES LIKE IS HAS BEEN DONE WITH 66 AND 67
-	DEBUG("[DEBUG][END] (**iraw)=[%02X] (%d) (%d)\n", **iraw, *dest & MP_0x66_MASK, *dest & MP_0xF2_MASK);
+	DEBUG("[DEBUG][END] (**iraw)=[%02X] (%d) (%d)\n", **iraw, *dest & AVL_MP_0x66_MASK, *dest & AVL_MP_0xF2_MASK);
 
 }
 
@@ -171,40 +171,40 @@ static void get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 	if (inst->i_vp[0] != 0xC5)
 	{
 		inst->i_vp[2] = *((*iraw)++);
-		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? RP_REXR_MASK : 0x0;
-		inst->i_flags |= !TEST_VEX_REX(X, inst->i_vp) ? RP_REXX_MASK : 0x0;
-		inst->i_flags |= !TEST_VEX_REX(B, inst->i_vp) ? RP_REXB_MASK : 0x0;
-		inst->i_flags |= TEST_VEX_REX(WE, inst->i_vp) ? RP_REXW_MASK : 0x0;
+		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? AVL_RP_REXR_MASK : 0x0;
+		inst->i_flags |= !TEST_VEX_REX(X, inst->i_vp) ? AVL_RP_REXX_MASK : 0x0;
+		inst->i_flags |= !TEST_VEX_REX(B, inst->i_vp) ? AVL_RP_REXB_MASK : 0x0;
+		inst->i_flags |= TEST_VEX_REX(WE, inst->i_vp) ? AVL_RP_REXW_MASK : 0x0;
 		opp = VEXXOP_PP_GET(inst->i_vp);
 	}
 	else
 	{
-		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? RP_REXR_MASK : 0x0;
+		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? AVL_RP_REXR_MASK : 0x0;
 		opp = VEXXOP2_PP_GET(inst->i_vp);
 	}
 
 	switch (opp)
 	{
 		case 0x1:
-			inst->i_flags |= MP_0x66_MASK;
+			inst->i_flags |= AVL_MP_0x66_MASK;
 			break ;
 		case 0x2:
-			inst->i_flags |= MP_0xF3_MASK;
+			inst->i_flags |= AVL_MP_0xF3_MASK;
 			break ;
 		case 0x3:
-			inst->i_flags |= MP_0xF2_MASK;
+			inst->i_flags |= AVL_MP_0xF2_MASK;
 			break ;
 	}
 
 		/// debug
 	DEBUG("OPP IS: %d\n", opp);
-	if (inst->i_flags & RP_REXR_MASK)
+	if (AVL_HAS_REXR_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.R\n");
-	if (inst->i_flags & RP_REXB_MASK)
+	if (AVL_HAS_REXB_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.B\n");
-	if (inst->i_flags & RP_REXX_MASK)
+	if (AVL_HAS_REXX_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.X\n");
-	if (inst->i_flags & RP_REXW_MASK)
+	if (AVL_HAS_REXW_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.W\n");
 }
 
@@ -212,36 +212,36 @@ __always_inline
 static void get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 {
 	(*iraw)++;
-	inst->i_flags |= OP_EVEX_MASK;
+	inst->i_flags |= AVL_OP_EVEX_MASK;
 
 	*(uword*)inst->i_vp = *((*(uword**)iraw)++);
 	inst->i_vp[2] = *((*iraw)++);
 
-	inst->i_flags |= !EVEX_R_GET(inst->i_vp) || !EVEX_R2_GET(inst->i_vp) ? RP_REXR_MASK : 0x0;
-	inst->i_flags |= !EVEX_X_GET(inst->i_vp) ? RP_REXX_MASK : 0x0;
-	inst->i_flags |= !EVEX_B_GET(inst->i_vp) ? RP_REXB_MASK : 0x0;
-	inst->i_flags |= EVEX_W_GET(inst->i_vp) ? RP_REXW_MASK : 0x0;
+	inst->i_flags |= !EVEX_R_GET(inst->i_vp) || !EVEX_R2_GET(inst->i_vp) ? AVL_RP_REXR_MASK : 0x0;
+	inst->i_flags |= !EVEX_X_GET(inst->i_vp) ? AVL_RP_REXX_MASK : 0x0;
+	inst->i_flags |= !EVEX_B_GET(inst->i_vp) ? AVL_RP_REXB_MASK : 0x0;
+	inst->i_flags |= EVEX_W_GET(inst->i_vp) ? AVL_RP_REXW_MASK : 0x0;
 
 	switch (EVEX_P_GET(inst->i_vp))
 	{
 		case 0x1:
-			inst->i_flags |= MP_0x66_MASK;
+			inst->i_flags |= AVL_MP_0x66_MASK;
 			break ;
 		case 0x2:
-			inst->i_flags |= MP_0xF3_MASK;
+			inst->i_flags |= AVL_MP_0xF3_MASK;
 			break ;
 		case 0x3:
-			inst->i_flags |= MP_0xF2_MASK;
+			inst->i_flags |= AVL_MP_0xF2_MASK;
 			break ;
 	}
 
-	if (inst->i_flags & RP_REXR_MASK)
+	if (AVL_HAS_REXR_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.R\n");
-	if (inst->i_flags & RP_REXB_MASK)
+	if (AVL_HAS_REXB_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.B\n");
-	if (inst->i_flags & RP_REXX_MASK)
+	if (AVL_HAS_REXX_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.X\n");
-	if (inst->i_flags & RP_REXW_MASK)
+	if (AVL_HAS_REXW_PFX(inst->i_flags))
 		DEBUG("-> VEX: HAS REX.W\n");
 }
 
@@ -380,7 +380,7 @@ static opfield_t	handle_x87_instructions(AVL_instruction_t* const inst, const ub
 __always_inline
 static void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix)
 {
-	if (prefix & MP_0xF3_MASK)
+	if (AVL_HAS_MP_0xF3_PFX(prefix))
 	{
 		if (opcode == 0x3A)
 			*found = (opfield_t){ .mnemonic = VPBROADCASTMW2D, .am1 = AM_V, .ot1 = AM_X, .am2 = AM_KRM,	.ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
@@ -439,32 +439,32 @@ static void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, 
 			switch (found->mnemonic)
 			{
 				case VPMOVM2B:
-					if (prefix & RP_REXW_MASK)
+					if (prefix & AVL_RP_REXW_MASK)
 						found->mnemonic = VPMOVM2W;
 					break ;
 
 				case VPMOVM2D:
-					if (prefix & RP_REXW_MASK)
+					if (prefix & AVL_RP_REXW_MASK)
 						found->mnemonic = VPMOVM2Q;
 					break ;
 
 				case VPTESTNMB:
-					if (prefix & RP_REXW_MASK)
+					if (prefix & AVL_RP_REXW_MASK)
 						found->mnemonic = VPTESTNMW;
 					break ;
 
 				case VPTESTNMD:
-					if (prefix & RP_REXW_MASK)
+					if (prefix & AVL_RP_REXW_MASK)
 						found->mnemonic = VPTESTNMQ;
 					break ;
 
 				case VPMOVB2M:
-					if (prefix & RP_REXW_MASK)
+					if (prefix & AVL_RP_REXW_MASK)
 						found->mnemonic = VPMOVW2M;
 					break ;
 
 				case VPMOVD2M:
-					if (prefix & RP_REXW_MASK)
+					if (prefix & AVL_RP_REXW_MASK)
 						found->mnemonic = VPMOVQ2M;
 					break ;
 		}
@@ -475,22 +475,22 @@ static void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, 
 __always_inline
 static void handle_evex_addons_0x0F_opmap(opfield_t* const found, ubyte opcode, udword prefix)
 {
-	if (prefix & MP_0x66_MASK)
+	if (AVL_HAS_MP_0x66_PFX(prefix))
 	{
 		if (opcode == 0x72)
 		{
 			// *found = (opfield_t){ .mnemonic = VPROLD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = AM_I, .ot3 = OT_B, .am4 = 0, .ot4 = 0, .symbol = 0 };
-			// if (prefix & RP_REXW_MASK)
+			// if (prefix & AVL_RP_REXW_MASK)
 			// 	found->mnemonic = VPROLQ;
 			// ///TODO: HANDLE HERE VPRORLD/Q TOOO !!!
 		}
 	}
-	else if (prefix & MP_0xF3_MASK)
+	else if (AVL_HAS_MP_0xF3_PFX(prefix))
 	{
 		// if (opcode == 0xE6)
 		// 	*found = (opfield_t){ .mnemonic = VCVTQQ2PD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
 	}
-	else if (!(prefix & MP_0xF2_MASK))
+	else if (!AVL_HAS_MP_0xF2_PFX(prefix))
 	{
 		if (opcode == 0x79)
 			*found = (opfield_t){ .mnemonic = VCVTPD2UDQ, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
@@ -499,7 +499,7 @@ static void handle_evex_addons_0x0F_opmap(opfield_t* const found, ubyte opcode, 
 		else if (opcode == 0x78)
 			*found = (opfield_t){ .mnemonic = VCVTTPD2UDQ, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
 
-		if (!(prefix & RP_REXW_MASK))
+		if (!AVL_HAS_REXW_PFX(prefix))
 		{
 			if (found->mnemonic == VCVTPD2UDQ)
 				found->mnemonic = VCVTPS2UDQ;
@@ -529,14 +529,14 @@ static void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode
 		goto ret;
 	else if (index == 3)
 		*found = (opfield_t){ .mnemonic = MODRM_EXT_GRP_17,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1A };
-	else if (prefix & MP_0x66_MASK && prefix & MP_0xF2_MASK)
+	else if (AVL_HAS_MP_0x66_PFX(prefix) && AVL_HAS_MP_0xF2_PFX(prefix))
 	{
 		if (index == 0)
 			*found = (opfield_t){ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_D,	.am2 = AM_E,	.ot2 = OT_B,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 		else if (index == 1)
 			*found = (opfield_t){ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_D,	.am2 = AM_E,	.ot2 = OT_W,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 	}
-	else if (prefix & MP_0xF2_MASK)
+	else if (AVL_HAS_MP_0xF2_PFX(prefix))
 	{
 		static const opfield_t arr[] = {
 			{ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_Y,	.am2 = AM_E,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -551,7 +551,7 @@ static void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode
 
 		*found = arr[index];
 	}
-	else if (prefix & MP_0xF3_MASK)
+	else if (AVL_HAS_MP_0xF3_PFX(prefix))
 	{
 		switch (index)
 		{
@@ -651,11 +651,11 @@ static void handle_ambigious_instructions_0x0F_opmap(opfield_t* const found, uby
 }
 
 #define IS_EVEX_COLISION_0x0F(x, p) ( \
-	(!((p) & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) && (x) == 0x79) \
-	/*|| ((p) & MP_0xF3_MASK && (x) == 0xE6)*/ \
-	|| (!((p) & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) && (x) == 0x5B) \
-	|| (!((p) & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) && (x) == 0x78) \
-	/*|| ((p) & MP_0x66_MASK && (x) == 0x72)*/ \
+	(!((p) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x79) \
+	/*|| ((p) & AVL_MP_0xF3_MASK && (x) == 0xE6)*/ \
+	|| (!((p) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x5B) \
+	|| (!((p) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x78) \
+	/*|| ((p) & AVL_MP_0x66_MASK && (x) == 0x72)*/ \
 )
 
 ///TODO: Change arguments and add an AVL_instruction_t instead
@@ -669,13 +669,13 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	{
 		const ubyte line = (opcode & 0xF0) >> 4;
 	
-		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, inst->i_flags & MP_0x66_MASK);
+		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, inst->i_flags & AVL_MP_0x66_MASK);
 
-		if (inst->i_flags & MP_0x66_MASK && !(line >= 0x9 && line <= 0xB))
+		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && !(line >= 0x9 && line <= 0xB))
 			scale = 1;
-		if (inst->i_flags & MP_0xF3_MASK)
+		if (AVL_HAS_MP_0xF3_PFX(inst->i_flags))
 			scale = 2;
-		if (inst->i_flags & MP_0xF2_MASK)
+		if (AVL_HAS_MP_0xF2_PFX(inst->i_flags))
 			scale = 3;
 
 		DEBUG("--> INDEX IS %"PRId64"\n", found->mnemonic + (0x76 * scale));
@@ -685,7 +685,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 		// Just overwrite for the moment
 
-		if (inst->i_flags & OP_EVEX_MASK)
+		if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 		{
 			switch (found->mnemonic)
 			{
@@ -722,27 +722,27 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case VCVTUDQ2PD:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VCVTUQQ2PD;
 					break ;
 
 				case VCVTUDQ2PS:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VCVTUQQ2PS;
 					break ;
 
 				case VCVTPD2UQQ:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VCVTPS2UQQ;
 					break ;
 
 				case VCVTTPD2QQ:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VCVTTPS2QQ;
 					break ;
 
 				case VCVTTPD2UQQ:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VCVTTPS2UQQ;
 					break ;
 
@@ -754,17 +754,17 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					// fall through
 				case VCVTTSD2USI:
 					// fall through
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->ot1 = OT_D;
 					break ;
 
 				case VPSRAD:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VPSRAQ;
 					break ;
 
 				case VCVTDQ2PD:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VCVTQQ2PD;
 					break ;
 
@@ -773,19 +773,19 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
-		if (inst->i_flags & (MP_0xF2_MASK | MP_0xF3_MASK))
+		if (inst->i_flags & (AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK))
 		{
 			if (opcode >= 0xF0 && opcode < 0xF8)
 				handle_rare_prefixes_0x38_opmap(found, opcode, inst->i_flags);
-			else if (inst->i_flags & OP_EVEX_MASK)
+			else if (inst->i_flags & AVL_OP_EVEX_MASK)
 				handle_evex_addons_0x38_opmap(found, opcode, inst->i_flags);
 		}
 		else
 		{
-			if (inst->i_flags & MP_0x66_MASK)
+			if (inst->i_flags & AVL_MP_0x66_MASK)
 			{
 				scale = 1;
-				if (inst->i_flags & OP_EVEX_MASK)
+				if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 				{
 					switch (opcode)
 					{
@@ -799,7 +799,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 						case 0x14:
 							*found = (opfield_t){ .mnemonic = VPRORVD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
-							if (inst->i_flags & RP_REXW_MASK)
+							if (AVL_HAS_REXW_PFX(inst->i_flags))
 								found->mnemonic = VPRORVQ;
 							no_overwrite = 1;
 							break ;
@@ -811,14 +811,14 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 						// case 0x1A:
 						// 	*found = (opfield_t){ .mnemonic = VBROADCASTF32X4,	.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_M,	.ot2 = OT_DQ,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_V };
-						// 	if (prefix & RP_REXW_MASK)
+						// 	if (prefix & AVL_RP_REXW_MASK)
 						// 		found->mnemonic = VBROADCASTF64X2;
 						// 	no_overwrite = 1;
 						// 	break ;
 
 						// case 0x1B:
 						// 	*found = (opfield_t){ .mnemonic = VBROADCASTF32X8,	.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_M,	.ot2 = OT_DQ,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
-						// 	if (prefix & RP_REXW_MASK)
+						// 	if (prefix & AVL_RP_REXW_MASK)
 						// 		found->mnemonic = VBROADCASTF64X4;
 						// 	no_overwrite = 1;
 						// 	break ;
@@ -839,7 +839,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 				*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * scale)];
 			DEBUG("[DEBUG INDEXING MAP 0x0F38] INDEX IS [%ld] (mnemonic='%d')\n", GET_MAP_INDEX(opcode) + (0x100 * scale), found->mnemonic);
 
-			if (inst->i_flags & OP_EVEX_MASK)
+			if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 			{
 				switch (found->mnemonic)
 				{	
@@ -850,7 +850,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VBROADCASTF128:
-						found->mnemonic = (inst->i_flags & RP_REXW_MASK) ? VBROADCASTF64X2 : VBROADCASTF32X4;
+						found->mnemonic = AVL_HAS_REXW_PFX(inst->i_flags) ? VBROADCASTF64X2 : VBROADCASTF32X4;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
 						// if (MODRM_MOD_GET(modrm) != 0b11)
@@ -858,7 +858,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VBROADCASTSD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!AVL_HAS_REXW_PFX(inst->i_flags))
 							found->mnemonic = VBROADCASTF32X2;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
@@ -867,7 +867,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VBROADCASTF32X8:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (AVL_HAS_REXW_PFX(inst->i_flags))
 							found->mnemonic = VBROADCASTF64X4;
 						if (EVEX_L2_GET(pvex))
 							found->ot1 = OT_DQQ;
@@ -876,7 +876,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VGATHERQPS:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VGATHERQPD;
 						else if (EVEX_L2_GET(pvex))
 						{
@@ -893,7 +893,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						// fall through
 					case VGATHERDPS:
 						// because strange swtich witout break "found->mnemonic == VGATHERDPS"
-						if (found->mnemonic == VGATHERDPS && inst->i_flags & RP_REXW_MASK)	
+						if (found->mnemonic == VGATHERDPS && inst->i_flags & AVL_RP_REXW_MASK)	
 							found->mnemonic = VGATHERDPD;
 						// fall through
 					case VGATHERQPD:
@@ -902,14 +902,14 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VPGATHERDD:
-						if (inst->i_flags & RP_REXW_MASK)	
+						if (inst->i_flags & AVL_RP_REXW_MASK)	
 							found->mnemonic = VPGATHERDQ;
 						///TODO: This is AM_H exception (can be handled diferently)
 						found->am3 = 0;
 						break ;
 
 					case VPGATHERQD:
-						if (inst->i_flags & RP_REXW_MASK)	
+						if (inst->i_flags & AVL_RP_REXW_MASK)	
 							found->mnemonic = VPGATHERQQ;
 						else
 						{
@@ -926,47 +926,47 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VSCATTERDPD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VSCATTERDPS;
 						break ;
 
 					case VSCATTERQPD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VSCATTERQPS;
 						break ;
 
 					case VPSCATTERDD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPSCATTERDQ;
 						break ;
 
 					case VPSCATTERQD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPSCATTERQQ;
 						break ;
 
 					case VGETEXPPD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VGETEXPPS;
 						break ;
 
 					case VGETEXPSD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VGETEXPSS;
 						break ;
 
 					case VPBLENDMB:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPBLENDMW;
 						break ;
 
 					case VPBLENDMD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPBLENDMQ;
 						break ;
 
 					case VPBROADCASTD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 						{
 							found->mnemonic = VPBROADCASTQ;
 							found->ot2 = OT_Q;
@@ -974,147 +974,147 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 						break ;
 
 					case VPCOMPRESSD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPCOMPRESSQ;
 						break ;
 					
 					case VPCONFLICTD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPCONFLICTQ;
 						break ;
 
 					case VPERMI2B:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPERMI2W;
 						break ;
 
 					case VPERMI2D:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPERMI2Q;
 						break ;
 
 					case VPERMI2PD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VPERMI2PS;
 						break ;
 
 					case VPERMT2B:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPERMT2W;
 						break ;
 
 					case VPERMT2D:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPERMT2Q;
 						break ;
 
 					case VPERMT2PD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VPERMT2PS;
 						break ;
 
 					case VPEXPANDD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPEXPANDQ;
 						break ;
 					
 					case VPLZCNTD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPLZCNTQ;
 						break ;
 
 					case VPROLVD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPROLVQ;
 						break ;
 
 					case VPTESTMB:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPTESTMW;
 						break ;
 
 					case VPTESTMD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPTESTMQ;
 						break ;
 
 					case VRCP14PD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VRCP14PS;
 						break ;
 
 					case VRCP14SD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VRCP14SS;
 						break ;
 
 					case VRSQRT14PD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VRSQRT14PS;
 						break ;
 
 					case VRSQRT14SD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VRSQRT14SS;
 						break ;
 
 					case VSCALEFPD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VSCALEFPS;
 						break ;
 
 					case VSCALEFSD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VSCALEFSS;
 						break ;
 
 					case VPMAXSD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPMAXSQ;
 						break ;
 
 					case VPMULLD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPMULLQ;
 						break ;
 
 					case VPMINUD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPMINUQ;
 						break ;
 
 					case VPMINSD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPMINSQ;
 						break ;
 
 					case VPMAXUD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPMAXUQ;
 						break ;
 
 					case VPERMB:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPERMW;
 						break ;
 
 					case VPERMPS:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPERMPD;
 						break ;
 
 					case VPERMD:
-						if (inst->i_flags & RP_REXW_MASK)
+						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VPERMQ;
 						break ;
 
 					case VBLENDMPD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VBLENDMPS;
 						break ;
 
 					case VEXPANDPD:
-						if (!(inst->i_flags & RP_REXW_MASK))
+						if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VEXPANDPS;
 						break ;
 				}
@@ -1127,14 +1127,14 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		/// Most of them are not checked because there's only
 		/// one ambigious instruction. I have to check them validation.
 
-		if (opcode == 0x0F && inst->i_flags & MP_0x66_MASK)
+		if (opcode == 0x0F && AVL_HAS_MP_0x66_PFX(inst->i_flags))
 			found->mnemonic = AMB_VPALIGNR_INDEX;
 		*found = lt_tree_byte_0x3A_ambigious_opmap[found->mnemonic];
 
 		///TODO: Handle ambigiousness otherway (create a single function)
 		/// Temporary solution (cause i doesn't know the amount and all  kinds of ambigiousness)
 
-		if (inst->i_flags & OP_EVEX_MASK)
+		if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 		{
 			switch (opcode)
 			{
@@ -1159,7 +1159,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case 0x18:
-					found->mnemonic = (inst->i_flags & RP_REXW_MASK) ? VINSERTF64X2 : VINSERTF32X4;
+					found->mnemonic = (inst->i_flags & AVL_RP_REXW_MASK) ? VINSERTF64X2 : VINSERTF32X4;
 					if (EVEX_L2_GET(pvex))
 					{
 						found->ot1 = OT_DQQ;
@@ -1168,7 +1168,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case 0x1A:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VINSERTF64X4;
 					found->ot1 = OT_DQQ;
 					found->ot2 = OT_DQQ;
@@ -1179,97 +1179,97 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					break ;
 
 				case 0x26:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VGETMANTPS;
 					break ;
 				
 				case 0x27:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 							found->mnemonic = VGETMANTSS;
 					break ;
 
 				case 0x3E:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VPCMPUW;
 					break ;
 
 				case 0x3F:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VPCMPW;
 					break ;
 
 				case 0x1E:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VPCMPUQ;
 					break ;
 
 				case 0x1F:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VPCMPQ;
 					break ;
 
 				case 0x25:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VPTERNLOGQ;
 					break ;
 
 				case 0x50:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VRANGEPS;
 					break ;
 
 				case 0x51:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VRANGESS;
 					break ;
 
 				case 0x56:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VREDUCEPS;
 					break ;
 
 				case 0x57:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VREDUCESS;
 					break ;
 
 				case 0x23:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VSHUFF64X2;
 					break ;
 
 				case 0x43:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VSHUFI64X2;
 					break ;
 
 				case 0x54:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VFIXUPIMMPS;
 					break ;
 				
 				case 0x55:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VFIXUPIMMSS;
 					break ;
 
 				case 0x66:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VFPCLASSPS;
 					break ;
 
 				case 0x67:
-					if (!(inst->i_flags & RP_REXW_MASK))
+					if (!(inst->i_flags & AVL_RP_REXW_MASK))
 						found->mnemonic = VFPCLASSSS;
 					break ;
 
 				case 0x03:
-					if (inst->i_flags & RP_REXW_MASK)
+					if (inst->i_flags & AVL_RP_REXW_MASK)
 						found->mnemonic = VALIGNQ;
 					break ;
 
 				// case 0x16:
-				// 	if (prefix & RP_REXW_MASK)
+				// 	if (prefix & AVL_RP_REXW_MASK)
 				// 		found->mnemonic = VPERMPD;
 				// 	break ;
 			}
@@ -1280,13 +1280,13 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 			if (opcode == 0x30 || opcode == 0x32)
 			{
-				//inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
-				AVL_SET_OPSZ(inst->i_flags, inst->i_flags & RP_REXW_MASK ? AVL_OPSZ_WORD : AVL_OPSZ_BYTE);
+				//inst->i_flags |= inst->i_flags & AVL_RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
+				AVL_SET_OPSZ(inst->i_flags, AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OPSZ_WORD : AVL_OPSZ_BYTE);
 			}
 			else if (opcode == 0x31 || opcode == 0x33)
 			{
-				//inst->i_flags |= inst->i_flags & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
-				AVL_SET_OPSZ(inst->i_flags, inst->i_flags & RP_REXW_MASK ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
+				//inst->i_flags |= inst->i_flags & AVL_RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+				AVL_SET_OPSZ(inst->i_flags, AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
 			}
 		}
 	}
@@ -1413,16 +1413,16 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	{
 		if (opcode == 0x90)
 		{
-			if ((inst->i_flags & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK)) == 0
-			&& inst->i_flags & (RP_REXB_MASK | RP_REXW_MASK))
+			if ((inst->i_flags & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) == 0
+			&& inst->i_flags & (AVL_RP_REXB_MASK | AVL_RP_REXW_MASK))
 				*found = (opfield_t){ .mnemonic = XCHG,	.am1 = DR_R8,	.ot1 = DRS_64,	.am2 = DR_RAX,	.ot2 = DRS_64,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
-			else if (inst->i_flags & MP_0xF3_MASK)
+			else if (AVL_HAS_MP_0xF3_PFX(inst->i_flags))
 				found->mnemonic = PAUSE;
-		}	
+		}
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
-		if (inst->i_flags & MP_0x66_MASK && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
+		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
 		{
 			switch (opcode)
 			{
@@ -1490,7 +1490,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
 	{
-		if (inst->i_flags & MP_0x66_MASK && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
+		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
 		{
 			switch (opcode)
 			{
@@ -1516,9 +1516,9 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 			}
 		}
 
-		if (opcode == 0x22 && inst->i_flags & RP_REXW_MASK)
+		if (opcode == 0x22 && AVL_HAS_REXW_PFX(inst->i_flags))
 			found->mnemonic = VPINSRQ;
-		else if (opcode == 0x16 && inst->i_flags & RP_REXW_MASK)
+		else if (opcode == 0x16 && AVL_HAS_REXW_PFX(inst->i_flags))
 			found->mnemonic = VPEXTRQ;
 
 	}
@@ -1526,7 +1526,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	{
 		if (MODRM_MOD_GET(inst->i_mod_rm) != 0b11)
 		{
-			if (inst->i_flags & MP_0x66_MASK)
+			if (AVL_HAS_MP_0x66_PFX(inst->i_flags))
 			{
 				if (opcode == 0xC4)
 				{
@@ -1542,7 +1542,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 					}
 				}
 			}
-			else if ((inst->i_flags & (MP_0x66_MASK | MP_0xF3_MASK | MP_0xF2_MASK)) == 0)
+			else if ((inst->i_flags & (AVL_MP_0x66_MASK | AVL_MP_0xF3_MASK | AVL_MP_0xF2_MASK)) == 0)
 			{
 				switch (opcode)
 				{
@@ -1577,7 +1577,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 			if (opcode == 0x6E || opcode == 0x7E)
 			{
 				
-				if (inst->i_flags & RP_REXW_MASK)
+				if (AVL_HAS_REXW_PFX(inst->i_flags))
 				{
 					if (inst->i_mnemonic == MOVD)
 						found->mnemonic = MOVQ;
@@ -1585,9 +1585,9 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 						found->mnemonic = VMOVQ;
 				}
 			}
-			else if (opcode >= 0x74 && opcode <= 0x76 && inst->i_flags & MP_0x66_MASK)
+			else if (opcode >= 0x74 && opcode <= 0x76 && inst->i_flags & AVL_MP_0x66_MASK)
 			{
-				if (inst->i_flags & OP_EVEX_MASK)
+				if (inst->i_flags & AVL_OP_EVEX_MASK)
 					found->am1 = AM_KR;
 			}
 		}
@@ -1623,7 +1623,7 @@ static ubyte	is_mnemonic_default_64_bits(AVL_instruction_t* const inst)
 #define IS_ONE_BYTE_OPCODE_MAP(x) (*(uword*)(x) == 0x0)
 #define IS_TWO_BYTE_OPCODE_MAP(x) (*(uword*)(x) == 0xF)
 #define IS_WORD_OVERWRITABLE_TWOBYTES_OPMAP(x) (((x) >= 0x9 && (x) <= 0xC) || (x) == 0x0 || (x) == 0x4)
-#define OS_RESET(x) ((x) &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
+//#define OS_RESET(x) ((x) &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK))
 #define IS_DEFAULT_REGISTER(x) ((x) >= 32)
 #define IS_TWO_BYTE_NONVEX_SIMD(x) (((x) >= 0x1 && (x) <= 0x2) || ((x) >= 0x5 && (x) <= 0x7) || (x) >= 0xC)
 
@@ -1633,7 +1633,7 @@ static ubyte	is_mnemonic_default_64_bits(AVL_instruction_t* const inst)
 #define IS_TWO_BYTE_NONVEX_SIMD_V2(x) !IS_EXCEPTION_NONVEX_NONSIMD(x) && ((GET_ROW(x) == 0x1 && GET_COLUMN(x) < 0x8) || GET_ROW(x) == 0x2 || (GET_ROW(x) >= 0x5 && GET_ROW(x) <= 0x7) || (GET_ROW(x) == 0xC && GET_COLUMN(x) < 0x8) || GET_ROW(x) > 0xC)
 
 #define IS_0x38_NONVEX_SIMD(x) (/*!(GET_ROW(x) == 0x8 && GET_COLUMN(x) <= 0x8) && */ GET_ROW(x) != 0xF)
-#define IS_0x3A_NONVEX_SIMD(x, p) (!((x) == 0x0F && !((p) & MP_0x66_MASK)) && !((x) == 0xF0 && (p) & MP_0xF2_MASK))
+#define IS_0x3A_NONVEX_SIMD(x, p) (!((x) == 0x0F && !((p) & AVL_MP_0x66_MASK)) && !((x) == 0xF0 && (p) & AVL_MP_0xF2_MASK))
 
 __always_inline
 static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found)
@@ -1641,7 +1641,7 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 	(void)found;
 
 	///TODO: REDO THIS WITHOUT TRIPLE RETURN 
-	if (dest->i_flags & OP_EVEX_MASK)
+	if (AVL_HAS_OP_EVEX_PFX(dest->i_flags))
 	{
 		if (EVEX_L2_GET(dest->i_vp))
 		{
@@ -1712,7 +1712,7 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 		// 	else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_3264(dest->mnemonic))
 		// 	{
 		// 		OS_RESET(*(udword*)dest->prefix);
-		// 		*(udword*)dest->prefix |= *(udword*)dest->prefix & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+		// 		*(udword*)dest->prefix |= *(udword*)dest->prefix & AVL_RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
 		// 	}
 		// }
 		// else
@@ -1724,7 +1724,7 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 		// 	else if (0 /* 16 bit exception */)
 		// 		*(udword*)dest->prefix |= OS_WORD_MASK;
 		// 	else if (0 /* 32 - 64 exception */)
-		// 		*(udword*)dest->prefix |= *(udword*)dest->prefix & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+		// 		*(udword*)dest->prefix |= *(udword*)dest->prefix & AVL_RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
 		// }
 
 		return ;
@@ -1769,13 +1769,13 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 
 	// if (*prefix & OS_DWORD_MASK)
 	// {
-		if (dest->i_flags & MP_0x66_MASK && !(dest->i_opcode[1] == 0x38 && ((dest->i_opcode[2] >> 4) & 0xF) == 0xF))
+		if (dest->i_flags & AVL_MP_0x66_MASK && !(dest->i_opcode[1] == 0x38 && ((dest->i_opcode[2] >> 4) & 0xF) == 0xF))
 		{
 			// OS_RESET(dest->i_flags);
 			// dest->i_flags |= OS_WORD_MASK;
 			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
 		}
-		else if (dest->i_flags & RP_REXW_MASK)
+		else if (AVL_HAS_REXW_PFX(dest->i_flags))
 		{
 			// OS_RESET(dest->i_flags);
 			// dest->i_flags |= OS_QWORD_MASK;
@@ -1820,7 +1820,7 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
 	}
 	/* More exceptions ... */
-	else if (dest->i_mnemonic == CMPXCHG8B && dest->i_flags & RP_REXW_MASK)
+	else if (dest->i_mnemonic == CMPXCHG8B && AVL_HAS_REXW_PFX(dest->i_flags))
 	{
 		dest->i_mnemonic = CMPXCHG16B;
 		// OS_RESET(dest->i_flags);
@@ -1828,7 +1828,7 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 		AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DQWORD);
 		found->ot1 = OT_DQ;
 	}
-	else if (dest->i_mnemonic == UMONITOR && !(dest->i_flags & LP_ADDRSZ_MASK))
+	else if (dest->i_mnemonic == UMONITOR && !AVL_HAS_LP_ADDRSZ_PFX(dest->i_flags))
 	{
 		// OS_RESET(dest->i_flags);
 		// dest->i_flags |= OS_QWORD_MASK;
@@ -1885,7 +1885,7 @@ static void		get_immediate(opfield_t opfield, AVL_instruction_t* const dest, con
 
 	///TODO: Not 100% sure but i think if is AM_L the immediate value is always 8-bits.
 
-	dest->i_flags |= OP_IMMEDIATE_MASK;
+	dest->i_flags |= AVL_OP_IMM_MASK;
 
 	DEBUG("[DEBUG][OT OF IMMEDIATE]: %d (**iraw='%X')\n", ot, **iraw);
 
@@ -1909,7 +1909,7 @@ static void		get_immediate(opfield_t opfield, AVL_instruction_t* const dest, con
 
 		default:
 		{
-			if (dest->i_flags & RP_REXW_MASK && IS_OT_UNRANGED(ot))
+			if (AVL_HAS_REXW_PFX(dest->i_flags) && IS_OT_UNRANGED(ot))
 				dest->i_imm = *((*(uqword**)iraw)++);
 			else
 			{
@@ -1988,7 +1988,7 @@ opcode_check:
 	// 	switch (**iraw)
 	// 	{
 	// 		// case 0x66:
-	// 		// 	*(udword*)dest->prefix |= MP_0x66_MASK;
+	// 		// 	*(udword*)dest->prefix |= AVL_MP_0x66_MASK;
 	// 		// 	break ;
 
 	// 		// case 0x67:
@@ -2003,11 +2003,11 @@ opcode_check:
 	// 		///SOLUTION: Check legacy prefixes (legacy_prefixes) before REX
 
 	// 		// case 0xF2:
-	// 		// 	*(udword*)dest->prefix |= MP_0xF2_MASK;
+	// 		// 	*(udword*)dest->prefix |= AVL_MP_0xF2_MASK;
 	// 		// 	break ;
 
 	// 		// case 0XF3:
-	// 		// 	*(udword*)dest->prefix |= MP_0xF3_MASK;
+	// 		// 	*(udword*)dest->prefix |= AVL_MP_0xF3_MASK;
 	// 		// 	break ;
 	// 	}
 	// 	skip_duplicated(iraw, 0xFF);
@@ -2037,7 +2037,7 @@ opcode_check:
 	}
 
 	///TODO: This is not an error for: mov WORD PTR [rsp + 880000], 42
-	// else if (*(udword*)dest->prefix & (MP_0x66_MASK | MP_0xF2_MASK | MP_0xF3_MASK))
+	// else if (*(udword*)dest->prefix & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK))
 	// {
 	// 	st = EINVOPCODE;
 	// 	goto error;
@@ -2068,7 +2068,7 @@ opcode_check:
 			if (0 && (st = err_handle_legacy_prefixes(&dest->i_flags)) != SUCCESS)
 				goto error;
 
-			DEBUG("[DEBUG] PREFIX AFTER: %d\n", dest->i_flags & MP_0xF2_MASK);
+			DEBUG("[DEBUG] PREFIX AFTER: %d\n", dest->i_flags & AVL_MP_0xF2_MASK);
 			DEBUG("[DEBUG] VALUE (**iraw) AFTER: %02X\n", **iraw);
 		}		
 	}
@@ -2093,7 +2093,7 @@ skip_prefix_check:
 		found = handle_x87_instructions(dest, iraw);
 	else
 	{
-		map = !dest->i_vp[0] ? get_map_legacy(dest) : get_map_vex(dest->i_vp, (dest->i_flags & OP_EVEX_MASK) != 0);
+		map = !dest->i_vp[0] ? get_map_legacy(dest) : get_map_vex(dest->i_vp, (dest->i_flags & AVL_OP_EVEX_MASK) != 0);
 
 		///TODO: Improve syntax using more defines for conditions
 
@@ -2119,9 +2119,9 @@ skip_prefix_check:
 				|| dest->i_opcode[2] == 0x47)
 				{
 					
-					if (dest->i_flags & RP_REXW_MASK)
+					if (AVL_HAS_REXW_PFX(dest->i_flags))
 					{
-						if (dest->i_flags & MP_0x66_MASK)
+						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
 						{
 							//dest->i_flags |= OS_DWORD_MASK;
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
@@ -2134,7 +2134,7 @@ skip_prefix_check:
 					}
 					else
 					{
-						if (dest->i_flags & MP_0x66_MASK)
+						if (dest->i_flags & AVL_MP_0x66_MASK)
 						{
 							//dest->i_flags |= OS_BYTE_MASK;
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_BYTE);
@@ -2148,9 +2148,9 @@ skip_prefix_check:
 				}
 				else if (dest->i_opcode[2] == 0x92 || dest->i_opcode[2] == 0x93)
 				{
-					if (dest->i_flags & MP_0xF2_MASK)
+					if (AVL_HAS_MP_0xF2_PFX(dest->i_flags))
 					{
-						if (dest->i_flags & RP_REXW_MASK)
+						if (AVL_HAS_REXW_PFX(dest->i_flags))
 						{
 							//dest->i_flags |= OS_QWORD_MASK;
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
@@ -2163,7 +2163,7 @@ skip_prefix_check:
 					}
 					else
 					{
-						if (dest->i_flags & MP_0x66_MASK)
+						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
 						{
 							//dest->i_flags |= OS_BYTE_MASK;
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_BYTE);
@@ -2177,12 +2177,12 @@ skip_prefix_check:
 				}
 				else if (dest->i_opcode[2] == 0x4B)
 				{
-					if (dest->i_flags & RP_REXW_MASK)
+					if (AVL_HAS_REXW_PFX(dest->i_flags))
 					{
 						//dest->i_flags |= OS_QWORD_MASK;
 						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
 					}
-					else if (dest->i_flags & MP_0x66_MASK)
+					else if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
 					{
 						//dest->i_flags |= OS_WORD_MASK;
 						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
@@ -2203,7 +2203,7 @@ skip_prefix_check:
 		
 		/* This is because AVX-512 EVEX instructions use the same opcode than other
 			opcodes without EVEX prefix (within 0x0F opcode map) */
-		else if (map == lt_two_byte_opmap && dest->i_flags & OP_EVEX_MASK && IS_EVEX_COLISION_0x0F(dest->i_opcode[2], dest->i_flags))
+		else if (map == lt_two_byte_opmap && AVL_HAS_OP_EVEX_PFX(dest->i_flags) && IS_EVEX_COLISION_0x0F(dest->i_opcode[2], dest->i_flags))
 			handle_evex_addons_0x0F_opmap(&found, dest->i_opcode[2], dest->i_flags);
 		else if (found.mnemonic == 0)
 			found = map[GET_MAP_INDEX(dest->i_opcode[2])];

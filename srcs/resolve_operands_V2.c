@@ -344,8 +344,8 @@ static reg_t	get_vector(uqword index, ubyte ot, udword flags)
 	|| (x) == VCOMISD \
 	|| (x) == VUCOMISD \
 	|| (x) == VMOVDDUP \
-	/*|| ((x) == PSUBQ && !(p & MP_0x66_MASK))*/ \
-	/*|| ((x) == PMULUDQ && !(p & MP_0x66_MASK))*/\
+	/*|| ((x) == PSUBQ && !(p & AVL_MP_0x66_MASK))*/ \
+	/*|| ((x) == PMULUDQ && !(p & AVL_MP_0x66_MASK))*/\
 	|| (x) == VCVTSD2SI \
 	|| (x) == VCVTTSD2SI \
 	|| (x) == VCVTPS2PD \
@@ -415,7 +415,7 @@ static reg_t	get_vector(uqword index, ubyte ot, udword flags)
 	|| (x) == VRSQRTSS \
 	|| (x) == VMAXSS \
 	|| (x) == VMINSS \
-	|| ((x) == VCMPSS /*&& !((p) & RP_REXW_MASK)*/) \
+	|| ((x) == VCMPSS /*&& !((p) & AVL_RP_REXW_MASK)*/) \
 	|| (x) == VCOMISS \
 	|| (x) == VUCOMISS \
 	|| (x) == VCVTSS2SI \
@@ -454,7 +454,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
     ubyte vex_vvvv;
 
-    if (inst->i_flags & OP_EVEX_MASK)
+    if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
         vex_vvvv = EVEX_VVVVV_EXTENDTED_GET(inst->i_vp);
     else
         vex_vvvv = (inst->i_vp[2] == 0 ? ~VEXXOP2_VVVV_GET(inst->i_vp) : ~VEXXOP_VVVV_GET(inst->i_vp)) & 0xF;
@@ -488,20 +488,20 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 			{
 				udword p = inst->i_flags;
 
-				if ((inst->i_mnemonic == VCVTSI2SS || inst->i_mnemonic == MOVD || inst->i_mnemonic == VMOVD || inst->i_mnemonic == VCVTSI2SD || inst->i_mnemonic == VPINSRD || inst->i_mnemonic == VPEXTRD) && !(p & RP_REXW_MASK))
+				if ((inst->i_mnemonic == VCVTSI2SS || inst->i_mnemonic == MOVD || inst->i_mnemonic == VMOVD || inst->i_mnemonic == VCVTSI2SD || inst->i_mnemonic == VPINSRD || inst->i_mnemonic == VPEXTRD) && !AVL_HAS_REXW_PFX(p))
 				{
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);	
 					// p |= OS_DWORD_MASK;
 					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
-				else if (p & OP_EVEX_MASK)
+				else if (AVL_HAS_OP_EVEX_PFX(p))
 				{
 					if (inst->i_mnemonic == VCVTUSI2SD || inst->i_mnemonic == VCVTUSI2SS)
 					{
 						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
-						// p |= p & RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+						// p |= p & AVL_RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
 
-						AVL_SET_OPSZ(p, p & RP_REXW_MASK ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
+						AVL_SET_OPSZ(p, AVL_HAS_REXW_PFX(p) ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
 					}
 				}
 
@@ -520,7 +520,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 			{
 				udword p = inst->i_flags;
 
-				if ((inst->i_mnemonic == VCVTSS2SI || inst->i_mnemonic == VCVTTSS2SI || inst->i_mnemonic == VPEXTRW || inst->i_mnemonic == VCVTSD2SI || inst->i_mnemonic == VCVTTSD2SI || inst->i_mnemonic == VMOVMSKPS || inst->i_mnemonic == VMOVMSKPD) && !(p & RP_REXW_MASK))
+				if ((inst->i_mnemonic == VCVTSS2SI || inst->i_mnemonic == VCVTTSS2SI || inst->i_mnemonic == VPEXTRW || inst->i_mnemonic == VCVTSD2SI || inst->i_mnemonic == VCVTTSD2SI || inst->i_mnemonic == VMOVMSKPS || inst->i_mnemonic == VMOVMSKPD) && !(p & AVL_RP_REXW_MASK))
 				{
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_DWORD_MASK;
@@ -568,7 +568,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 
-				else if (inst->i_flags & OP_EVEX_MASK)
+				else if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 				{
 					if (!EVEX_L_GET(inst->i_vp) && !EVEX_L2_GET(inst->i_vp) && inst->i_mnemonic == VSCATTERQPS)
 					{
@@ -613,7 +613,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 					AVL_SET_OPSZ(p, AVL_OPSZ_WORD);
 				}
-				else if (inst->i_mnemonic == VPINSRW && !(p & RP_REXW_MASK))
+				else if (inst->i_mnemonic == VPINSRW && !AVL_HAS_REXW_PFX(p))
 				{
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_DWORD_MASK;
@@ -648,7 +648,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 					AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 				}
-				else if (p & OP_EVEX_MASK)
+				else if (AVL_HAS_OP_EVEX_PFX(p))
 				{
 					if (EVEX_L_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPD2UDQ || inst->i_mnemonic == VCVTTPD2UDQ || inst->i_mnemonic == VCVTUQQ2PS
 					|| inst->i_mnemonic == VPSCATTERQD || inst->i_mnemonic == VSCATTERQPS || inst->i_mnemonic == VCVTQQ2PS))
@@ -681,7 +681,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 				{
 					udword p = inst->i_flags;
 
-					if (!(p & OP_EVEX_MASK))
+					if (!AVL_HAS_OP_EVEX_PFX(p))
 					{
 						if ((inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTDQ2PD || inst->i_mnemonic == VCVTPH2PS
 						|| inst->i_mnemonic == VCVTPS2PH || inst->i_mnemonic == VPSLLW || inst->i_mnemonic == VPSLLD
@@ -747,9 +747,9 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_16(inst->i_mnemonic))
 							*dest = AVL_OP_MEM16;
 						else if (IS_OSMEMEXTENTED_EXCEPTION_NONVEC_8(inst->i_mnemonic))
-							*dest = inst->i_flags & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
+							*dest = AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OP_MEM64 : AVL_OP_MEM32;
 					}
-					else if (inst->i_flags & OP_EVEX_MASK)
+					else if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 					{
 						if (EVEX_L2_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTUDQ2PD
 						|| inst->i_mnemonic == VCVTDQ2PD || inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTPS2UQQ
@@ -828,9 +828,9 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						else if (0 /* 16 bit exception */)
 							*dest = AVL_OP_MEM16;
 						else if (0 /* 32 - 64 exception */)
-							*dest = inst->i_flags & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
+							*dest = AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OP_MEM64 : AVL_OP_MEM32;
 						else if (inst->i_mnemonic == VGATHERDPS)
-							*dest = inst->i_flags & RP_REXW_MASK ? AVL_OP_MEM64 : AVL_OP_MEM32;
+							*dest = AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OP_MEM64 : AVL_OP_MEM32;
 					}
 				}
 				break ;
@@ -911,7 +911,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 			if (IS_AMBIGIOUS(ot))
 			{
-				if (inst->i_flags & RP_REXB_MASK)
+				if (AVL_HAS_REXB_PFX(inst->i_flags))
                     *dest += 0x8;
         		*skip = 0x1;
 			}
@@ -957,7 +957,7 @@ void	resolve_operands_v2(AVL_instruction_t* const dest, opfield_t instruction)
         resolve_operand_v2(dest, regs[i], ams[attr_index], ots[attr_index], &skip);
 
         /* Addressing Mode H ((E)VEX.VVVV) is ignored for instructions with no (E)VEX prefix. */
-        if (ams[attr_index] == AM_H && !((dest->i_flags & OP_EVEX_MASK /*&& !IS_EVEX_AMH_EXCEPTION(dest)*/)|| (dest->i_vp[0] && !IS_VEX_AMH_EXCEPTION(dest))))
+        if (ams[attr_index] == AM_H && !((AVL_HAS_OP_EVEX_PFX(dest->i_flags) /*&& !IS_EVEX_AMH_EXCEPTION(dest)*/)|| (dest->i_vp[0] && !IS_VEX_AMH_EXCEPTION(dest))))
             i--;
 
         attr_index += skip + 0x1;

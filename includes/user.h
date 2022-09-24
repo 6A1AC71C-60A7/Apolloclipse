@@ -43,7 +43,7 @@
 */
 
 /// This 1-bit value is an extension to the MODRM.rm field or the SIB.base field
-#define AVL_RP_REXB_MASK (uint32_t)(AVL_HAS_LP_ADDRSZ_PFX << 0x1)
+#define AVL_RP_REXB_MASK (uint32_t)(AVL_LP_ADDRSZ_MASK << 0x1)
 /// This 1-bit value is an extension to the SIB.index field
 #define AVL_RP_REXX_MASK (uint32_t)(AVL_RP_REXB_MASK << 0x1)
 /// This 1-bit value is an extension to the MODRM.reg field
@@ -62,9 +62,13 @@
 
 ///NOTE: AVL_LP_OPSZ_MASK which is 0x66 might also be a Mandatory Prefix
 ///TODO: Same for 0xF2 and 0xF3 ...
-#define AVL_MP_0xF2_MASK (uint32_t)(AVL_RP_REXW_MASK << 0x1)
-#define AVL_MP_0xF3_MASK (uint32_t)(AVL_MP_0xF2_MASK << 0x1)
+#define AVL_MP_0x66_MASK AVL_LP_OPSZ_MASK
+#define AVL_MP_0x67_MASK AVL_LP_ADDRSZ_MASK
+#define AVL_MP_0xF2_MASK AVL_LP_REPNX_MASK
+#define AVL_MP_0xF3_MASK AVL_LP_REPX_MASK
 
+#define AVL_HAS_MP_0x66_PFX(x) !!((x) & AVL_MP_0x66_MASK)
+#define AVL_HAS_MP_0x67_PFX(x) !!((x) & AVL_MP_0x67_MASK)
 #define AVL_HAS_MP_0xF2_PFX(x) !!((x) & AVL_MP_0xF2_MASK)
 #define AVL_HAS_MP_0xF3_PFX(x) !!((x) & AVL_MP_0xF3_MASK)
 
@@ -72,7 +76,7 @@
 ** Optional prefixes (immediate value and EVEX prefix)
 */
 
-#define AVL_OP_IMM_MASK (uint32_t)(AVL_HAS_MP_0xF3_PFX << 0x1)
+#define AVL_OP_IMM_MASK (uint32_t)(AVL_RP_REXW_MASK << 0x1)
 #define AVL_OP_EVEX_MASK (uint32_t)(AVL_OP_IMM_MASK << 0x1)
 
 #define AVL_HAS_OP_IMM_PFX(x) !!((x) & AVL_OP_IMM_MASK)
