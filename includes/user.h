@@ -151,7 +151,7 @@
 ** TODO: NAME OF SECTION
 */
 
-#define AVL_GET_EVEX_VVVV(evex) (uint8_t)(((!(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(v)) << 0x4) | ((*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vvvv)))
+#define AVL_GET_EVEX_VVVV(evex) (uint8_t)(((!(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(v)) << 0x4) | (~(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vvvv) & 0xF))
 #define AVL_GET_EVEX_LL(evex) (uint8_t)((((*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vlen2)) << 0x1) | ((*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vlen)))
 
 #define AVL_GET_MODRM_MOD(modrm) (uint8_t)(((modrm) >> 0x6) & 0x3)

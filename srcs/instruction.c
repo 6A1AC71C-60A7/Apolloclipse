@@ -170,17 +170,29 @@ static void get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 
 	if (inst->i_vp[0] != 0xC5)
 	{
+		AVL_vex_t*	vp = (AVL_vex_t*)inst->i_vp;
+
 		inst->i_vp[2] = *((*iraw)++);
-		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? AVL_RP_REXR_MASK : 0x0;
-		inst->i_flags |= !TEST_VEX_REX(X, inst->i_vp) ? AVL_RP_REXX_MASK : 0x0;
-		inst->i_flags |= !TEST_VEX_REX(B, inst->i_vp) ? AVL_RP_REXB_MASK : 0x0;
-		inst->i_flags |= TEST_VEX_REX(WE, inst->i_vp) ? AVL_RP_REXW_MASK : 0x0;
-		opp = VEXXOP_PP_GET(inst->i_vp);
+
+		if (!vp->vx_rexr)
+			inst->i_flags |= AVL_RP_REXR_MASK;
+		if (!vp->vx_rexx)
+			inst->i_flags |= AVL_RP_REXX_MASK;
+		if (!vp->vx_rexb)
+			inst->i_flags |= AVL_RP_REXB_MASK;
+		if (vp->vx_rexw)
+			inst->i_flags |= AVL_RP_REXW_MASK;
+
+		opp = vp->vx_prefix;
 	}
 	else
 	{
-		inst->i_flags |= !TEST_VEX_REX(R, inst->i_vp) ? AVL_RP_REXR_MASK : 0x0;
-		opp = VEXXOP2_PP_GET(inst->i_vp);
+		AVL_vex2_t*	vp2 = (AVL_vex2_t*)inst->i_vp;
+
+		if (!vp2->vx2_rexr)
+			inst->i_flags |= AVL_RP_REXR_MASK;
+
+		opp = vp2->vx2_prefix;
 	}
 
 	switch (opp)
@@ -214,15 +226,21 @@ static void get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 	(*iraw)++;
 	inst->i_flags |= AVL_OP_EVEX_MASK;
 
+	AVL_evex_t* evp = (AVL_evex_t*)inst->i_vp;
+
 	*(uword*)inst->i_vp = *((*(uword**)iraw)++);
 	inst->i_vp[2] = *((*iraw)++);
 
-	inst->i_flags |= !EVEX_R_GET(inst->i_vp) || !EVEX_R2_GET(inst->i_vp) ? AVL_RP_REXR_MASK : 0x0;
-	inst->i_flags |= !EVEX_X_GET(inst->i_vp) ? AVL_RP_REXX_MASK : 0x0;
-	inst->i_flags |= !EVEX_B_GET(inst->i_vp) ? AVL_RP_REXB_MASK : 0x0;
-	inst->i_flags |= EVEX_W_GET(inst->i_vp) ? AVL_RP_REXW_MASK : 0x0;
+	if (!evp->evx_rexr || !evp->evx_rexr2)
+		inst->i_flags |= AVL_RP_REXR_MASK;
+	if (!evp->evx_rexx)
+		inst->i_flags |= AVL_RP_REXX_MASK;
+	if (!evp->evx_rexb)
+		inst->i_flags |= AVL_RP_REXB_MASK;
+	if (evp->evx_rexw)
+		inst->i_flags |= AVL_RP_REXW_MASK;
 
-	switch (EVEX_P_GET(inst->i_vp))
+	switch (evp->evx_prefix)
 	{
 		case 0x1:
 			inst->i_flags |= AVL_MP_0x66_MASK;
@@ -257,7 +275,7 @@ static const opfield_t* get_map_vex(ubyte* const vex, ubyte isevex)
 		return lt_two_byte_opmap;
 	}
 
-	const ubyte mmmmm = isevex ? EVEX_MAP_GET(vex) : VEXXOP_MAP_SELECT_GET(vex);
+	const ubyte mmmmm = isevex ? ((AVL_evex_t*)vex)->evx_opmap : ((AVL_vex_t*)vex)->vx_opmap;
 	const opfield_t* map;
 
 	DEBUG("VEX MAP SELECT FIELD IS: %d\n", mmmmm);
@@ -327,7 +345,7 @@ static opfield_t	handle_x87_instructions(AVL_instruction_t* const inst, const ub
 	DEBUG("DEBUG x87: MODRM IS 0x%02X\n", inst->i_mod_rm);
 
 	/* Documentation's map starts at 0xC0 (fields from 0x0 to 0x0 are zeroed), so I've stripped those in mine */
-	map_index = inst->i_mod_rm > 0xBF ? GET_MAP_INDEX(inst->i_mod_rm) - 0XC0 : MODRM_REG_GET(inst->i_mod_rm);
+	map_index = inst->i_mod_rm > 0xBF ? GET_MAP_INDEX(inst->i_mod_rm) - 0XC0 : AVL_GET_MODRM_REG(inst);
 
 	switch (inst->i_opcode[2])
 	{
@@ -851,7 +869,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 					case VBROADCASTF128:
 						found->mnemonic = AVL_HAS_REXW_PFX(inst->i_flags) ? VBROADCASTF64X2 : VBROADCASTF32X4;
-						if (EVEX_L2_GET(pvex))
+						if (((AVL_evex_t*)pvex)->evx_vlen2)
 							found->ot1 = OT_DQQ;
 						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
@@ -860,7 +878,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					case VBROADCASTSD:
 						if (!AVL_HAS_REXW_PFX(inst->i_flags))
 							found->mnemonic = VBROADCASTF32X2;
-						if (EVEX_L2_GET(pvex))
+						if (((AVL_evex_t*)pvex)->evx_vlen2)
 							found->ot1 = OT_DQQ;
 						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
@@ -869,7 +887,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					case VBROADCASTF32X8:
 						if (AVL_HAS_REXW_PFX(inst->i_flags))
 							found->mnemonic = VBROADCASTF64X4;
-						if (EVEX_L2_GET(pvex))
+						if (((AVL_evex_t*)pvex)->evx_vlen2)
 							found->ot1 = OT_DQQ;
 						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
@@ -878,12 +896,12 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					case VGATHERQPS:
 						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VGATHERQPD;
-						else if (EVEX_L2_GET(pvex))
+						else if (((AVL_evex_t*)pvex)->evx_vlen2)
 						{
 							found->ot1 = OT_QQ;
 							found->ot2 = OT_QQ;
 						}
-						else if (EVEX_L_GET(pvex))
+						else if (((AVL_evex_t*)pvex)->evx_vlen)
 						{
 							found->ot1 = OT_DQ;
 							found->ot2 = OT_DQ;
@@ -913,7 +931,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 							found->mnemonic = VPGATHERQQ;
 						else
 						{
-							if (!EVEX_L_GET(pvex) && !EVEX_L2_GET(pvex))
+							if (!((AVL_evex_t*)pvex)->evx_vlen && !((AVL_evex_t*)pvex)->evx_vlen2)
 								found->ot2 = OT_Q;
 							else
 							{
@@ -1160,7 +1178,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 				case 0x18:
 					found->mnemonic = (inst->i_flags & AVL_RP_REXW_MASK) ? VINSERTF64X2 : VINSERTF32X4;
-					if (EVEX_L2_GET(pvex))
+					if (((AVL_evex_t*)pvex)->evx_vlen2)
 					{
 						found->ot1 = OT_DQQ;
 						found->ot2 = OT_DQQ;
@@ -1564,7 +1582,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 					case 0x77:
 						if (inst->i_vp[0])
 						{
-							if (inst->i_vp[2] ? VEXXOP_L_GET(inst->i_vp) : VEXXOP2_L_GET(inst->i_vp))
+							if (inst->i_vp[2] ? ((AVL_vex_t*)inst->i_vp)->vx_vlen : ((AVL_vex2_t*)inst->i_vp)->vx2_vlen)
 								found->mnemonic = VZEROALL;
 							else
 								found->mnemonic = VZEROUPPER;
@@ -1643,11 +1661,11 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 	///TODO: REDO THIS WITHOUT TRIPLE RETURN 
 	if (AVL_HAS_OP_EVEX_PFX(dest->i_flags))
 	{
-		if (EVEX_L2_GET(dest->i_vp))
+		if (((AVL_evex_t*)dest->i_vp)->evx_vlen2)
 		{
 			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DQQWORD);
 		}
-		else if (EVEX_L_GET(dest->i_vp))
+		else if (((AVL_evex_t*)dest->i_vp)->evx_vlen)
 		{
 			AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QQWORD);
 		}
@@ -1659,7 +1677,7 @@ static void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 	}
 	else if (dest->i_vp[0])
 	{
-		const ubyte is256os = dest->i_vp[2] ? VEXXOP_L_GET(dest->i_vp) : VEXXOP2_L_GET(dest->i_vp);
+		const ubyte is256os = dest->i_vp[2] ? ((AVL_vex_t*)dest->i_vp)->vx_vlen : ((AVL_vex2_t*)dest->i_vp)->vx2_vlen;
 		//dest->i_flags |= is256os ? OS_QQWORD_MASK : OS_DQWORD_MASK;
 		AVL_SET_OPSZ(dest->i_flags, is256os ? AVL_OPSZ_QQWORD : AVL_OPSZ_DQWORD);
 		return ;

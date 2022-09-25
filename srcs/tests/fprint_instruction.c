@@ -2740,9 +2740,9 @@ static reg_t get_addressing_reg_offset(AVL_instruction_t* const inst)
 		|| inst->i_mnemonic == VSCATTERDPS || inst->i_mnemonic == VSCATTERQPS
 		|| inst->i_mnemonic == VSCATTERQPD))
 		{
-			if (EVEX_L2_GET(inst->i_vp))
+			if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 				offset = AVL_OP_ZMM0;
-			else if (EVEX_L_GET(inst->i_vp))
+			else if (((AVL_evex_t*)inst->i_vp)->evx_vlen)
 				offset = AVL_OP_YMM0;
 			else
 				offset = AVL_OP_XMM0;
@@ -2750,14 +2750,14 @@ static reg_t get_addressing_reg_offset(AVL_instruction_t* const inst)
 		else if (inst->i_mnemonic == VGATHERDPD || inst->i_mnemonic == VPGATHERDQ
 		|| inst->i_mnemonic == VPSCATTERDQ || inst->i_mnemonic == VSCATTERDPD)
 		{
-			if (EVEX_L2_GET(inst->i_vp))
+			if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 				offset = AVL_OP_YMM0;
 			else
 				offset = AVL_OP_XMM0;
 		}
 		else if (inst->i_mnemonic == VPGATHERQD)
 		{
-			if (!EVEX_L2_GET(inst->i_vp) && !EVEX_L_GET(inst->i_vp))
+			if (!((AVL_evex_t*)inst->i_vp)->evx_vlen2 && !((AVL_evex_t*)inst->i_vp)->evx_vlen)
 				offset = AVL_OP_XMM0;
 			else
 				offset = AVL_OP_ZMM0;
@@ -2767,7 +2767,7 @@ static reg_t get_addressing_reg_offset(AVL_instruction_t* const inst)
 	{
 		if (inst->i_mnemonic == VGATHERDPS || inst->i_mnemonic == VPGATHERDD || inst->i_mnemonic == VPGATHERQD)
 		{
-			if ((inst->i_vp[2] ? VEXXOP_L_GET(inst->i_vp) : VEXXOP2_L_GET(inst->i_vp))
+			if ((inst->i_vp[2] ? ((AVL_vex_t*)inst->i_vp)->vx_vlen : ((AVL_vex2_t*)inst->i_vp)->vx2_vlen)
 			&& !(inst->i_mnemonic == VGATHERDPS && AVL_HAS_REXW_PFX(inst->i_flags)))
 			// vgatherpd always use [xmm]
 				offset = AVL_OP_YMM0;
@@ -2938,12 +2938,12 @@ static ubyte print_merge_zero_avx512(FILE* where, AVL_instruction_t* const targe
 			"k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
 		};
 
-		ubyte kindex = EVEX_K_GET(target->i_vp);
+		ubyte kindex = ((AVL_evex_t*)target->i_vp)->evx_mask;
 		if (kindex /* && HAS_NO_KMASK_EXCEPTION(target->mnemonic) */)
 			fprintf(where, " {%s}", regs_k[kindex]);
 
 		
-		if (EVEX_Z_GET(target->i_vp))
+		if (((AVL_evex_t*)target->i_vp)->evx_zero)
 			fprintf(where, " {z}");
 	}
 

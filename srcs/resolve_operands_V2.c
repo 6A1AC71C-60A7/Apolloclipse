@@ -455,9 +455,9 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
     ubyte vex_vvvv;
 
     if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
-        vex_vvvv = EVEX_VVVVV_EXTENDTED_GET(inst->i_vp);
+        vex_vvvv = AVL_GET_EVEX_VVVV(inst->i_vp);
     else
-        vex_vvvv = (inst->i_vp[2] == 0 ? ~VEXXOP2_VVVV_GET(inst->i_vp) : ~VEXXOP_VVVV_GET(inst->i_vp)) & 0xF;
+        vex_vvvv = (inst->i_vp[2] == 0 ? ~((AVL_vex2_t*)inst->i_vp)->vx2_vvvv : ~((AVL_vex_t*)inst->i_vp)->vx_vvvv) & 0xF;
 
     DEBUG("MODRM BYTE: 0x%02X\n", inst->i_mod_rm);
     DEBUG("MODRM REG: %d\n", modrm_reg);
@@ -570,7 +570,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 				else if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 				{
-					if (!EVEX_L_GET(inst->i_vp) && !EVEX_L2_GET(inst->i_vp) && inst->i_mnemonic == VSCATTERQPS)
+					if (!((AVL_evex_t*)inst->i_vp)->evx_vlen && !((AVL_evex_t*)inst->i_vp)->evx_vlen2 && inst->i_mnemonic == VSCATTERQPS)
 					{
 						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 						// p |= OS_QWORD_MASK;
@@ -650,7 +650,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 				}
 				else if (AVL_HAS_OP_EVEX_PFX(p))
 				{
-					if (EVEX_L_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPD2UDQ || inst->i_mnemonic == VCVTTPD2UDQ || inst->i_mnemonic == VCVTUQQ2PS
+					if (((AVL_evex_t*)inst->i_vp)->evx_vlen && (inst->i_mnemonic == VCVTPD2UDQ || inst->i_mnemonic == VCVTTPD2UDQ || inst->i_mnemonic == VCVTUQQ2PS
 					|| inst->i_mnemonic == VPSCATTERQD || inst->i_mnemonic == VSCATTERQPS || inst->i_mnemonic == VCVTQQ2PS))
 					{
 						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
@@ -658,7 +658,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 
 						AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 					}
-					else if (EVEX_L2_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPD2PS || inst->i_mnemonic == VCVTPD2DQ || inst->i_mnemonic == VCVTTPD2DQ
+					else if (((AVL_evex_t*)inst->i_vp)->evx_vlen2 && (inst->i_mnemonic == VCVTPD2PS || inst->i_mnemonic == VCVTPD2DQ || inst->i_mnemonic == VCVTTPD2DQ
 					|| inst->i_mnemonic == VCVTPD2UDQ || inst->i_mnemonic == VCVTTPD2UDQ || inst->i_mnemonic == VCVTUQQ2PS || inst->i_mnemonic == VPSCATTERQD
 					|| inst->i_mnemonic == VSCATTERQPS || inst->i_mnemonic == VCVTQQ2PS))
 					{
@@ -719,7 +719,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						}
 
 						// EVEX_L2_GET(inst->vexxop) == p & OS_DQQWORD_MASK
-						if (EVEX_L2_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTPS2PH
+						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2 && (inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTPS2PH
 						|| inst->i_mnemonic == VCVTUDQ2PD || inst->i_mnemonic == VCVTPS2UQQ || inst->i_mnemonic == VCVTTPS2QQ || inst->i_mnemonic == VCVTTPS2UQQ
 						|| inst->i_mnemonic == VPMOVSDW || inst->i_mnemonic == VPMOVUSDW || inst->i_mnemonic == VPMOVQD || inst->i_mnemonic == VPMOVSQD || inst->i_mnemonic == VPMOVUSQD
 						|| inst->i_mnemonic == VPMOVWB || inst->i_mnemonic == VPMOVSWB || inst->i_mnemonic == VPMOVUSWB || inst->i_mnemonic == VCVTDQ2PD))
@@ -751,15 +751,15 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					}
 					else if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 					{
-						if (EVEX_L2_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTUDQ2PD
+						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2 && (inst->i_mnemonic == VCVTPS2PD || inst->i_mnemonic == VCVTUDQ2PD
 						|| inst->i_mnemonic == VCVTDQ2PD || inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTPS2UQQ
 						|| inst->i_mnemonic == VCVTTPS2QQ || inst->i_mnemonic == VCVTTPS2UQQ))
 							*dest = AVL_OP_MEM256;
-						else if (EVEX_L_GET(inst->i_vp) && (inst->i_mnemonic == VCVTUDQ2PD || inst->i_mnemonic == VCVTDQ2PD
+						else if (((AVL_evex_t*)inst->i_vp)->evx_vlen && (inst->i_mnemonic == VCVTUDQ2PD || inst->i_mnemonic == VCVTDQ2PD
 						|| inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTPS2UQQ || inst->i_mnemonic == VCVTTPS2QQ
 						|| inst->i_mnemonic == VCVTTPS2UQQ))	
 							*dest = AVL_OP_MEM128;
-						else if (EVEX_L2_GET(inst->i_vp) && (inst->i_mnemonic == VCVTPS2PD))
+						else if (((AVL_evex_t*)inst->i_vp)->evx_vlen2 && (inst->i_mnemonic == VCVTPS2PD))
 							*dest = AVL_OP_MEM128;
 						else if (inst->i_mnemonic == VBROADCASTF32X4 || inst->i_mnemonic == VBROADCASTF64X2
 						|| inst->i_mnemonic == VINSERTF32X4 || inst->i_mnemonic == VINSERTF64X2)
@@ -770,7 +770,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						else if ((inst->i_mnemonic == VCVTPH2PS || inst->i_mnemonic == VCVTUDQ2PD || inst->i_mnemonic == VCVTPS2UQQ
 						|| inst->i_mnemonic == VCVTTPS2QQ  || inst->i_mnemonic == VCVTTPS2UQQ || inst->i_mnemonic == VCVTPS2PD
 						|| inst->i_mnemonic == VCVTDQ2PD || inst->i_mnemonic == VMOVDDUP)
-						&& !EVEX_L_GET(inst->i_vp) && !EVEX_L2_GET(inst->i_vp))
+						&& !((AVL_evex_t*)inst->i_vp)->evx_vlen && !((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 							*dest = AVL_OP_MEM64;
 						else if ((inst->i_mnemonic == VCVTSD2USI || inst->i_mnemonic == VCVTTSD2USI || inst->i_mnemonic == VGETEXPSD
 						|| inst->i_mnemonic == VGETMANTSD || inst->i_mnemonic == VRANGESD || inst->i_mnemonic == VRCP14SD
@@ -791,9 +791,9 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						else if (inst->i_mnemonic == VPMOVDB || inst->i_mnemonic == VPMOVSDB || inst->i_mnemonic == VPMOVUSDB
 						|| inst->i_mnemonic == VPMOVQW || inst->i_mnemonic == VPMOVSQW || inst->i_mnemonic == VPMOVUSQW)
 						{
-							if (EVEX_L2_GET(inst->i_vp))
+							if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 								*dest = AVL_OP_MEM128;
-							else if (EVEX_L_GET(inst->i_vp))
+							else if (((AVL_evex_t*)inst->i_vp)->evx_vlen)
 								*dest = AVL_OP_MEM64;
 							else
 								*dest = AVL_OP_MEM32;
@@ -802,18 +802,18 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						|| inst->i_mnemonic == VPMOVQD || inst->i_mnemonic == VPMOVSQD || inst->i_mnemonic == VPMOVUSQD
 						|| inst->i_mnemonic == VPMOVWB || inst->i_mnemonic == VPMOVSWB || inst->i_mnemonic == VPMOVUSWB)
 						{
-							if (EVEX_L2_GET(inst->i_vp))
+							if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 								*dest = AVL_OP_MEM256;
-							else if (EVEX_L_GET(inst->i_vp))
+							else if (((AVL_evex_t*)inst->i_vp)->evx_vlen)
 								*dest = AVL_OP_MEM128;
 							else
 								*dest = AVL_OP_MEM64;
 						}
 						else if (inst->i_mnemonic == VPMOVQB || inst->i_mnemonic == VPMOVSQB || inst->i_mnemonic == VPMOVUSQB)
 						{
-							if (EVEX_L2_GET(inst->i_vp))
+							if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 								*dest = AVL_OP_MEM64;
-							else if (EVEX_L_GET(inst->i_vp))
+							else if (((AVL_evex_t*)inst->i_vp)->evx_vlen)
 								*dest = AVL_OP_MEM32;
 							else
 								*dest = AVL_OP_MEM16;

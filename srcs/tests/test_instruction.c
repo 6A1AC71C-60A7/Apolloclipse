@@ -61,10 +61,10 @@ void fprint_info(FILE* where, AVL_instruction_t* target)
     ///TODO: VEX 
 
     fprintf(where, "MODRM:\n - MOD: %d\n - REG: %d\n - RM: %d\n- - -\n",
-    AVL_GET_MODRM_MOD(target->i_mod_rm), MODRM_REG_GET(target->i_mod_rm), MODRM_RM_GET(target->i_mod_rm));
+    AVL_GET_MODRM_MOD(target->i_mod_rm), AVL_GET_MODRM_REG(target), AVL_GET_MODRM_RM(target));
 
     fprintf(where, "SIB:\n - BASE: %d\n - INDEX: %d\n - SCALE: %d\n- - -\n",
-    SIB_BASE_GET(target->i_sib), SIB_INDEX_GET(target->i_sib), AVL_GET_SIB_SCALE(target->i_sib));
+    AVL_GET_SIB_BASE(target), AVL_GET_SIB_INDEX(target), AVL_GET_SIB_SCALE(target->i_sib));
 
     fprintf(where, "DISPLACEMENT: %d\n- - -\n", target->i_disp);
 

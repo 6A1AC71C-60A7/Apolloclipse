@@ -81,30 +81,30 @@
 ** VEX/XOP members values 
 */
 
-/// Prefix: 0xC4 (3 bytes VEX) | 0xC5 (2 byte VEX) | 0x8F (3 byte XOP)
-#define VEXXOP_PREFIX_GET(x) (ubyte)(*(ubyte*)(x))
-/// This 1-bit value is an 'inverted' extension to the MODRM.reg field (the inverse of REX.R)
-#define VEXXOP_R_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x7) & 0x1)
-/// This 1-bit value is an 'inverted' extension to the SIB.index field (the inverse of REX.X)
-#define VEXXOP_X_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x6) & 0x1)
-/// This 1-bit value is an 'inverted' extension to the MODRM.rm field or the SIB.base field (the inverse of REX.B)
-#define VEXXOP_B_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x5) & 0x1)
-/// Specifies the opcode map to use
-#define VEXXOP_MAP_SELECT_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0b00011111)
-/// For integer instructions: when 1, a 64-bit operand size is used; otherwise, when 0, the default operand size is used (equivalent with REX.W)
-/// For non-integer instructions, this bit is a general opcode extension bit
-#define VEXXOP_WE_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x7) & 0x1)
+// /// Prefix: 0xC4 (3 bytes VEX) | 0xC5 (2 byte VEX) | 0x8F (3 byte XOP)
+// #define VEXXOP_PREFIX_GET(x) (ubyte)(*(ubyte*)(x))
+// /// This 1-bit value is an 'inverted' extension to the MODRM.reg field (the inverse of REX.R)
+// #define VEXXOP_R_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x7) & 0x1)
+// /// This 1-bit value is an 'inverted' extension to the SIB.index field (the inverse of REX.X)
+// #define VEXXOP_X_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x6) & 0x1)
+// /// This 1-bit value is an 'inverted' extension to the MODRM.rm field or the SIB.base field (the inverse of REX.B)
+// #define VEXXOP_B_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x5) & 0x1)
+// /// Specifies the opcode map to use
+// #define VEXXOP_MAP_SELECT_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0x1F)
+// /// For integer instructions: when 1, a 64-bit operand size is used; otherwise, when 0, the default operand size is used (equivalent with REX.W)
+// /// For non-integer instructions, this bit is a general opcode extension bit
+// #define VEXXOP_WE_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x7) & 0x1)
 /// An additional operand for the instruction, the value of the XMM or YMM register is 'inverted'
-#define VEXXOP_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x3) & 0xF)
-#define VEXXOP2_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x3) & 0xF)
+// #define VEXXOP_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 0x3) & 0xF)
+// #define VEXXOP2_VVVV_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 0x3) & 0xF)
 
 /// When 0, a 128-bit vector lengh is used. Otherwise, when 1, a 256-bit vector length is used
-#define VEXXOP_L_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 2) & 0x1)
-#define VEXXOP2_L_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 2) & 0x1)
+// #define VEXXOP_L_GET(x) (ubyte)(((*(ubyte*)((x) + 2)) >> 2) & 0x1)
+// #define VEXXOP2_L_GET(x) (ubyte)(((*(ubyte*)((x) + 1)) >> 2) & 0x1)
 /// Specifies an implied mandatory prefix for the opcode:
 /// 00 (none) | 01 (0x66) | 10 (0xF3) | 11 (0xF2)
-#define VEXXOP_PP_GET(x) (ubyte)(*(ubyte*)((x) + 2) & 0b00000011)
-#define VEXXOP2_PP_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0b00000011)
+// #define VEXXOP_PP_GET(x) (ubyte)(*(ubyte*)((x) + 2) & 0x3)
+// #define VEXXOP2_PP_GET(x) (ubyte)(*(ubyte*)((x) + 1) & 0x3)
 
 
 /*
@@ -114,32 +114,32 @@
 ///TODO: Document this
 ///TODO: Invert all here or nothing but not both
 
-#define EVEX_R_GET(x) (ubyte)((*(ubyte*)(x) >> 0x7) & 0x1)
-#define EVEX_X_GET(x) (ubyte)((*(ubyte*)(x) >> 0x6) & 0x1)
-#define EVEX_B_GET(x) (ubyte)((*(ubyte*)(x) >> 0x5) & 0x1)
-#define EVEX_R2_GET(x) (ubyte)((*(ubyte*)(x) >> 0x4) & 0x1)
-#define EVEX_MAP_GET(x) (ubyte)(*(ubyte*)(x) & 0x3)
-#define EVEX_W_GET(x) (ubyte)((*(ubyte*)((x) + 0x1) >> 0x7) & 0x1)
-#define EVEX_VVVV_GET(x) (ubyte)(~(*(ubyte*)((x) + 0x1) >> 0x3) & 0xF)
-#define EVEX_P_GET(x) (ubyte)((*(ubyte*)((x) + 0x1)) & 0x3)
-#define EVEX_Z_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x7) & 0x1)
-#define EVEX_L2_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x6) & 0x1)
-#define EVEX_L_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x5) & 0x1)
-#define EVEX_BROADCAST_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x4) & 0x1)
-#define EVEX_V2_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x3) & 0x1)
-#define EVEX_K_GET(x) (ubyte)((*(ubyte*)((x) + 0x2)) & 0x7)
+// #define EVEX_R_GET(x) (ubyte)((*(ubyte*)(x) >> 0x7) & 0x1)
+// #define EVEX_X_GET(x) (ubyte)((*(ubyte*)(x) >> 0x6) & 0x1)
+// #define EVEX_B_GET(x) (ubyte)((*(ubyte*)(x) >> 0x5) & 0x1)
+// #define EVEX_R2_GET(x) (ubyte)((*(ubyte*)(x) >> 0x4) & 0x1)
+// #define EVEX_MAP_GET(x) (ubyte)(*(ubyte*)(x) & 0x3)
+// #define EVEX_W_GET(x) (ubyte)((*(ubyte*)((x) + 0x1) >> 0x7) & 0x1)
+//#define EVEX_VVVV_GET(x) (ubyte)(~(*(ubyte*)((x) + 0x1) >> 0x3) & 0xF)
+//#define EVEX_P_GET(x) (ubyte)((*(ubyte*)((x) + 0x1)) & 0x3)
+//#define EVEX_Z_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x7) & 0x1)
+// #define EVEX_L2_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x6) & 0x1)
+// #define EVEX_L_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x5) & 0x1)
+// #define EVEX_BROADCAST_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x4) & 0x1)
+// #define EVEX_V2_GET(x) (ubyte)((*(ubyte*)((x) + 0x2) >> 0x3) & 0x1)
+// #define EVEX_K_GET(x) (ubyte)((*(ubyte*)((x) + 0x2)) & 0x7)
 
-#define EVEX_VVVVV_EXTENDTED_GET(x) ((!EVEX_V2_GET(x) << 0x4) | EVEX_VVVV_GET(x))
-#define EVEX_L_EXTENDED_GET(x) ((EVEX_L2_GET(x) << 1) | EVEX_L_GET(x))
+//#define EVEX_VVVVV_EXTENDTED_GET(x) AVL_GET_EVEX_VVVV(x) //((!EVEX_V2_GET(x) << 0x4) | EVEX_VVVV_GET(x))
+//#define EVEX_L_EXTENDED_GET(x) AVL_GET_EVEX_LL(x) // ((EVEX_L2_GET(x) << 1) | EVEX_L_GET(x))
 
 /*
 ** ModR/M member values
 */
 
 /// Specify (in)direct operand, optionally with displacement. Can be extented by 1 bit. 
-#define MODRM_RM_GET(x) (ubyte)(*(ubyte*)&(x) & 0b00000111)
-/// Opcode extension or register reference
-#define MODRM_REG_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
+// #define MODRM_RM_GET(x) (ubyte)(*(ubyte*)&(x) & 0b00000111)
+// /// Opcode extension or register reference
+// #define MODRM_REG_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
 /// In general, when this field is 0b11, then register-direct addressing mode is used;
 ///		otherwise register-indirect addressing mode is used. 
 //#define MODRM_MOD_GET(x) AVL_GET_MODRM_MOD(x) // (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
@@ -157,9 +157,9 @@
 */
 
 /// The scaling factor of SIB.index
-# define SIB_BASE_GET(x) (ubyte)(*(ubyte*)(&(x)) & 0b00000111)
-/// The index register to use. Can be extented by 1 bit.
-# define SIB_INDEX_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
+// # define SIB_BASE_GET(x) (ubyte)(*(ubyte*)(&(x)) & 0b00000111)
+// /// The index register to use. Can be extented by 1 bit.
+// # define SIB_INDEX_GET(x) (ubyte)((*(ubyte*)(&(x)) >> 0x3) & 0b00000111)
 /// The base register to use. Can be extented by 1 bit.
 //# define SIB_SCALE_GET(x) AVL_GET_SIB_SCALE(x) // (ubyte)((*(ubyte*)(&(x)) >> 0x6) & 0b00000011)
 
