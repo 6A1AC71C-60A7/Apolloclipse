@@ -2234,7 +2234,7 @@ skip_prefix_check:
 		if (HAS_GROUP_EXTENTION(found.symbol))
 		{
 			DEBUG("HAS EXTENSION\n");
-			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, **iraw, dest->i_flags, found);
+			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, found, **iraw, dest->i_flags);
 
 			if (found.am1 == 0 || HAS_IMMEDIATE(found.am1))
 				(*iraw)++;

@@ -190,7 +190,7 @@
 err_t			get_instruction_prefixes(AVL_instruction_t* const inst, const ubyte** instruction_raw);
 void			handle_modrm(AVL_instruction_t* const inst, const ubyte** instruction_raw);
 err_t			get_instruction(AVL_instruction_t* const inst, const ubyte** instruction_raw);
-opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, ubyte modrm, udword prefix, opfield_t found);
+opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, opfield_t found, ubyte modrm, udword prefix);
 extern void		resolve_operands(AVL_instruction_t* const dest, opfield_t instruction);
 extern void		resolve_operands_v2(AVL_instruction_t* const dest, opfield_t instruction);
 
