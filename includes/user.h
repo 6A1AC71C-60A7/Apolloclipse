@@ -145,11 +145,15 @@
 #define AVL_OPSZ_IS_DQQWORD(x) (AVL_GET_OPERAND_SZ(x) == AVL_OPSZ_DQQWORD)
 
 #define AVL_CLEAR_OPSZ(flags) ((flags) &= ~((1 << __AVL_OPERAND_SZ_SHIFT_AMOUNT) | (1 << (__AVL_OPERAND_SZ_SHIFT_AMOUNT + 1)) | (1 << (__AVL_OPERAND_SZ_SHIFT_AMOUNT + 2))))
-#define AVL_SET_OPSZ(flags, opsz) AVL_CLEAR_OPSZ(flags) ; ( (flags) |= (((opsz) & 0x7) << __AVL_OPERAND_SZ_SHIFT_AMOUNT))
+#define AVL_SET_OPSZ(flags, opsz) ((flags) |= (((opsz) & 0x7) << __AVL_OPERAND_SZ_SHIFT_AMOUNT))
 
 /*
 ** TODO: NAME OF SECTION
 */
+
+#define AVL_HAS_OP_VEX_PFX(x) !!(*(x)->i_vp) // use this one before the others
+#define AVL_ISVEX2_PFX(x) !!(*(x)->i_vp == 0xC5)
+#define AVL_ISVEX3_PFX(x) (!AVL_ISVEX2_PFX(x))
 
 #define AVL_GET_EVEX_VVVV(evex) (uint8_t)(((!(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(v)) << 0x4) | (~(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vvvv) & 0xF))
 #define AVL_GET_EVEX_LL(evex) (uint8_t)((((*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vlen2)) << 0x1) | ((*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vlen)))

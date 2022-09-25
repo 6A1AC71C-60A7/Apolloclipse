@@ -947,11 +947,13 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 			if (opcode == 0x30 || opcode == 0x32)
 			{
 				//inst->i_flags |= inst->i_flags & AVL_RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
+				AVL_CLEAR_OPSZ(inst->i_flags);
 				AVL_SET_OPSZ(inst->i_flags, AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OPSZ_WORD : AVL_OPSZ_BYTE);
 			}
 			else if (opcode == 0x31 || opcode == 0x33)
 			{
 				//inst->i_flags |= inst->i_flags & AVL_RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
+				AVL_CLEAR_OPSZ(inst->i_flags);
 				AVL_SET_OPSZ(inst->i_flags, AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
 			}
 		}
@@ -1369,11 +1371,13 @@ skip_prefix_check:
 						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
 						{
 							//dest->i_flags |= OS_DWORD_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
 						}
 						else
 						{
 							//dest->i_flags |= OS_QWORD_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
 						}
 					}
@@ -1382,11 +1386,13 @@ skip_prefix_check:
 						if (dest->i_flags & AVL_MP_0x66_MASK)
 						{
 							//dest->i_flags |= OS_BYTE_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_BYTE);
 						}
 						else
 						{
 							//dest->i_flags |= OS_WORD_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
 						}
 					}
@@ -1398,11 +1404,13 @@ skip_prefix_check:
 						if (AVL_HAS_REXW_PFX(dest->i_flags))
 						{
 							//dest->i_flags |= OS_QWORD_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
 						}
 						else
 						{
 							//dest->i_flags |= OS_DWORD_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
 						}
 					}
@@ -1411,11 +1419,13 @@ skip_prefix_check:
 						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
 						{
 							//dest->i_flags |= OS_BYTE_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_BYTE);
 						}
 						else
 						{
 							//dest->i_flags |= OS_WORD_MASK;
+							AVL_CLEAR_OPSZ(dest->i_flags);
 							AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
 						}
 					}
@@ -1425,16 +1435,19 @@ skip_prefix_check:
 					if (AVL_HAS_REXW_PFX(dest->i_flags))
 					{
 						//dest->i_flags |= OS_QWORD_MASK;
+						AVL_CLEAR_OPSZ(dest->i_flags);
 						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_QWORD);
 					}
 					else if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
 					{
 						//dest->i_flags |= OS_WORD_MASK;
+						AVL_CLEAR_OPSZ(dest->i_flags);
 						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_WORD);
 					}
 					else
 					{
 						//dest->i_flags |= OS_DWORD_MASK;
+						AVL_CLEAR_OPSZ(dest->i_flags);
 						AVL_SET_OPSZ(dest->i_flags, AVL_OPSZ_DWORD);
 					}
 				}

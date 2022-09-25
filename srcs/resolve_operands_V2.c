@@ -492,6 +492,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 				{
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);	
 					// p |= OS_DWORD_MASK;
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 				else if (AVL_HAS_OP_EVEX_PFX(p))
@@ -501,6 +502,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 						// p |= p & AVL_RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
 
+						AVL_CLEAR_OPSZ(p);
 						AVL_SET_OPSZ(p, AVL_HAS_REXW_PFX(p) ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
 					}
 				}
@@ -525,6 +527,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_DWORD_MASK;
 
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 
@@ -549,6 +552,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_WORD_MASK;
 
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_WORD);
 				}
 
@@ -557,6 +561,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_QWORD_MASK;
 
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_QWORD);
 				}
 
@@ -565,6 +570,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_DWORD_MASK;
 
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 
@@ -575,6 +581,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 						// p |= OS_QWORD_MASK;
 
+						AVL_CLEAR_OPSZ(p);
 						AVL_SET_OPSZ(p, AVL_OPSZ_QWORD);
 					}
 				}
@@ -611,6 +618,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_WORD_MASK;
 
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_WORD);
 				}
 				else if (inst->i_mnemonic == VPINSRW && !AVL_HAS_REXW_PFX(p))
@@ -618,6 +626,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_DWORD_MASK;
 
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_DWORD);
 				}
 
@@ -646,6 +655,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 					// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 					// p |= OS_DQWORD_MASK;
 
+					AVL_CLEAR_OPSZ(p);
 					AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 				}
 				else if (AVL_HAS_OP_EVEX_PFX(p))
@@ -656,6 +666,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 						// p |= OS_DQWORD_MASK;
 
+						AVL_CLEAR_OPSZ(p);
 						AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 					}
 					else if (((AVL_evex_t*)inst->i_vp)->evx_vlen2 && (inst->i_mnemonic == VCVTPD2PS || inst->i_mnemonic == VCVTPD2DQ || inst->i_mnemonic == VCVTTPD2DQ
@@ -665,6 +676,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 						// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 						// p |= OS_QQWORD_MASK;
 
+						AVL_CLEAR_OPSZ(p);
 						AVL_SET_OPSZ(p, AVL_OPSZ_QQWORD);
 					}
 
@@ -692,6 +704,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 							// p |= OS_DQWORD_MASK;
 
+							AVL_CLEAR_OPSZ(p);
 							AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 						}
 					}
@@ -707,6 +720,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 							// p |= OS_DQWORD_MASK;
 
+							AVL_CLEAR_OPSZ(p);
 							AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 						}
 
@@ -715,6 +729,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 							// p |= OS_DQWORD_MASK;
 
+							AVL_CLEAR_OPSZ(p);
 							AVL_SET_OPSZ(p, AVL_OPSZ_DQWORD);
 						}
 
@@ -727,6 +742,7 @@ static void resolve_operand_v2(AVL_instruction_t* const inst, reg_t* const dest,
 							// p &= ~(OS_BYTE_MASK | OS_WORD_MASK | OS_DWORD_MASK | OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK);
 							// p |= OS_QQWORD_MASK;
 
+							AVL_CLEAR_OPSZ(p);
 							AVL_SET_OPSZ(p, AVL_OPSZ_QQWORD);
 						}
 					}
