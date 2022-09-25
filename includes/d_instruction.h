@@ -195,3 +195,34 @@ extern void		resolve_operands(AVL_instruction_t* const dest, opfield_t instructi
 extern void		resolve_operands_v2(AVL_instruction_t* const dest, opfield_t instruction);
 
 void			get_instructions(AVL_instruction_t* const dest, uqword destlen, const ubyte** iraw);
+
+
+extern void		get_legacy_prefixes(udword* const dest, const ubyte** iraw);
+extern err_t	err_handle_legacy_prefixes(const udword* const dest);
+extern void		get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw);
+extern void		get_rex_prefix(udword* const dest, const ubyte** iraw);
+extern void		get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw);
+
+extern ubyte	has_modrm(opfield_t opfield);
+extern ubyte	get_modrm(AVL_instruction_t* const inst, const ubyte** iraw);
+extern ubyte	get_sib(AVL_instruction_t* const inst, const ubyte** iraw);
+extern void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbits);
+extern ubyte	has_immediate(opfield_t opfield);
+extern void		get_immediate(opfield_t opfield, AVL_instruction_t* const dest, const ubyte** iraw);
+
+#define HAS_IMMEDIATE(x) ( \
+	(x) != 0 && (x) >= AM_I && (x) <= AM_L \
+)
+
+#define IS_ESCAPE_FX87(x) ((x) >= 0xD8 && (x) <= 0xDF)
+
+extern void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found);
+
+//extern void		redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, ubyte opcode, ubyte* pvex, AVL_instruction_t* const inst);
+
+
+#define GET_MAP_INDEX(x) (((x) & 0x0F) + ((((x) & 0xF0) >> 0x4) * 0x10))
+
+///tmp to remove
+extern void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix);
+extern void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix);
