@@ -989,7 +989,7 @@ static ubyte	get_opcode_attributes(mnemonic_t* const mnemonic, opfield_t opfield
 
 	ubyte opattr = 0;
 
-	if (has_modrm(opfield))
+	if (INST_HAS_MODRM(opfield))
 		opattr |= HAS_ATTR_MODRM;
 
 	return opattr;
@@ -1476,7 +1476,7 @@ skip_prefix_check:
 			DEBUG("HAS EXTENSION\n");
 			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, found, **iraw, dest->i_flags);
 
-			if (found.am1 == 0 || HAS_IMMEDIATE(found.am1))
+			if (found.am1 == 0 || OPERAND_HAS_IMMEDIATE(found.am1))
 				(*iraw)++;
 		}
 
@@ -1504,8 +1504,8 @@ skip_prefix_check:
 	if (!not_overwrite && dest->i_mnemonic != KSHIFTL && dest->i_mnemonic != KSHIFTR)
 		get_operand_size(dest, &found);
 
-	if (has_immediate(found))
-		get_immediate(found, dest, iraw);
+	if (OPFIELD_HAS_IMMEDIATE(found))
+		get_immediate(dest, found, iraw);
 	else
 		DEBUG("DEBUG: HAS NOT IMMEDIATE\n");
 

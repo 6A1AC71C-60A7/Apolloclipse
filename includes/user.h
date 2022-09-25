@@ -57,11 +57,9 @@
 #define AVL_HAS_REXW_PFX(x) !!((x) & AVL_RP_REXW_MASK)
 
 /*
-** Mandatory prefix
+** Mandatory prefix (aliases)
 */
 
-///NOTE: AVL_LP_OPSZ_MASK which is 0x66 might also be a Mandatory Prefix
-///TODO: Same for 0xF2 and 0xF3 ...
 #define AVL_MP_0x66_MASK AVL_LP_OPSZ_MASK
 #define AVL_MP_0x67_MASK AVL_LP_ADDRSZ_MASK
 #define AVL_MP_0xF2_MASK AVL_LP_REPNX_MASK

@@ -203,15 +203,20 @@ extern void		get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 extern void		get_rex_prefix(udword* const dest, const ubyte** iraw);
 extern void		get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw);
 
-extern ubyte	has_modrm(opfield_t opfield);
 extern ubyte	get_modrm(AVL_instruction_t* const inst, const ubyte** iraw);
 extern ubyte	get_sib(AVL_instruction_t* const inst, const ubyte** iraw);
 extern void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbits);
-extern ubyte	has_immediate(opfield_t opfield);
-extern void		get_immediate(opfield_t opfield, AVL_instruction_t* const dest, const ubyte** iraw);
+extern void		get_immediate(AVL_instruction_t* const dest, opfield_t opfield, const ubyte** iraw);
 
-#define HAS_IMMEDIATE(x) ( \
-	(x) != 0 && (x) >= AM_I && (x) <= AM_L \
+#define OPERAND_HAS_IMMEDIATE(am) ( \
+	(am) != 0 && (am) >= AM_I && (am) <= AM_L \
+)
+
+#define OPFIELD_HAS_IMMEDIATE(opfield) ( \
+	OPERAND_HAS_IMMEDIATE(opfield.am1) \
+	|| OPERAND_HAS_IMMEDIATE(opfield.am2) \
+	|| OPERAND_HAS_IMMEDIATE(opfield.am3) \
+	|| OPERAND_HAS_IMMEDIATE(opfield.am4) \
 )
 
 #define IS_ESCAPE_FX87(x) ((x) >= 0xD8 && (x) <= 0xDF)
@@ -226,3 +231,31 @@ extern void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const fo
 ///tmp to remove
 extern void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix);
 extern void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix);
+
+#define OPFIELD_HAS_MODRM(x) ( \
+	(x) != AM_ZERO && ( \
+		(x) == AM_C \
+		|| (x) == AM_D \
+		|| (x) == AM_E \
+		|| (x) == AM_G \
+		|| (x) == AM_M \
+		|| (x) == AM_N \
+		|| (x) == AM_P \
+		|| (x) == AM_Q \
+		|| (x) == AM_R \
+		|| (x) == AM_S \
+		|| (x) == AM_U \
+		|| (x) == AM_V \
+		|| (x) == AM_W \
+		|| (x) == AM_KR \
+		|| (x) == AM_KRM \
+		|| (x) == AM_KM \
+	) \
+)
+
+#define INST_HAS_MODRM(x) ( \
+	OPFIELD_HAS_MODRM(opfield.am1) \
+	|| OPFIELD_HAS_MODRM(opfield.am2) \
+	|| OPFIELD_HAS_MODRM(opfield.am3) \
+	|| OPFIELD_HAS_MODRM(opfield.am4) \
+)
