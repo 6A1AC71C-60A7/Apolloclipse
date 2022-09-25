@@ -30,7 +30,6 @@ void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 			if (lt_legacy_prefixes[prefix_it] == **iraw)
 			{
 				*dest |= AVL_LP_LOCK_MASK << prefix_it;
-				DEBUG("[DEBUG] FOUND PREFIX: %02X\n", **iraw);
 #ifndef LP_STOP_IF_REPEATED
 				found = 1;
 				(*iraw)++;
@@ -48,9 +47,6 @@ void		get_legacy_prefixes(udword* const dest, const ubyte** iraw)
 #else
 	while (old != *dest);
 #endif
-
-	///TODO: FIRST OF ALL TO FIX THIS REMOVE THE F2 AND F3 PREFIXES LIKE IS HAS BEEN DONE WITH 66 AND 67
-	DEBUG("[DEBUG][END] (**iraw)=[%02X] (%d) (%d)\n", **iraw, *dest & AVL_MP_0x66_MASK, *dest & AVL_MP_0xF2_MASK);
 
 }
 
@@ -80,7 +76,7 @@ err_t	err_handle_legacy_prefixes(const udword* const dest)
 
 	matches = 0;
 	dest_shift = *dest >> 3;
-	if (dest_shift & 0xff)
+	if (dest_shift & 0xFF)
 	{
 		for (udword i = 0 ; i <= 0b00001000 ; i++)
 		{
@@ -105,7 +101,7 @@ void get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 
 	if (inst->i_vp[0] != 0xC5)
 	{
-		AVL_vex_t*	vp = (AVL_vex_t*)inst->i_vp;
+		AVL_vex_t* vp = (AVL_vex_t*)inst->i_vp;
 
 		inst->i_vp[2] = *((*iraw)++);
 
@@ -122,7 +118,7 @@ void get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 	}
 	else
 	{
-		AVL_vex2_t*	vp2 = (AVL_vex2_t*)inst->i_vp;
+		AVL_vex2_t* vp2 = (AVL_vex2_t*)inst->i_vp;
 
 		if (!vp2->vx2_rexr)
 			inst->i_flags |= AVL_RP_REXR_MASK;
@@ -142,19 +138,7 @@ void get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 			inst->i_flags |= AVL_MP_0xF2_MASK;
 			break ;
 	}
-
-		/// debug
-	DEBUG("OPP IS: %d\n", opp);
-	if (AVL_HAS_REXR_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.R\n");
-	if (AVL_HAS_REXB_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.B\n");
-	if (AVL_HAS_REXX_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.X\n");
-	if (AVL_HAS_REXW_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.W\n");
 }
-
 
 __always_inline
 void get_rex_prefix(udword* const dest, const ubyte** iraw)
@@ -166,15 +150,13 @@ void get_rex_prefix(udword* const dest, const ubyte** iraw)
 	}
 }
 
-
 __always_inline
 void get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 {
-	(*iraw)++;
-	inst->i_flags |= AVL_OP_EVEX_MASK;
-
 	AVL_evex_t* evp = (AVL_evex_t*)inst->i_vp;
 
+	(*iraw)++;
+	inst->i_flags |= AVL_OP_EVEX_MASK;
 	*(uword*)inst->i_vp = *((*(uword**)iraw)++);
 	inst->i_vp[2] = *((*iraw)++);
 
@@ -199,13 +181,4 @@ void get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 			inst->i_flags |= AVL_MP_0xF2_MASK;
 			break ;
 	}
-
-	if (AVL_HAS_REXR_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.R\n");
-	if (AVL_HAS_REXB_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.B\n");
-	if (AVL_HAS_REXX_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.X\n");
-	if (AVL_HAS_REXW_PFX(inst->i_flags))
-		DEBUG("-> VEX: HAS REX.W\n");
 }
