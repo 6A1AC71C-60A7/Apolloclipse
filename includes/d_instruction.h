@@ -219,7 +219,7 @@ extern void		get_immediate(AVL_instruction_t* const dest, opfield_t opfield, con
 	|| OPERAND_HAS_IMMEDIATE(opfield.am4) \
 )
 
-#define IS_ESCAPE_FX87(x) ((x) >= 0xD8 && (x) <= 0xDF)
+#define IS_ESCAPE_FX87(x) (!AVL_HAS_OP_VEX_PFX(x) && !INST_ISPREFIXED(x) && TESTRANGE((x)->i_opcode[2], 0xD8, 0xDF))
 
 extern void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found);
 
@@ -254,8 +254,8 @@ extern void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode
 )
 
 #define INST_HAS_MODRM(x) ( \
-	OPFIELD_HAS_MODRM(opfield.am1) \
-	|| OPFIELD_HAS_MODRM(opfield.am2) \
-	|| OPFIELD_HAS_MODRM(opfield.am3) \
-	|| OPFIELD_HAS_MODRM(opfield.am4) \
+	OPFIELD_HAS_MODRM(x.am1) \
+	|| OPFIELD_HAS_MODRM(x.am2) \
+	|| OPFIELD_HAS_MODRM(x.am3) \
+	|| OPFIELD_HAS_MODRM(x.am4) \
 )

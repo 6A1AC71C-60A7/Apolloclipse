@@ -11,8 +11,6 @@
 	|| (x) == 0xC3 \
 	|| (x) == 0xC7 \
 )
-#define GET_ROW(x) (((x) >> 0x4) & 0xF)
-#define GET_COLUMN(x) ((x) & 0xF)
 
 #define IS_TWO_BYTE_NONVEX_SIMD(x) \
 	!IS_EXCEPTION_NONVEX_NONSIMD(x) \

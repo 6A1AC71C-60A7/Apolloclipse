@@ -149,9 +149,13 @@
 ** TODO: NAME OF SECTION
 */
 
-#define AVL_HAS_OP_VEX_PFX(x) !!(*(x)->i_vp) // use this one before the others
-#define AVL_ISVEX2_PFX(x) !!(*(x)->i_vp == 0xC5)
-#define AVL_ISVEX3_PFX(x) (!AVL_ISVEX2_PFX(x))
+#define AVL_CONST_VEX2_PREFIX 0xC5
+#define AVL_CONST_VEX3_PREFIX 0xC4
+#define AVL_CONST_EVEX_PREFIX 0x62
+
+#define AVL_HAS_OP_VEX_PFX(x) !!(*(x)->i_vp) // use this one before the others (also true when EVEX)
+#define AVL_ISVEX2_PFX(x) !!(*(x)->i_vp == AVL_CONST_VEX2_PREFIX)
+#define AVL_ISVEX3_PFX(x) !!(*(x)->i_vp == AVL_CONST_VEX3_PREFIX)
 
 #define AVL_GET_EVEX_VVVV(evex) (uint8_t)(((!(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(v)) << 0x4) | (~(*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vvvv) & 0xF))
 #define AVL_GET_EVEX_LL(evex) (uint8_t)((((*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vlen2)) << 0x1) | ((*(AVL_evex_t*)(evex)).__AVL_SET_EVEX_PREF(vlen)))

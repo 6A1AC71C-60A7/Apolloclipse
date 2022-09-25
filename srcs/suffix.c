@@ -15,9 +15,7 @@
 __always_inline
 ubyte	get_modrm(AVL_instruction_t* const inst, const ubyte** iraw)
 {
-	///TODO: Redo define 'IS_ESCAPE_FX87'
-	/* If is x87 instruction, the modR/M is already parsed */
-	if (AVL_HAS_OP_VEX_PFX(inst) || INST_ISPREFIXED(inst) || !IS_ESCAPE_FX87(inst->i_opcode[2]))
+	if (AVL_HAS_OP_VEX_PFX(inst) || INST_ISPREFIXED(inst) || !IS_ESCAPE_FX87(inst))
 		inst->i_mod_rm = *((*iraw)++);
 
 	/* BYTE bits: { 0, 0, MOD[1], MOD[0], RM[3], RM[2], RM[1], RM[0] }

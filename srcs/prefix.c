@@ -99,7 +99,7 @@ void get_vex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw)
 
 	*(uword*)inst->i_vp = *((*(uword**)iraw)++);
 
-	if (inst->i_vp[0] != 0xC5)
+	if (AVL_ISVEX3_PFX(inst))
 	{
 		AVL_vex_t* vp = (AVL_vex_t*)inst->i_vp;
 
