@@ -24,7 +24,11 @@ $(addprefix srcs/,\
 	get_instruction_by_extension.c\
 	instruction.c\
 	main.c\
+	redirect_indexing_opfield.c\
 	resolve_operands_V2.c\
+	suffix.c\
+	operand_size.c\
+	prefix.c\
 	$(addprefix tests/,\
 		fprint_instruction.c\
 		test_instruction.c\
