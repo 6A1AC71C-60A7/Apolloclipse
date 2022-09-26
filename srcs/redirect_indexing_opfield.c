@@ -5,17 +5,13 @@
 
 #include <user.h>
 
-
-
 __always_inline
-void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix)
+void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword flags)
 {
-	if (AVL_HAS_MP_0xF3_PFX(prefix))
+	if (AVL_HAS_MP_0xF3_PFX(flags))
 	{
 		if (opcode == 0x3A)
 			*found = (opfield_t){ .mnemonic = VPBROADCASTMW2D, .am1 = AM_V, .ot1 = AM_X, .am2 = AM_KRM,	.ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
-		// else if (opcode == 0x2A)
-		// 	*found = (opfield_t){ .mnemonic = VPBROADCASTMB2Q, .am1 = AM_V,	.ot1 = AM_X, .am2 = AM_KRM, .ot2 = OT_X, .am3 = 0, .ot3 = 0, .am4 = 0, .ot4 = 0, .symbol = 0 };
 		else
 		{
 			static const opfield_t arr[] = {
@@ -63,62 +59,59 @@ void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword 
 				{ .mnemonic = VPMOVD2M,		.am1 = AM_KR,	.ot1 = OT_X,	.am2 = AM_W,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,	.ot4 = 0,	.symbol = 0 },				
 			};
 
-			if (opcode >= 10 && opcode <= (ARRLEN(arr) + 0x10))
+			if (TESTRANGE(opcode, 0xA, (ARRLEN(arr) + 0x10)))
 				*found = arr[opcode - 0x10];
 
-			switch (found->mnemonic)
+			if (AVL_HAS_REXW_PFX(flags))
 			{
-				case VPMOVM2B:
-					if (prefix & AVL_RP_REXW_MASK)
+				switch (found->mnemonic)
+				{
+					case VPMOVM2B:
 						found->mnemonic = VPMOVM2W;
-					break ;
+						break ;
 
-				case VPMOVM2D:
-					if (prefix & AVL_RP_REXW_MASK)
+					case VPMOVM2D:
 						found->mnemonic = VPMOVM2Q;
-					break ;
+						break ;
 
-				case VPTESTNMB:
-					if (prefix & AVL_RP_REXW_MASK)
+					case VPTESTNMB:
 						found->mnemonic = VPTESTNMW;
-					break ;
+						break ;
 
-				case VPTESTNMD:
-					if (prefix & AVL_RP_REXW_MASK)
+					case VPTESTNMD:
 						found->mnemonic = VPTESTNMQ;
-					break ;
+						break ;
 
-				case VPMOVB2M:
-					if (prefix & AVL_RP_REXW_MASK)
+					case VPMOVB2M:
 						found->mnemonic = VPMOVW2M;
-					break ;
+						break ;
 
-				case VPMOVD2M:
-					if (prefix & AVL_RP_REXW_MASK)
+					case VPMOVD2M:
 						found->mnemonic = VPMOVQ2M;
-					break ;
+						break ;
+				}
 			}
 		}
 	}
 }
 
 __always_inline
-void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix)
+void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udword flags)
 {
-	const ubyte index = opcode & 0x0F;
+	const ubyte column = GET_COLUMN(opcode);
 
-	if (index == 4)
-		goto ret;
-	else if (index == 3)
+	if (column == 4)
+		return ;
+	else if (column == 3)
 		*found = (opfield_t){ .mnemonic = MODRM_EXT_GRP_17,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1A };
-	else if (AVL_HAS_MP_0x66_PFX(prefix) && AVL_HAS_MP_0xF2_PFX(prefix))
+	else if (AVL_HAS_MP_0x66_PFX(flags) && AVL_HAS_MP_0xF2_PFX(flags))
 	{
-		if (index == 0)
+		if (column == 0)
 			*found = (opfield_t){ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_D,	.am2 = AM_E,	.ot2 = OT_B,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
-		else if (index == 1)
+		else if (column == 1)
 			*found = (opfield_t){ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_D,	.am2 = AM_E,	.ot2 = OT_W,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
 	}
-	else if (AVL_HAS_MP_0xF2_PFX(prefix))
+	else if (AVL_HAS_MP_0xF2_PFX(flags))
 	{
 		static const opfield_t arr[] = {
 			{ .mnemonic = CRC32,	.am1 = AM_G,	.ot1 = OT_Y,	.am2 = AM_E,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -131,11 +124,11 @@ void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udwor
 			{ .mnemonic = SHRX,		.am1 = AM_G,	.ot1 = OT_Y,	.am2 = AM_E,	.ot2 = OT_Y,	.am3 = AM_B,	.ot3 = OT_Y,	.am4 = 0,		.ot4 = 0,		.symbol = S_V }
 		};
 
-		*found = arr[index];
+		*found = arr[column];
 	}
-	else if (AVL_HAS_MP_0xF3_PFX(prefix))
+	else if (AVL_HAS_MP_0xF3_PFX(flags))
 	{
-		switch (index)
+		switch (column)
 		{
 			case 0x5:
 				*found = (opfield_t){ .mnemonic = PEXT,	.am1 = AM_G,	.ot1 = OT_Y,	.am2 = AM_E,	.ot2 = OT_Y,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_V };
@@ -150,7 +143,4 @@ void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udwor
 				break ;
 		}
 	}
-ret:
-	return ;
 }
-
