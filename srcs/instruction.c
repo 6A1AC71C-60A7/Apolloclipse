@@ -63,6 +63,18 @@
 
 #define HAS_GROUP_EXTENTION(x) ((x == S_1A))
 
+#define IS_K_INSTRUCTION_0F(map, row, inst) ( \
+	map == lt_two_byte_opmap \
+	&& (row == 0x4 || row == 0x9) \
+	&& AVL_HAS_OP_VEX_PFX(inst) \
+)
+
+#define IS_OVERWRITING_EVEX_0F(map, inst) ( \
+	map == lt_two_byte_opmap \
+	&& AVL_HAS_OP_EVEX_PFX((inst)->i_flags) \
+	&& IS_EVEX_COLISION_0x0F((inst)->i_opcode[2], (inst)->i_flags) \
+)
+
 __always_inline
 static void skip_duplicated(const ubyte** target, ubyte mask)
 {
@@ -173,7 +185,7 @@ static opfield_t	handle_x87_instructions(AVL_instruction_t* const inst, const ub
 }
 
 __always_inline
-static void handle_evex_addons_0x0F_opmap(opfield_t* const found, ubyte opcode, udword prefix)
+static void handle_overwriting_evex_instructions_0F(opfield_t* const found, ubyte opcode, udword prefix)
 {
 	if (!AVL_HAS_MP_0xF2_PFX(prefix))
 	{
@@ -197,7 +209,7 @@ static void handle_evex_addons_0x0F_opmap(opfield_t* const found, ubyte opcode, 
 }
 
 __always_inline
-static void handle_ambigious_instructions_0x0F_opmap(opfield_t* const found, ubyte opcode)
+static void handle_k_instructions_0x0F(opfield_t* const found, ubyte opcode)
 {
 	switch (opcode)
 	{
@@ -263,18 +275,18 @@ static void handle_ambigious_instructions_0x0F_opmap(opfield_t* const found, uby
 ///WTF: If i copy paste this to another file it doesn't work anymore ...
 ///TODO: Change arguments and add an AVL_instruction_t instead
 __always_inline
-static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, ubyte opcode, ubyte* pvex, AVL_instruction_t* const inst)
+static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfield_t* map, opfield_t* const found, ubyte* const is_k_inst)
 {
 	uqword scale = 0;
 	ubyte no_overwrite = 0;
 
 	if (map == lt_two_byte_opmap)
 	{
-		const ubyte line = (opcode & 0xF0) >> 4;
+		const ubyte row = GET_ROW(inst->i_opcode[2]);
 	
-		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", line, inst->i_flags & AVL_MP_0x66_MASK);
+		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", row, inst->i_flags & AVL_MP_0x66_MASK);
 
-		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && !(line >= 0x9 && line <= 0xB))
+		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && !(row >= 0x9 && row <= 0xB))
 			scale = 1;
 		if (AVL_HAS_MP_0xF3_PFX(inst->i_flags))
 			scale = 2;
@@ -378,10 +390,10 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 	{
 		if (inst->i_flags & (AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK))
 		{
-			if (opcode >= 0xF0 && opcode < 0xF8)
-				handle_rare_prefixes_0x38_opmap(found, opcode, inst->i_flags);
+			if (inst->i_opcode[2] >= 0xF0 && inst->i_opcode[2] < 0xF8)
+				handle_rare_prefixes_0x38_opmap(found, inst->i_opcode[2], inst->i_flags);
 			else if (inst->i_flags & AVL_OP_EVEX_MASK)
-				handle_evex_addons_0x38_opmap(found, opcode, inst->i_flags);
+				handle_evex_addons_0x38_opmap(found, inst->i_opcode[2], inst->i_flags);
 		}
 		else
 		{
@@ -390,7 +402,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 				scale = 1;
 				if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 				{
-					switch (opcode)
+					switch (inst->i_opcode[2])
 					{
 						
 						///TODO: no_overwrite solution is trash
@@ -439,8 +451,8 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 				}
 			}
 			if (!no_overwrite)
-				*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(opcode) + (0x100 * scale)];
-			DEBUG("[DEBUG INDEXING MAP 0x0F38] INDEX IS [%ld] (mnemonic='%d')\n", GET_MAP_INDEX(opcode) + (0x100 * scale), found->mnemonic);
+				*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(inst->i_opcode[2]) + (0x100 * scale)];
+			DEBUG("[DEBUG INDEXING MAP 0x0F38] INDEX IS [%ld] (mnemonic='%d')\n", GET_MAP_INDEX(inst->i_opcode[2]) + (0x100 * scale), found->mnemonic);
 
 			if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 			{
@@ -454,7 +466,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 					case VBROADCASTF128:
 						found->mnemonic = AVL_HAS_REXW_PFX(inst->i_flags) ? VBROADCASTF64X2 : VBROADCASTF32X4;
-						if (((AVL_evex_t*)pvex)->evx_vlen2)
+						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 							found->ot1 = OT_DQQ;
 						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
@@ -463,7 +475,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					case VBROADCASTSD:
 						if (!AVL_HAS_REXW_PFX(inst->i_flags))
 							found->mnemonic = VBROADCASTF32X2;
-						if (((AVL_evex_t*)pvex)->evx_vlen2)
+						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 							found->ot1 = OT_DQQ;
 						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
@@ -472,7 +484,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					case VBROADCASTF32X8:
 						if (AVL_HAS_REXW_PFX(inst->i_flags))
 							found->mnemonic = VBROADCASTF64X4;
-						if (((AVL_evex_t*)pvex)->evx_vlen2)
+						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 							found->ot1 = OT_DQQ;
 						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
 						// 	found->ot2 = OT_DQ;
@@ -481,12 +493,12 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 					case VGATHERQPS:
 						if (inst->i_flags & AVL_RP_REXW_MASK)
 							found->mnemonic = VGATHERQPD;
-						else if (((AVL_evex_t*)pvex)->evx_vlen2)
+						else if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 						{
 							found->ot1 = OT_QQ;
 							found->ot2 = OT_QQ;
 						}
-						else if (((AVL_evex_t*)pvex)->evx_vlen)
+						else if (((AVL_evex_t*)inst->i_vp)->evx_vlen)
 						{
 							found->ot1 = OT_DQ;
 							found->ot2 = OT_DQ;
@@ -516,7 +528,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 							found->mnemonic = VPGATHERQQ;
 						else
 						{
-							if (!((AVL_evex_t*)pvex)->evx_vlen && !((AVL_evex_t*)pvex)->evx_vlen2)
+							if (!((AVL_evex_t*)inst->i_vp)->evx_vlen && !((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 								found->ot2 = OT_Q;
 							else
 							{
@@ -730,7 +742,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		/// Most of them are not checked because there's only
 		/// one ambigious instruction. I have to check them validation.
 
-		if (opcode == 0x0F && AVL_HAS_MP_0x66_PFX(inst->i_flags))
+		if (inst->i_opcode[2] == 0x0F && AVL_HAS_MP_0x66_PFX(inst->i_flags))
 			found->mnemonic = AMB_VPALIGNR_INDEX;
 		*found = lt_tree_byte_0x3A_ambigious_opmap[found->mnemonic];
 
@@ -739,7 +751,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 		if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 		{
-			switch (opcode)
+			switch (inst->i_opcode[2])
 			{
 				case 0x8:
 					*found = (opfield_t){ .mnemonic = VRNDSCALEPS, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_W, .ot2 = OT_X, .am3 = AM_I, .ot3 = OT_B, .am4 = 0, .ot4 = 0, .symbol = 0 };
@@ -763,7 +775,7 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 
 				case 0x18:
 					found->mnemonic = (inst->i_flags & AVL_RP_REXW_MASK) ? VINSERTF64X2 : VINSERTF32X4;
-					if (((AVL_evex_t*)pvex)->evx_vlen2)
+					if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 					{
 						found->ot1 = OT_DQQ;
 						found->ot2 = OT_DQQ;
@@ -879,18 +891,8 @@ static void redirect_indexing_opfield(const opfield_t* map, opfield_t* const fou
 		}
 		else if (found->mnemonic == KSHIFTL || found->mnemonic == KSHIFTR)
 		{
-			if (opcode == 0x30 || opcode == 0x32)
-			{
-				//inst->i_flags |= inst->i_flags & AVL_RP_REXW_MASK ? OS_WORD_MASK : OS_BYTE_MASK;
-				AVL_CLEAR_OPSZ(inst->i_flags);
-				AVL_SET_OPSZ(inst->i_flags, AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OPSZ_WORD : AVL_OPSZ_BYTE);
-			}
-			else if (opcode == 0x31 || opcode == 0x33)
-			{
-				//inst->i_flags |= inst->i_flags & AVL_RP_REXW_MASK ? OS_QWORD_MASK : OS_DWORD_MASK;
-				AVL_CLEAR_OPSZ(inst->i_flags);
-				AVL_SET_OPSZ(inst->i_flags, AVL_HAS_REXW_PFX(inst->i_flags) ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD);
-			}
+			*is_k_inst = 0x1;
+
 		}
 	}
 	else
@@ -1055,7 +1057,7 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 					case 0x77:
 						if (inst->i_vp[0])
 						{
-							if (inst->i_vp[2] ? ((AVL_vex_t*)inst->i_vp)->vx_vlen : ((AVL_vex2_t*)inst->i_vp)->vx2_vlen)
+							if (AVL_ISVEX3_PFX(inst) ? ((AVL_vex_t*)inst->i_vp)->vx_vlen : ((AVL_vex2_t*)inst->i_vp)->vx2_vlen)
 								found->mnemonic = VZEROALL;
 							else
 								found->mnemonic = VZEROUPPER;
@@ -1068,7 +1070,6 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 		{
 			if (opcode == 0x6E || opcode == 0x7E)
 			{
-				
 				if (AVL_HAS_REXW_PFX(inst->i_flags))
 				{
 					if (inst->i_mnemonic == MOVD)
@@ -1086,246 +1087,129 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	inst->i_mnemonic = found->mnemonic;
 }
 
-err_t	get_instruction_V2(AVL_instruction_t* const dest, const ubyte** iraw)
+__always_inline
+static void get_prefix_data(AVL_instruction_t* const dest, const ubyte** iraw)
 {
-	err_t		st = SUCCESS;
+	if (IS_EVEX_PREFIX(**iraw))
+		get_evex_prefixes(dest, iraw);
+	else if (IS_VEX_PREFIX(**iraw))
+		get_vex_prefixes(dest, iraw);
+	else
+	{
+		get_legacy_prefixes(&dest->i_flags, iraw);
 
-	ubyte		isvex = 0x0;
-	ubyte		skip_pref = 0x0;
-	ubyte		isescape;
-	ubyte		isrex;
-	ubyte		opattr;
+		///TODO: Useful error check but for instructions which have have 2 prefixes fails
+		/// They're always exceptions ... (0f 38 F0)
+		/// Opcode values isn't parsed yet so is difucult to know whether or not is an exception ...
+		if (0 && (/*st = */err_handle_legacy_prefixes(&dest->i_flags)) != SUCCESS)
+		{} // error
 
-	const ubyte* const istart = *iraw;
+		if (IS_REXBYTE(**iraw))
+		{
+			get_rex_prefix(&dest->i_flags, iraw);
+			skip_duplicated(iraw, 0xF0);
+		}
 
-	DEBUG("DEBUG: FIRST BYTE IS: %02X\n", **iraw);
+		if (IS_GPM_ESCAPE(**iraw))
+		{
+			dest->i_opcode[0] = *((*iraw)++);
 
-opcode_check:
+			if (IS_GPM_ESCAPE2(**iraw))
+				dest->i_opcode[1] = *((*iraw)++);
+		}
+	}		
+}
+
+__always_inline
+static const opfield_t* get_map(AVL_instruction_t* const inst)
+{
+	const opfield_t* map;
+
+	if (!AVL_HAS_OP_VEX_PFX(inst))
+		map = get_map_legacy(inst);
+	else
+		map = get_map_vex(inst->i_vp, AVL_HAS_OP_EVEX_PFX(inst->i_flags));
+
+	return map;
+}
+
+__always_inline
+static opfield_t get_opfield(AVL_instruction_t* const inst, const opfield_t* map, const ubyte** iraw, ubyte* const is_k_inst)
+{
+	const ubyte row = GET_ROW(inst->i_opcode[2]);
+	opfield_t found = {};
+
+	if (IS_K_INSTRUCTION_0F(map, row, inst))
+	{
+		*is_k_inst = 0x1;
+		handle_k_instructions_0x0F(&found, inst->i_opcode[2]);
+	}
+	else if (IS_OVERWRITING_EVEX_0F(map, inst))
+		handle_overwriting_evex_instructions_0F(&found, inst->i_opcode[2], inst->i_flags);
+	else if (found.mnemonic == 0)
+		found = map[GET_MAP_INDEX(inst->i_opcode[2])];
+
+	if (HAS_GROUP_EXTENTION(found.symbol))
+	{
+		found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, found, **iraw, inst->i_flags);
+		if (found.am1 == 0 || OPERAND_HAS_IMMEDIATE(found.am1))
+			(*iraw)++;
+	}
+	else if (IS_OPMAP_INDEXING(found.am1) || map == lt_three_byte_0x38_opmap)
+		redirect_indexing_opfield(inst, map, &found, is_k_inst);
+
+	return found;
+}
+
+__always_inline
+static void	get_suffix_data(AVL_instruction_t* const dest, opfield_t found, const ubyte** iraw)
+{
+	ubyte opattr = INST_HAS_MODRM(found) ? HAS_ATTR_MODRM : 0x0;
+
+	if (opattr & HAS_ATTR_MODRM)
+		opattr |= get_modrm(dest, iraw);
+	if (opattr & HAS_ATTR_SIB)
+		opattr |= get_sib(dest, iraw);
+	if (HAS_ATTR_DISP(opattr))
+		get_displacement(&dest->i_disp, iraw, GET_DISP_LENGHT(opattr));
+}
+
+err_t	get_instruction(AVL_instruction_t* const dest, const ubyte** iraw)
+{
+	err_t				st = SUCCESS;
+	const ubyte* const	istart = *iraw;
+	const opfield_t*	map;
+	opfield_t 			found = {};
+	ubyte				is_k_inst = 0;
 
 	///TODO: In some documentation i found that these are the 'SIMD prefixes'
 	///READ: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol2/o_b5573232dd8f1481-74.html
 	/// And take more notes
 
-	DEBUG("::::: BEFORE: %02X\n", **iraw);
-
-	if ((isvex | isescape) == 0 && (isrex = IS_REXBYTE(**iraw)))
-	{
-		DEBUG("---> HAS REX BYTE <---\n");
-		get_rex_prefix(&dest->i_flags, iraw);
-		skip_duplicated(iraw, 0xF0);
-	}
-
-	DEBUG("::::: AFTER: %02X\n", **iraw);
-
-	if (!INST_ISPREFIXED(dest) && (isescape = IS_GPM_ESCAPE(**iraw)))
-	{
-		dest->i_opcode[0] = *((*iraw)++);
-
-		if (IS_GPM_ESCAPE2(**iraw))
-			dest->i_opcode[1] = *((*iraw)++);
-	}
-
-	///TODO: This is not an error for: mov WORD PTR [rsp + 880000], 42
-	// else if (dest->i_flags & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK))
-	// {
-	// 	st = EINVOPCODE;
-	// 	goto error;
-	// }
-
-	if (skip_pref)
-		goto skip_prefix_check;
-
-	if ((isescape & isrex) == 0x0 && !INST_ISPREFIXED(dest))
-	{
-		if ((isvex = IS_EVEX_PREFIX(**iraw)))
-		{
-			get_evex_prefixes(dest, iraw);
-			DEBUG("DEBUG: EVEX: [62][%02X][%02X][%02X]\n", dest->i_vp[0], dest->i_vp[1], dest->i_vp[2]);
-		}
-		else if ((isvex = IS_VEX_PREFIX(**iraw)))
-		{
-			get_vex_prefixes(dest, iraw);
-			DEBUG("DEBUG: VEX: [%02X][%02X][%02X]\n", dest->i_vp[0], dest->i_vp[1], dest->i_vp[2]);
-		}
-		else if (!INST_ISPREFIXED(dest))
-		{
-			get_legacy_prefixes(&dest->i_flags, iraw);
-
-			///TODO: Useful error check but for instructions which have have 2 prefixes fails
-			/// They're always exceptions ... (0f 38 F0)
-			/// Opcode values isn't parsed yet so is difucult to know whether or not is an exception ...
-			if (0 && (st = err_handle_legacy_prefixes(&dest->i_flags)) != SUCCESS)
-				goto error;
-
-			DEBUG("[DEBUG] PREFIX AFTER: %d\n", dest->i_flags & AVL_MP_0xF2_MASK);
-			DEBUG("[DEBUG] VALUE (**iraw) AFTER: %02X\n", **iraw);
-		}		
-	}
-
-	if (isvex == 0x0)
-	{
-		skip_pref = 0x1;
-		goto opcode_check;
-	}
-
-skip_prefix_check:
+	get_prefix_data(dest, iraw);
 
 	dest->i_opcode[2] = *((*iraw)++);
-
-	DEBUG("DEBUG: OPCODE IS [%02X][%02X][%02X]\n", dest->i_opcode[0], dest->i_opcode[1], dest->i_opcode[2]);
-
-	opfield_t 			found = {};
-	const opfield_t*	map = 0;
-	ubyte not_overwrite = 0;
 
 	if (IS_ESCAPE_FX87(dest))
 		found = handle_x87_instructions(dest, iraw);
 	else
 	{
-		if (!AVL_HAS_OP_VEX_PFX(dest))
-			map = get_map_legacy(dest);
-		else
-			map = get_map_vex(dest->i_vp, AVL_HAS_OP_EVEX_PFX(dest->i_flags & AVL_OP_EVEX_MASK));
-
-		const ubyte row = GET_ROW(dest->i_opcode[2]);
-	
-		///TODO: Define for condition
-		/* This is because AVX-512 K instructions use the same opcode than other
-			opcodes (within 0x0F opcode map) but a diferent prefix (VEX) */
-		if (map == lt_two_byte_opmap && (row == 0x4 || row == 0x9) && AVL_HAS_OP_VEX_PFX(dest))
-		{
-			handle_ambigious_instructions_0x0F_opmap(&found, dest->i_opcode[2]);
-
-			///TODO: Define for condition
-			///TODO: Move this to operand_size.c AND remove 'not_overwrite'
-			if (TESTRANGE(dest->i_opcode[2], 0x41, 0x47) || TESTRANGE(dest->i_opcode[2], 0x90, 0x99)
-			|| TESTRANGE(dest->i_opcode[2], 0x4A, 0x4B)) 
-			{
-				not_overwrite = 1;
-				ubyte opsz;
-		
-				if (TESTRANGE(dest->i_opcode[2], 0x41, 0x42) || TESTRANGE(dest->i_opcode[2], 0x44, 0x47)
-				|| TESTRANGE(dest->i_opcode[2], 0x90, 0x91) || TESTRANGE(dest->i_opcode[2], 0x98, 0x99)
-				|| dest->i_opcode[2] == 0x4A)
-				{
-					
-					if (AVL_HAS_REXW_PFX(dest->i_flags))
-					{
-						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
-							opsz = AVL_OPSZ_DWORD;
-						else
-							opsz = AVL_OPSZ_QWORD;
-					}
-					else
-					{
-						if (dest->i_flags & AVL_MP_0x66_MASK)
-							opsz = AVL_OPSZ_BYTE;
-						else
-							opsz = AVL_OPSZ_WORD;
-					}
-				}
-				else if (dest->i_opcode[2] == 0x92 || dest->i_opcode[2] == 0x93)
-				{
-					if (AVL_HAS_MP_0xF2_PFX(dest->i_flags))
-					{
-						if (AVL_HAS_REXW_PFX(dest->i_flags))
-							opsz = AVL_OPSZ_QWORD;
-						else
-							opsz = AVL_OPSZ_DWORD;
-					}
-					else
-					{
-						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
-							opsz = AVL_OPSZ_BYTE;
-						else
-							opsz = AVL_OPSZ_WORD;
-					}
-				}
-				else if (dest->i_opcode[2] == 0x4B)
-				{
-					if (AVL_HAS_REXW_PFX(dest->i_flags))
-						opsz = AVL_OPSZ_QWORD;
-					else if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
-						opsz = AVL_OPSZ_WORD;
-					else
-						opsz = AVL_OPSZ_DWORD;
-				}
-
-				AVL_CLEAR_OPSZ(dest->i_flags);
-				AVL_SET_OPSZ(dest->i_flags, opsz);
-
-				if (!AVL_OPSZ_IS_QWORD(dest->i_flags))
-				{
-					if (dest->i_opcode[2] == 0x92)
-						found.ot2 = OT_D;
-					else if (dest->i_opcode[2] == 0x93)
-						found.ot1 = OT_D;
-				}
-			}
-		}
-
-		///TODO: Define for condition
-		/* This is because AVX-512 EVEX instructions use the same opcode than other
-			opcodes without EVEX prefix (within 0x0F opcode map) */
-		else if (map == lt_two_byte_opmap && AVL_HAS_OP_EVEX_PFX(dest->i_flags) && IS_EVEX_COLISION_0x0F(dest->i_opcode[2], dest->i_flags))
-			handle_evex_addons_0x0F_opmap(&found, dest->i_opcode[2], dest->i_flags);
-		else if (found.mnemonic == 0)
-			found = map[GET_MAP_INDEX(dest->i_opcode[2])];
-
-		DEBUG("DEBUG: MAP INDEX: %d\n", GET_MAP_INDEX(dest->i_opcode[2]));
-		//DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
-		DEBUG("2 ADDR MODE: [%d] [%d]\n", found.am1, found.am2);
-		DEBUG("2 OPERAND TYPE: [%d %d]\n", found.ot1, found.ot2);
-
-		if (HAS_GROUP_EXTENTION(found.symbol))
-		{
-			DEBUG("HAS EXTENSION\n");
-			found = get_instruction_by_extension_one_and_two_b_opmap(found.mnemonic, found, **iraw, dest->i_flags);
-
-			if (found.am1 == 0 || OPERAND_HAS_IMMEDIATE(found.am1))
-				(*iraw)++;
-		}
-
-		if (map == lt_three_byte_0x38_opmap || IS_OPMAP_INDEXING(found.am1))
-		{
-			DEBUG("IS INDEXING: %02X\n", dest->i_opcode[2]);
-			redirect_indexing_opfield(map, &found, dest->i_opcode[2], dest->i_vp, dest);
-		}
+		map = get_map(dest);
+		found = get_opfield(dest, map, iraw, &is_k_inst);
 	}
-
-	DEBUG("DEBUG: MNEMONIC: %d\n", found.mnemonic);
 
 	dest->i_mnemonic = found.mnemonic;
 
-	opattr = INST_HAS_MODRM(found) ? HAS_ATTR_MODRM : 0x0;
-
-	if (opattr & HAS_ATTR_MODRM)
-		opattr |= get_modrm(dest, iraw);
-	DEBUG("OPATTR IS (no sib): %d\n", opattr);
-	if (opattr & HAS_ATTR_SIB)
-		opattr |= get_sib(dest, iraw);
-	DEBUG("OPATTR IS (sib): %d\n", opattr);
-	if (HAS_ATTR_DISP(opattr))
-		get_displacement(&dest->i_disp, iraw, GET_DISP_LENGHT(opattr));
-
+	get_suffix_data(dest, found, iraw);
 	handle_ambigious_arguments(&found, map, dest);
-
-	///TODO: Remove this condition
-	if (!not_overwrite && dest->i_mnemonic != KSHIFTL && dest->i_mnemonic != KSHIFTR)
-		get_operand_size(dest, &found);
+	get_operand_size(dest, &found, is_k_inst);
 
 	if (OPFIELD_HAS_IMMEDIATE(found))
 		get_immediate(dest, found, iraw);
-	else
-		DEBUG("DEBUG: HAS NOT IMMEDIATE\n");
 
-	//resolve_operands(dest, found);
 	resolve_operands_v2(dest, found);
 
 	dest->i_size = *iraw - istart;
-
-error:
-	DEBUG("IRAW AT THE END: %02X\n", **iraw);
 
 	return st;
 }
@@ -1333,7 +1217,7 @@ error:
 void	get_instructions(AVL_instruction_t* const dest, uqword destlen, const ubyte** iraw)
 {
 	for (uqword i = 0 ; i < destlen ; i++)
-		get_instruction_V2(&dest[i], iraw);
+		get_instruction(&dest[i], iraw);
 }
 
 

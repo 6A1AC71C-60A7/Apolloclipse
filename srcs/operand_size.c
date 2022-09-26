@@ -124,7 +124,7 @@ static ubyte	is_operand_size_default_64bits(AVL_instruction_t* const inst)
 }
 
 __always_inline
-void	get_operand_size(AVL_instruction_t* const dest, opfield_t* const found)
+void	get_operand_size(AVL_instruction_t* const dest, opfield_t* const found, ubyte is_k_inst)
 {
 	ubyte opsz;
 
@@ -139,13 +139,79 @@ void	get_operand_size(AVL_instruction_t* const dest, opfield_t* const found)
 	}
 	else if (AVL_HAS_OP_VEX_PFX(dest))
 	{
-		const ubyte is_qqword = AVL_ISVEX3_PFX(dest) ? ((AVL_vex_t*)dest->i_vp)->vx_vlen : ((AVL_vex2_t*)dest->i_vp)->vx2_vlen;
+		if (is_k_inst)
+		{
+			if (dest->i_opcode[2] == 0x30 || dest->i_opcode[2] == 0x32)
+				opsz = AVL_HAS_REXW_PFX(dest->i_flags) ? AVL_OPSZ_WORD : AVL_OPSZ_BYTE;
+			else if (dest->i_opcode[2] == 0x31 || dest->i_opcode[2] == 0x33)
+				opsz = AVL_HAS_REXW_PFX(dest->i_flags) ? AVL_OPSZ_QWORD : AVL_OPSZ_DWORD;
+			else if (TESTRANGE(dest->i_opcode[2], 0x41, 0x47) || TESTRANGE(dest->i_opcode[2], 0x90, 0x99)
+			|| TESTRANGE(dest->i_opcode[2], 0x4A, 0x4B)) 
+			{		
+				if (TESTRANGE(dest->i_opcode[2], 0x41, 0x42) || TESTRANGE(dest->i_opcode[2], 0x44, 0x47)
+				|| TESTRANGE(dest->i_opcode[2], 0x90, 0x91) || TESTRANGE(dest->i_opcode[2], 0x98, 0x99)
+				|| dest->i_opcode[2] == 0x4A)
+				{
+					
+					if (AVL_HAS_REXW_PFX(dest->i_flags))
+					{
+						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
+							opsz = AVL_OPSZ_DWORD;
+						else
+							opsz = AVL_OPSZ_QWORD;
+					}
+					else
+					{
+						if (dest->i_flags & AVL_MP_0x66_MASK)
+							opsz = AVL_OPSZ_BYTE;
+						else
+							opsz = AVL_OPSZ_WORD;
+					}
+				}
+				else if (dest->i_opcode[2] == 0x92 || dest->i_opcode[2] == 0x93)
+				{
+					if (AVL_HAS_MP_0xF2_PFX(dest->i_flags))
+					{
+						if (AVL_HAS_REXW_PFX(dest->i_flags))
+							opsz = AVL_OPSZ_QWORD;
+						else
+							opsz = AVL_OPSZ_DWORD;
+					}
+					else
+					{
+						if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
+							opsz = AVL_OPSZ_BYTE;
+						else
+							opsz = AVL_OPSZ_WORD;
+					}
 
-		opsz = is_qqword ? AVL_OPSZ_QQWORD : AVL_OPSZ_DQWORD;
-
-		///TODO: if (IS_K*()) { handle k mnemonics operand size }
-		/// SIZE RESOLUTION FOR THESE MUST BE PERFORMED OTHERWAY
-
+					if (opsz != AVL_OPSZ_QWORD)
+					{
+						if (dest->i_opcode[2] == 0x92)
+							found->ot2 = OT_D;
+						else if (dest->i_opcode[2] == 0x93)
+							found->ot1 = OT_D;
+					}
+				}
+				else if (dest->i_opcode[2] == 0x4B)
+				{
+					if (AVL_HAS_REXW_PFX(dest->i_flags))
+						opsz = AVL_OPSZ_QWORD;
+					else if (AVL_HAS_MP_0x66_PFX(dest->i_flags))
+						opsz = AVL_OPSZ_WORD;
+					else
+						opsz = AVL_OPSZ_DWORD;
+				}
+			}
+			AVL_CLEAR_OPSZ(dest->i_flags);
+			AVL_SET_OPSZ(dest->i_flags, opsz);
+			return ;
+		}
+		else
+		{
+			const ubyte is_qqword = AVL_ISVEX3_PFX(dest) ? ((AVL_vex_t*)dest->i_vp)->vx_vlen : ((AVL_vex2_t*)dest->i_vp)->vx2_vlen;
+			opsz = is_qqword ? AVL_OPSZ_QQWORD : AVL_OPSZ_DQWORD;
+		}
 	}
 	else if (IS_NONVEX_SIMD(dest))
 		opsz = AVL_OPSZ_DQWORD;
@@ -175,6 +241,7 @@ void	get_operand_size(AVL_instruction_t* const dest, opfield_t* const found)
 		}
 		else if (dest->i_mnemonic == UMONITOR && !AVL_HAS_LP_ADDRSZ_PFX(dest->i_flags))
 			opsz = AVL_OPSZ_QWORD;
+
 	}
 
 	AVL_CLEAR_OPSZ(dest->i_flags);

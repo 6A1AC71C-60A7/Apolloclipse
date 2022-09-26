@@ -221,7 +221,7 @@ extern void		get_immediate(AVL_instruction_t* const dest, opfield_t opfield, con
 
 #define IS_ESCAPE_FX87(x) (!AVL_HAS_OP_VEX_PFX(x) && !INST_ISPREFIXED(x) && TESTRANGE((x)->i_opcode[2], 0xD8, 0xDF))
 
-extern void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found);
+extern void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found, ubyte is_k_inst);
 
 //extern void		redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, ubyte opcode, ubyte* pvex, AVL_instruction_t* const inst);
 
@@ -259,3 +259,4 @@ extern void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode
 	|| OPFIELD_HAS_MODRM(x.am3) \
 	|| OPFIELD_HAS_MODRM(x.am4) \
 )
+

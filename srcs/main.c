@@ -242,7 +242,7 @@ int main(int ac, const char* av[])
 #else
     (void)av; (void)ac;
 
-    const ubyte iraw[] = "\xc4\xe3\x79\x32\xca\x69";
+    const ubyte iraw[] = "\xc5\xf9\x90\xca";
 #endif
 
     const ubyte* prt = iraw;
