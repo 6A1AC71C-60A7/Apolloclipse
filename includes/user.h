@@ -129,7 +129,7 @@
 #define AVL_OPSZ_DQWORD 0x4
 #define AVL_OPSZ_QQWORD 0x5
 #define AVL_OPSZ_DQQWORD 0x6
-///TODO: I have bit left to indicate 'other' type (e.g 80-bits pointer)
+///TODO: I have 1 valaue left to indicate 'other' type (e.g 80-bits pointer)
 
 #define __AVL_OPERAND_SZ_SHIFT_AMOUNT 0x1D
 #define AVL_GET_OPERAND_SZ(x) (((x) >> __AVL_OPERAND_SZ_SHIFT_AMOUNT) & 0x7)

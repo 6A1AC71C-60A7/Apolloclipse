@@ -1207,7 +1207,7 @@ err_t	get_instruction(AVL_instruction_t* const dest, const ubyte** iraw)
 	if (OPFIELD_HAS_IMMEDIATE(found))
 		get_immediate(dest, found, iraw);
 
-	resolve_operands_v2(dest, found);
+	resolve_operands(dest, found);
 
 	dest->i_size = *iraw - istart;
 

@@ -25,7 +25,7 @@ $(addprefix srcs/,\
 	instruction.c\
 	main.c\
 	redirect_indexing_opfield.c\
-	resolve_operands_V2.c\
+	resolve_operands.c\
 	suffix.c\
 	operand_size.c\
 	prefix.c\
