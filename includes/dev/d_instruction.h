@@ -1,13 +1,12 @@
 
 #pragma once
 
-#include <d_error.h>
-#include <d_mnemonic.h>
-#include <d_opcode.h>
-#include <d_lookup_tables.h>
-#include <user/types.h>
-
-#include <user.h>
+#include <dev/d_error.h>
+#include <user/AVL_mnemonic.h>
+#include <dev/d_opcode.h>
+#include <dev/d_lookup_tables.h>
+#include <user/AVL_types.h>
+#include <AVL_disassembler.h>
 
 
 // /*

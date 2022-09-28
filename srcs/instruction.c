@@ -1,7 +1,7 @@
 
-#include <d_portability.h>
-#include <d_instruction.h>
-#include <d_utils.h>
+#include <dev/d_portability.h>
+#include <dev/d_instruction.h>
+#include <dev/d_utils.h>
 
 ///NOTE: GPM stands for "Gereral Purpose Multiple"
 

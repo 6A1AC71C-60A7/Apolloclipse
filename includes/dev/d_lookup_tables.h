@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include <d_mnemonic.h>
-#include <d_opcode.h>
+#include <user/AVL_mnemonic.h>
+#include <dev/d_opcode.h>
 
 static const ubyte lt_legacy_prefixes[] = {
     0xF0, 0xF2, 0xF3, 0x64, 0x65, 0x2E, 0x3E, 0x66, 0x67

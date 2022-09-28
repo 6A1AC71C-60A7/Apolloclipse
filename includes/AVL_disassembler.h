@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <user/types.h>
+#include <user/AVL_types.h>
 
 /*
 ** Legacy prefixes

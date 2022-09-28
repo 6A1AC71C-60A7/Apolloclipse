@@ -9,12 +9,12 @@
 // IT ALSO MUST HAVE A BLACKLIST FOR REGISTER PERMUTATION (USEFUL FOR THE FUTURE)
 //      (EXCEPTIONS ON REGISTERS WHICH WILL BE THE OUTPUT)
 
-#include <tests.h>
-#include <d_opcode.h>
+#include <dev/tests.h>
+#include <dev/d_opcode.h>
 
-#include <user/register.h>
+#include <user/AVL_register.h>
 
-#include <user.h>
+#include <AVL_disassembler.h>
 
 #include <fcntl.h>
 #include <unistd.h>

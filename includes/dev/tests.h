@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <d_instruction.h>
+#include <dev/d_instruction.h>
 
 void test_instruction(const ubyte *instruction_raw, AVL_instruction_t* answer);
 

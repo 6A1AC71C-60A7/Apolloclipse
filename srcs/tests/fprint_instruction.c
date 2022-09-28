@@ -1,11 +1,11 @@
 
-#include <d_portability.h>
-#include <d_instruction.h>
-#include <d_error.h>
+#include <dev/d_portability.h>
+#include <dev/d_instruction.h>
+#include <dev/d_error.h>
 
-#include <user/types.h>
+#include <user/AVL_types.h>
 
-#include <user.h>
+#include <AVL_disassembler.h>
 
 #define KEYWORD_PTR
 #undef KEYWORD_PTR
@@ -13,7 +13,7 @@
 #define ADDRESING_GREATHER_THAN_QWORD
 #undef ADDRESING_GREATHER_THAN_QWORD
 
-#include <user/register.h>
+#include <user/AVL_register.h>
 
 static const char* const regs_v2[] = {
 	"<[NONE]>",

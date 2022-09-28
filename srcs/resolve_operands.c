@@ -1,9 +1,9 @@
 
-#include <d_portability.h>
-#include <d_instruction.h>
-#include <d_opcode.h>
-#include <d_utils.h>
-#include <user/register.h>
+#include <dev/d_portability.h>
+#include <dev/d_instruction.h>
+#include <dev/d_opcode.h>
+#include <dev/d_utils.h>
+#include <user/AVL_register.h>
 
 #define IS_AME_NONEVEX_EXCEPTION(x) ( \
 	(x) == VCVTSI2SS \

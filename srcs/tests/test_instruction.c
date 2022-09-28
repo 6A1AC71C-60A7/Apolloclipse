@@ -1,7 +1,7 @@
 
-#include <d_portability.h>
-#include <d_instruction.h>
-#include <d_error.h>
+#include <dev/d_portability.h>
+#include <dev/d_instruction.h>
+#include <dev/d_error.h>
 
 __always_inline
 static void test_instruction_prefixes(const ubyte *instruction_raw, AVL_instruction_t* const data)
