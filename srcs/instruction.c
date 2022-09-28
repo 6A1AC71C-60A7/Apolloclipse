@@ -277,23 +277,19 @@ static void handle_k_instructions_0x0F(opfield_t* const found, ubyte opcode)
 __always_inline
 static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfield_t* map, opfield_t* const found, ubyte* const is_k_inst)
 {
+	const mnemonic_t oldmn = found->mnemonic;
 	uqword scale = 0;
-	ubyte no_overwrite = 0;
 
 	if (map == lt_two_byte_opmap)
 	{
 		const ubyte row = GET_ROW(inst->i_opcode[2]);
 	
-		DEBUG("DEBUG: LINE: %d, HAS 0x66: %d\n", row, inst->i_flags & AVL_MP_0x66_MASK);
-
 		if (AVL_HAS_MP_0x66_PFX(inst->i_flags) && !(row >= 0x9 && row <= 0xB))
 			scale = 1;
 		if (AVL_HAS_MP_0xF3_PFX(inst->i_flags))
 			scale = 2;
 		if (AVL_HAS_MP_0xF2_PFX(inst->i_flags))
 			scale = 3;
-
-		DEBUG("--> INDEX IS %"PRId64"\n", found->mnemonic + (0x76 * scale));
 
 		/* Prefix dependent instructions are aligned by 0x76 bytes */
 		*found = lt_two_byte_ambigious_opmap[found->mnemonic + (0x76 * scale)];
@@ -335,54 +331,56 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 				case VPXOR:
 					found->mnemonic = VPXORD;
 					break ;
+			}
 
-				case VCVTUDQ2PD:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
+			if (AVL_HAS_REXW_PFX(inst->i_flags))
+			{
+				switch (found->mnemonic)
+				{
+					case VPSRAD:
+						found->mnemonic = VPSRAQ;
+						break ;
+
+					case VCVTDQ2PD:
+						found->mnemonic = VCVTQQ2PD;
+						break ;
+
+					case VCVTUDQ2PD:
 						found->mnemonic = VCVTUQQ2PD;
 					break ;
 
-				case VCVTUDQ2PS:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
+					case VCVTUDQ2PS:
 						found->mnemonic = VCVTUQQ2PS;
-					break ;
-
-				case VCVTPD2UQQ:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						break ;
+				}
+			}
+			else
+			{
+				switch (found->mnemonic)
+				{
+					case VCVTPD2UQQ:
 						found->mnemonic = VCVTPS2UQQ;
-					break ;
+						break ;
 
-				case VCVTTPD2QQ:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
+					case VCVTTPD2QQ:
 						found->mnemonic = VCVTTPS2QQ;
-					break ;
+						break ;
 
-				case VCVTTPD2UQQ:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
+					case VCVTTPD2UQQ:
 						found->mnemonic = VCVTTPS2UQQ;
-					break ;
+						break ;
 
-				case VCVTSS2USI:
-					// fall through
-				case VCVTSD2USI:
-					// fall through
-				case VCVTTSS2USI:
-					// fall through
-				case VCVTTSD2USI:
-					// fall through
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
+					case VCVTSS2USI:
+						// fall through
+					case VCVTSD2USI:
+						// fall through
+					case VCVTTSS2USI:
+						// fall through
+					case VCVTTSD2USI:
+						// fall through
 						found->ot1 = OT_D;
-					break ;
-
-				case VPSRAD:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VPSRAQ;
-					break ;
-
-				case VCVTDQ2PD:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VCVTQQ2PD;
-					break ;
-
+						break ;
+				}
 			}
 		}
 	}
@@ -390,14 +388,14 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 	{
 		if (inst->i_flags & (AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK))
 		{
-			if (inst->i_opcode[2] >= 0xF0 && inst->i_opcode[2] < 0xF8)
+			if (TESTRANGE(inst->i_opcode[2], 0xF0, 0xF8))
 				handle_rare_prefixes_0x38_opmap(found, inst->i_opcode[2], inst->i_flags);
-			else if (inst->i_flags & AVL_OP_EVEX_MASK)
+			else if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 				handle_evex_addons_0x38_opmap(found, inst->i_opcode[2], inst->i_flags);
 		}
 		else
 		{
-			if (inst->i_flags & AVL_MP_0x66_MASK)
+			if (AVL_HAS_MP_0x66_PFX(inst->i_flags))
 			{
 				scale = 1;
 				if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
@@ -409,50 +407,30 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 
 						case 0x10:
 							*found = (opfield_t){ .mnemonic = VPSRLVW,	.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,	.ot4 = 0,	.symbol = S_V };
-							no_overwrite = 1;
 							break ;
 
 						case 0x14:
 							*found = (opfield_t){ .mnemonic = VPRORVD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
 							if (AVL_HAS_REXW_PFX(inst->i_flags))
 								found->mnemonic = VPRORVQ;
-							no_overwrite = 1;
 							break ;
 
 						case 0x15:
 							*found = (opfield_t){ .mnemonic = VPROLVD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
-							no_overwrite = 1;
 							break ;
-
-						// case 0x1A:
-						// 	*found = (opfield_t){ .mnemonic = VBROADCASTF32X4,	.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_M,	.ot2 = OT_DQ,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_V };
-						// 	if (prefix & AVL_RP_REXW_MASK)
-						// 		found->mnemonic = VBROADCASTF64X2;
-						// 	no_overwrite = 1;
-						// 	break ;
-
-						// case 0x1B:
-						// 	*found = (opfield_t){ .mnemonic = VBROADCASTF32X8,	.am1 = AM_V,	.ot1 = OT_QQ,	.am2 = AM_M,	.ot2 = OT_DQ,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
-						// 	if (prefix & AVL_RP_REXW_MASK)
-						// 		found->mnemonic = VBROADCASTF64X4;
-						// 	no_overwrite = 1;
-						// 	break ;
 
 						case 0x2C:
 							*found = (opfield_t){ .mnemonic = VSCALEFPD, .am1 = AM_V, .ot1 = OT_X, .am2 = AM_H, .ot2 = OT_X, .am3 = AM_W, .ot3 = OT_X, .am4 = 0, .ot4 = 0, .symbol = 0 };
-							no_overwrite = 1;
 							break ;
 
 						case 0x2D:
 							*found = (opfield_t){ .mnemonic = VSCALEFSD, .am1 = AM_V, .ot1 = OT_DQ, .am2 = AM_H, .ot2 = OT_DQ, .am3 = AM_W, .ot3 = OT_DQ, .am4 = 0, .ot4 = 0, .symbol = 0 };
-							no_overwrite = 1;
 							break ;
 					}
 				}
 			}
-			if (!no_overwrite)
+			if (found->mnemonic == oldmn)
 				*found = lt_three_byte_0x38_opmap[GET_MAP_INDEX(inst->i_opcode[2]) + (0x100 * scale)];
-			DEBUG("[DEBUG INDEXING MAP 0x0F38] INDEX IS [%ld] (mnemonic='%d')\n", GET_MAP_INDEX(inst->i_opcode[2]) + (0x100 * scale), found->mnemonic);
 
 			if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 			{
@@ -468,8 +446,6 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 						found->mnemonic = AVL_HAS_REXW_PFX(inst->i_flags) ? VBROADCASTF64X2 : VBROADCASTF32X4;
 						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 							found->ot1 = OT_DQQ;
-						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
-						// 	found->ot2 = OT_DQ;
 						break ;
 
 					case VBROADCASTSD:
@@ -477,8 +453,6 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 							found->mnemonic = VBROADCASTF32X2;
 						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 							found->ot1 = OT_DQQ;
-						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
-						// 	found->ot2 = OT_DQ;
 						break ;
 
 					case VBROADCASTF32X8:
@@ -486,8 +460,6 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 							found->mnemonic = VBROADCASTF64X4;
 						if (((AVL_evex_t*)inst->i_vp)->evx_vlen2)
 							found->ot1 = OT_DQQ;
-						// if (AVL_GET_MODRM_MOD(modrm) != 0b11)
-						// 	found->ot2 = OT_DQ;
 						break ;
 
 					case VGATHERQPS:
@@ -508,7 +480,7 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 						// fall through
 					case VGATHERDPS:
 						// because strange swtich witout break "found->mnemonic == VGATHERDPS"
-						if (found->mnemonic == VGATHERDPS && inst->i_flags & AVL_RP_REXW_MASK)	
+						if (AVL_HAS_REXW_PFX(inst->i_flags) && found->mnemonic == VGATHERDPS)	
 							found->mnemonic = VGATHERDPD;
 						// fall through
 					case VGATHERQPD:
@@ -539,215 +511,179 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 						///TODO: This is AM_H exception (can be handled diferently)
 						found->am3 = 0;
 						break ;
+				}
 
-					case VSCATTERDPD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
-							found->mnemonic = VSCATTERDPS;
-						break ;
-
-					case VSCATTERQPD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
-							found->mnemonic = VSCATTERQPS;
-						break ;
-
-					case VPSCATTERDD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+				if (AVL_HAS_REXW_PFX(inst->i_flags))
+				{
+					switch (found->mnemonic)
+					{
+						case VPSCATTERDD:
 							found->mnemonic = VPSCATTERDQ;
-						break ;
+							break ;
 
-					case VPSCATTERQD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+						case VPSCATTERQD:
 							found->mnemonic = VPSCATTERQQ;
-						break ;
+							break ;
 
-					case VGETEXPPD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
-							found->mnemonic = VGETEXPPS;
-						break ;
-
-					case VGETEXPSD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
-							found->mnemonic = VGETEXPSS;
-						break ;
-
-					case VPBLENDMB:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+						case VPBLENDMB:
 							found->mnemonic = VPBLENDMW;
-						break ;
+							break ;
 
-					case VPBLENDMD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+						case VPBLENDMD:
 							found->mnemonic = VPBLENDMQ;
-						break ;
+							break ;
 
-					case VPBROADCASTD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-						{
+						case VPBROADCASTD:
 							found->mnemonic = VPBROADCASTQ;
 							found->ot2 = OT_Q;
-						}
-						break ;
+							break ;
 
-					case VPCOMPRESSD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+						case VPCOMPRESSD:
 							found->mnemonic = VPCOMPRESSQ;
-						break ;
-					
-					case VPCONFLICTD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+							break ;
+						
+						case VPCONFLICTD:
 							found->mnemonic = VPCONFLICTQ;
-						break ;
+							break ;
 
-					case VPERMI2B:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+						case VPERMI2B:
 							found->mnemonic = VPERMI2W;
-						break ;
+							break ;
 
-					case VPERMI2D:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
+						case VPERMI2D:
 							found->mnemonic = VPERMI2Q;
-						break ;
+							break ;
 
-					case VPERMI2PD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VPERMT2B:
+							found->mnemonic = VPERMT2W;
+							break ;
+
+						case VPERMT2D:
+							found->mnemonic = VPERMT2Q;
+							break ;
+
+						case VPEXPANDD:
+							found->mnemonic = VPEXPANDQ;
+							break ;
+						
+						case VPLZCNTD:
+							found->mnemonic = VPLZCNTQ;
+							break ;
+
+						case VPROLVD:
+							found->mnemonic = VPROLVQ;
+							break ;
+
+						case VPTESTMB:
+							found->mnemonic = VPTESTMW;
+							break ;
+
+						case VPTESTMD:
+							found->mnemonic = VPTESTMQ;
+							break ;
+
+						case VPMAXSD:
+							found->mnemonic = VPMAXSQ;
+							break ;
+
+						case VPMULLD:
+							found->mnemonic = VPMULLQ;
+							break ;
+
+						case VPMINUD:
+							found->mnemonic = VPMINUQ;
+							break ;
+
+						case VPMINSD:
+							found->mnemonic = VPMINSQ;
+							break ;
+
+						case VPMAXUD:
+							found->mnemonic = VPMAXUQ;
+							break ;
+
+						case VPERMB:
+							found->mnemonic = VPERMW;
+							break ;
+
+						case VPERMPS:
+							found->mnemonic = VPERMPD;
+							break ;
+
+						case VPERMD:
+							found->mnemonic = VPERMQ;
+							break ;
+					}
+				}
+				else
+				{
+					switch (found->mnemonic)
+					{
+						case VSCATTERDPD:
+							found->mnemonic = VSCATTERDPS;
+							break ;
+
+						case VSCATTERQPD:
+							found->mnemonic = VSCATTERQPS;
+							break ;
+
+						case VGETEXPPD:
+							found->mnemonic = VGETEXPPS;
+							break ;
+
+						case VGETEXPSD:
+							found->mnemonic = VGETEXPSS;
+							break ;
+
+						case VPERMI2PD:
 							found->mnemonic = VPERMI2PS;
 						break ;
 
-					case VPERMT2B:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPERMT2W;
-						break ;
-
-					case VPERMT2D:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPERMT2Q;
-						break ;
-
-					case VPERMT2PD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VPERMT2PD:
 							found->mnemonic = VPERMT2PS;
-						break ;
-
-					case VPEXPANDD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPEXPANDQ;
-						break ;
-					
-					case VPLZCNTD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPLZCNTQ;
-						break ;
-
-					case VPROLVD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPROLVQ;
-						break ;
-
-					case VPTESTMB:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPTESTMW;
-						break ;
-
-					case VPTESTMD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPTESTMQ;
-						break ;
-
-					case VRCP14PD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+							break ;
+						
+						case VRCP14PD:
 							found->mnemonic = VRCP14PS;
-						break ;
+							break ;
 
-					case VRCP14SD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VRCP14SD:
 							found->mnemonic = VRCP14SS;
-						break ;
+							break ;
 
-					case VRSQRT14PD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VRSQRT14PD:
 							found->mnemonic = VRSQRT14PS;
-						break ;
+							break ;
 
-					case VRSQRT14SD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VRSQRT14SD:
 							found->mnemonic = VRSQRT14SS;
-						break ;
+							break ;
 
-					case VSCALEFPD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VSCALEFPD:
 							found->mnemonic = VSCALEFPS;
-						break ;
+							break ;
 
-					case VSCALEFSD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VSCALEFSD:
 							found->mnemonic = VSCALEFSS;
-						break ;
+							break ;
 
-					case VPMAXSD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPMAXSQ;
-						break ;
-
-					case VPMULLD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPMULLQ;
-						break ;
-
-					case VPMINUD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPMINUQ;
-						break ;
-
-					case VPMINSD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPMINSQ;
-						break ;
-
-					case VPMAXUD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPMAXUQ;
-						break ;
-
-					case VPERMB:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPERMW;
-						break ;
-
-					case VPERMPS:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPERMPD;
-						break ;
-
-					case VPERMD:
-						if (inst->i_flags & AVL_RP_REXW_MASK)
-							found->mnemonic = VPERMQ;
-						break ;
-
-					case VBLENDMPD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VBLENDMPD:
 							found->mnemonic = VBLENDMPS;
-						break ;
+							break ;
 
-					case VEXPANDPD:
-						if (!(inst->i_flags & AVL_RP_REXW_MASK))
+						case VEXPANDPD:
 							found->mnemonic = VEXPANDPS;
-						break ;
+							break ;
+					}
 				}
 			}
 		}
 	}
 	else if (map == lt_three_byte_0x3A_opmap)
 	{
-		///TODO: Most of these instructions have prefixes,
-		/// Most of them are not checked because there's only
-		/// one ambigious instruction. I have to check them validation.
-
 		if (inst->i_opcode[2] == 0x0F && AVL_HAS_MP_0x66_PFX(inst->i_flags))
 			found->mnemonic = AMB_VPALIGNR_INDEX;
 		*found = lt_tree_byte_0x3A_ambigious_opmap[found->mnemonic];
-
-		///TODO: Handle ambigiousness otherway (create a single function)
-		/// Temporary solution (cause i doesn't know the amount and all  kinds of ambigiousness)
 
 		if (AVL_HAS_OP_EVEX_PFX(inst->i_flags))
 		{
@@ -792,108 +728,92 @@ static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfie
 				case 0x42:
 					found->mnemonic = VDBPSADBW;
 					break ;
-
-				case 0x26:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VGETMANTPS;
-					break ;
-				
-				case 0x27:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-							found->mnemonic = VGETMANTSS;
-					break ;
-
-				case 0x3E:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VPCMPUW;
-					break ;
-
-				case 0x3F:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VPCMPW;
-					break ;
-
-				case 0x1E:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VPCMPUQ;
-					break ;
-
-				case 0x1F:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VPCMPQ;
-					break ;
-
-				case 0x25:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VPTERNLOGQ;
-					break ;
-
-				case 0x50:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VRANGEPS;
-					break ;
-
-				case 0x51:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VRANGESS;
-					break ;
-
-				case 0x56:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VREDUCEPS;
-					break ;
-
-				case 0x57:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VREDUCESS;
-					break ;
-
-				case 0x23:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VSHUFF64X2;
-					break ;
-
-				case 0x43:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
-						found->mnemonic = VSHUFI64X2;
-					break ;
-
-				case 0x54:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VFIXUPIMMPS;
-					break ;
-				
-				case 0x55:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VFIXUPIMMSS;
-					break ;
-
-				case 0x66:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VFPCLASSPS;
-					break ;
-
-				case 0x67:
-					if (!(inst->i_flags & AVL_RP_REXW_MASK))
-						found->mnemonic = VFPCLASSSS;
-					break ;
-
-				case 0x03:
-					if (inst->i_flags & AVL_RP_REXW_MASK)
+			}
+			if (AVL_HAS_REXW_PFX(inst->i_flags))
+			{
+				switch (inst->i_opcode[2])
+				{
+					case 0x03:
 						found->mnemonic = VALIGNQ;
-					break ;
+						break ;
 
-				// case 0x16:
-				// 	if (prefix & AVL_RP_REXW_MASK)
-				// 		found->mnemonic = VPERMPD;
-				// 	break ;
+					case 0x1E:
+						found->mnemonic = VPCMPUQ;
+						break ;
+
+					case 0x1F:
+						found->mnemonic = VPCMPQ;
+						break ;
+
+					case 0x23:
+						found->mnemonic = VSHUFF64X2;
+						break ;
+
+					case 0x25:
+						found->mnemonic = VPTERNLOGQ;
+						break ;
+					
+					case 0x3E:
+						found->mnemonic = VPCMPUW;
+						break ;
+
+					case 0x3F:
+						found->mnemonic = VPCMPW;
+						break ;
+
+					case 0x43:
+						found->mnemonic = VSHUFI64X2;
+						break ;
+				}
+			}
+			else
+			{
+				switch (inst->i_opcode[2])
+				{
+					case 0x26:
+						found->mnemonic = VGETMANTPS;
+						break ;
+					
+					case 0x27:
+							found->mnemonic = VGETMANTSS;
+						break ;
+					
+					case 0x50:
+						found->mnemonic = VRANGEPS;
+						break ;
+
+					case 0x51:
+						found->mnemonic = VRANGESS;
+						break ;
+
+					case 0x54:
+						found->mnemonic = VFIXUPIMMPS;
+						break ;
+					
+					case 0x55:
+						found->mnemonic = VFIXUPIMMSS;
+						break ;
+
+					case 0x56:
+						found->mnemonic = VREDUCEPS;
+						break ;
+
+					case 0x57:
+						found->mnemonic = VREDUCESS;
+						break ;
+
+					case 0x66:
+						found->mnemonic = VFPCLASSPS;
+						break ;
+
+					case 0x67:
+						found->mnemonic = VFPCLASSSS;
+						break ;
+				}
 			}
 		}
 		else if (found->mnemonic == KSHIFTL || found->mnemonic == KSHIFTR)
-		{
 			*is_k_inst = 0x1;
-
-		}
 	}
 	else
 	{
