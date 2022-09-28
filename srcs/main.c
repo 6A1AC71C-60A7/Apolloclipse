@@ -239,7 +239,7 @@ int main(int ac, const char* av[])
 
     const ubyte* prt = iraw;
 
-    get_instructions(dest, INST_NB, &prt);
+    AVL_disassemble_instructions(dest, INST_NB, &prt);
 
     //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
     for (uqword i = 0 ; i < INST_NB ; i++)

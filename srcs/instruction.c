@@ -1246,7 +1246,7 @@ static err_t	get_instruction(AVL_instruction_t* const dest, const ubyte** iraw)
 	return st;
 }
 
-void	get_instructions(AVL_instruction_t* const dest, uqword destlen, const ubyte** iraw)
+void	AVL_disassemble_instructions(AVL_instruction_t* const dest, uqword destlen, const ubyte** iraw)
 {
 	for (uqword i = 0 ; i < destlen ; i++)
 		get_instruction(&dest[i], iraw);
