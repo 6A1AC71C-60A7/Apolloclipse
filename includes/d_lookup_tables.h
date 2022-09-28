@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <d_mnemonic.h>
 #include <d_opcode.h>
 
 static const ubyte lt_legacy_prefixes[] = {
@@ -80,26 +81,6 @@ static const ubyte lt_sib_encoded[] = {
 	SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, // mod == 0b10 ; SIB.index == 0b1101
 	SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, // mod == 0b10 ; SIB.index == 0b1010
 	SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, SBASE | SINDEX | SSCALE | SDISP_32, // mod == 0b10 ; SIB.index == 0b1111
-};
-
-static const ubyte lt_opcode_defaut_map[] = {
-
-};
-
-static const ubyte lt_opcode_0x0F_map[] = {
-
-};
-
-static const ubyte lt_opcode_0x0F38_map[] = {
-
-};
-
-static const ubyte lt_opcode_0x0F3A_map[] = {
-
-};
-
-static const ubyte lt_opcode_3dnow_map[] = {
-
 };
 
 #define AMB_VMOVUPS_INDEX 0x0
@@ -245,16 +226,6 @@ static const ubyte lt_opcode_3dnow_map[] = {
 #define MODRM_EXT_GRP_15 0x15
 #define MODRM_EXT_GRP_16 0x16
 #define MODRM_EXT_GRP_17 0x17
-
-
-
-
-
-
-
-
-
-
 
 
 static const opfield_t lt_one_byte_opmap[] = {

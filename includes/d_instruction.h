@@ -4,7 +4,7 @@
 #include <d_error.h>
 #include <d_mnemonic.h>
 #include <d_opcode.h>
-
+#include <d_lookup_tables.h>
 #include <user/types.h>
 
 #include <user.h>
@@ -222,14 +222,9 @@ extern void		get_immediate(AVL_instruction_t* const dest, opfield_t opfield, con
 
 extern void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found, ubyte is_k_inst);
 
-//extern void		redirect_indexing_opfield(const opfield_t* map, opfield_t* const found, ubyte opcode, ubyte* pvex, AVL_instruction_t* const inst);
-
-
 #define GET_MAP_INDEX(x) (((x) & 0x0F) + ((((x) & 0xF0) >> 0x4) * 0x10))
 
-///tmp to remove
-extern void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix);
-extern void handle_rare_prefixes_0x38_opmap(opfield_t* const found, ubyte opcode, udword prefix);
+
 
 #define OPFIELD_HAS_MODRM(x) ( \
 	(x) != AM_ZERO && ( \
