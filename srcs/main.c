@@ -26,12 +26,9 @@
 #define TEST_FILE
 //#undef TEST_FILE
 
-/*
-    - AVX512
-        - vprol / vpror distinction (bit 4 of modrm dictates ???) function 'handle_evex_addons_0x0F_opmap'
-*/
-
-///TODO: Check in registers.h
+///TODO: In some documentation i found that these are the 'SIMD prefixes'
+///READ: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol2/o_b5573232dd8f1481-74.html
+/// And take more notes
 
 ///TODO: Add flags resolution and R|W per operand
 
@@ -59,11 +56,6 @@
 /// The operand size is not handle yet and i don't know yet if is imperative to do
 /// or just an addon (i don't know whether or not)
 /// After all the user can resolve the operand size looking at prefixes ...
-
-///TODO: mxx instructions which are the same overload than their VEX implementation are only present with a 'v' as first character
-
-///TODO: FOR FMA: If VEX.W size is 64 bits, which means double are used and mnemonic must end by 'd' instead of 's'
-///ALSO: VEX.W is not handled yet in operand size resolution (ONLY USEFUL FOR PS/PD OR SS/SD)
 
 ///TODO: EVEX HAS DIFERENT DISPLACEMENT TO PARSE
 /// SEEMS ONLY USEFUL FOR THE DISPLAY
@@ -262,21 +254,6 @@ int main(int ac, const char* av[])
 #endif
     }
     //fprintf(stdout, "*** *** *** *** *** *** *** *** *** *** *** *** ***\n");
-
-    AVL_instruction_t test = {};
-
-    // AVL_SET_OPSZ(test.i_flags, AVL_OPSZ_DQWORD);
-    // if (AVL_OPSZ_IS_QWORD(test.i_flags))
-    //     fprintf(stderr, "IS QWORD 1!\n");
-    // AVL_SET_OPSZ(test.i_flags, AVL_OPSZ_DWORD);
-    // if (AVL_OPSZ_IS_QWORD(test.i_flags))
-    //     fprintf(stderr, "IS QWORD 2!\n");
-    // else if AVL_OPSZ_IS_DWORD(test.i_flags)
-    //     fprintf(stderr, "IS DWORD!\n");
-
-    test.i_mod_rm = 0b00101110;
-    
-    fprintf(stderr, "[TEST] RM: %d REG: %d\n", AVL_GET_MODRM_RM(&test), AVL_GET_MODRM_REG(&test));
 
     return st;
 }

@@ -3,27 +3,6 @@
 #include <d_instruction.h>
 #include <d_utils.h>
 
-// 1) Check for REX | [{66, f2, f3}], 0f
-// 2) If multiple REX, {66, f2, f3} or 0f skip and ignore
-// 3) If ((1)) check for opcode
-// 4) Else check for prefixes
-// 4.1) If multiple REPEATED prefixes, skip and ignore
-// 5) Check for VEX
-// 6) If VEX take another path (reused fcnt btw)
-// 7) Else check for opcode
-// 8) If opcode spefied (opcode): check modrm
-// 7) If specified (modrm): check for SIB
-// 8) If specified (modrm or SIB): check displacement.
-// 9) If specified (opcode) : check immediate
-
-// VEX PATH:
-// 1) Check VEX
-// 2) Check opcode
-// 3) Check modrm
-// 4) If specified (modrm): check for SIB
-// 5) If specified (modrm or SIB): check displacement.
-// 6) If specified (opcode) : check immediate
-
 ///NOTE: GPM stands for "Gereral Purpose Multiple"
 
 #define IS_GPM_ESCAPE(x) ((x) == 0x0F)
@@ -35,19 +14,12 @@
 #define IS_EVEX_PREFIX(x) ((x) == AVL_CONST_EVEX_PREFIX)
 #define IS_OPMAP_INDEXING(x) ((x) == AMB)
 
-#define IS_EVEX_COLISION_0x0F(x, p) ( \
-	(!((p) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x79) \
-	|| (!((p) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x5B) \
-	|| (!((p) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x78) \
+#define IS_EVEX_COLISION_0x0F(x, fl) ( \
+	(!((fl) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x79) \
+	|| (!((fl) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x5B) \
+	|| (!((fl) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) && (x) == 0x78) \
 )
 
-#define HAS_ATTR_MODRM 0x1
-#define HAS_ATTR_SIB (HAS_ATTR_MODRM << 1)
-#define HAS_ATTR_MODRMDISP_8 (HAS_ATTR_SIB << 1)
-#define HAS_ATTR_MODRMDISP_32 (HAS_ATTR_MODRMDISP_8 << 1)
-#define HAS_ATTR_SIBDISP_8 (HAS_ATTR_MODRMDISP_32 << 1)
-#define HAS_ATTR_SIBDISP_32 (HAS_ATTR_SIBDISP_8 << 1)
-#define HAS_ATTR_IMMEDIATE (HAS_ATTR_SIBDISP_32 << 1)
 #define HAS_ATTR_DISP(x) ( \
 	(x) & HAS_ATTR_MODRMDISP_8 \
 	|| (x) & HAS_ATTR_MODRMDISP_32 \
@@ -413,9 +385,6 @@ __always_inline
 static void		handle_ambigious_arguments(AVL_instruction_t* const inst, opfield_t* const found, const opfield_t* map)
 {
 	const ubyte opcode = inst->i_opcode[2];
-
-	///TODO: Preform (move) the ambigiousness handling in group extensions here ?
-	/// MMM parse is a lot more complex, i don't think so (seems not worth)
 
 	if (map == lt_one_byte_opmap && opcode == 0x90)
 	{
@@ -1249,10 +1218,6 @@ static err_t	get_instruction(AVL_instruction_t* const dest, const ubyte** iraw)
 	opfield_t 			found = {};
 	ubyte				is_k_inst = 0;
 
-	///TODO: In some documentation i found that these are the 'SIMD prefixes'
-	///READ: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol2/o_b5573232dd8f1481-74.html
-	/// And take more notes
-
 	get_prefix_data(dest, iraw);
 
 	dest->i_opcode[2] = *((*iraw)++);
@@ -1286,22 +1251,3 @@ void	get_instructions(AVL_instruction_t* const dest, uqword destlen, const ubyte
 	for (uqword i = 0 ; i < destlen ; i++)
 		get_instruction(&dest[i], iraw);
 }
-
-
-
-
-
-
-
-/// SUPORTED:
-/// LEGACYPREFIX::= [ 0xF0 | 0xF2 | 0xF3] [0x64 | 0x65 | 0x2E | 0x3E ] [ 0x66 ] [ 0x67 ]
-/// REXPREFIX::= 0b{0100}{W:1}{R:1}{X:1}{B:1}
-/// VEXPREFIX::= 
-/// PREFIX::=  ([LEGACYPREFIX] [REXPREFIX]) | ([LEGACYPREFIX] [VEXPREFIX])
-/// OPCODEPREFIX::= (0x66 | 0xF2 | 0xF3) 0x0F [ 0x38 | 0x3A ]) | 0x0F [ 0x38 | 0x3A ]
-/// OPCODE::= [OPCODEPREFIX] 0bXXXXXXXX
-/// MODRM::= 0b{MOD:2}{REG:3}{RM:3}
-/// SIB::= 0b{SCALE:2}{INDEX:3}{BASE:3}
-/// DISPLACEMENT::= 8 | 32 bits
-/// IMMEDIATE::= 8 | 16 | 32 | 64 bits
-/// INSTRUCTION::= [PREFIX] OPCODE [MODRM] [SIB] [DISP] [IMM]
