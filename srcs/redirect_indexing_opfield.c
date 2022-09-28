@@ -1,9 +1,8 @@
+
 #include <d_portability.h>
 #include <d_instruction.h>
 #include <d_lookup_tables.h>
 #include <d_utils.h>
-
-#include <user.h>
 
 __always_inline
 void handle_evex_addons_0x38_opmap(opfield_t* const found, ubyte opcode, udword flags)

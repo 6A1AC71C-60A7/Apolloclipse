@@ -1,9 +1,8 @@
+
 #include <d_portability.h>
 #include <d_instruction.h>
 #include <d_lookup_tables.h>
 #include <d_utils.h>
-
-#include <user.h>
 
 #define IS_OT_UNRANGED(x) ( \
 	(x) != OT_C \

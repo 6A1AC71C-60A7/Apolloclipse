@@ -4,8 +4,6 @@
 #include <d_lookup_tables.h>
 #include <d_utils.h>
 
-#include <user.h>
-
 // 1) Check for REX | [{66, f2, f3}], 0f
 // 2) If multiple REX, {66, f2, f3} or 0f skip and ignore
 // 3) If ((1)) check for opcode

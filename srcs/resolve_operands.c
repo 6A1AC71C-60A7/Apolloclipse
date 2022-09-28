@@ -3,10 +3,7 @@
 #include <d_instruction.h>
 #include <d_opcode.h>
 #include <d_utils.h>
-
 #include <user/register.h>
-
-#include <user.h>
 
 #define IS_AME_NONEVEX_EXCEPTION(x) ( \
 	(x) == VCVTSI2SS \
