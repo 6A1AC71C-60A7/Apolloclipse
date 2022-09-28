@@ -909,16 +909,13 @@ static void		handle_ambigious_arguments(opfield_t* const found, const opfield_t*
 	///TODO: Preform (move) the ambigiousness handling in group extensions here ?
 	/// MMM parse is a lot more complex, i don't think so (seems not worth)
 
-	if (map == lt_one_byte_opmap)
+	if (map == lt_one_byte_opmap && opcode == 0x90)
 	{
-		if (opcode == 0x90)
-		{
-			if ((inst->i_flags & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) == 0
-			&& inst->i_flags & (AVL_RP_REXB_MASK | AVL_RP_REXW_MASK))
-				*found = (opfield_t){ .mnemonic = XCHG,	.am1 = DR_R8,	.ot1 = DRS_64,	.am2 = DR_RAX,	.ot2 = DRS_64,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
-			else if (AVL_HAS_MP_0xF3_PFX(inst->i_flags))
-				found->mnemonic = PAUSE;
-		}
+		if ((inst->i_flags & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) == 0
+		&& inst->i_flags & (AVL_RP_REXB_MASK | AVL_RP_REXW_MASK))
+			*found = (opfield_t){ .mnemonic = XCHG,	.am1 = DR_R8,	.ot1 = DRS_64,	.am2 = DR_RAX,	.ot2 = DRS_64,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 };
+		else if (AVL_HAS_MP_0xF3_PFX(inst->i_flags))
+			found->mnemonic = PAUSE;
 	}
 	else if (map == lt_three_byte_0x38_opmap)
 	{
@@ -1174,7 +1171,7 @@ static void	get_suffix_data(AVL_instruction_t* const dest, opfield_t found, cons
 		get_displacement(&dest->i_disp, iraw, GET_DISP_LENGHT(opattr));
 }
 
-err_t	get_instruction(AVL_instruction_t* const dest, const ubyte** iraw)
+static err_t	get_instruction(AVL_instruction_t* const dest, const ubyte** iraw)
 {
 	err_t				st = SUCCESS;
 	const ubyte* const	istart = *iraw;
