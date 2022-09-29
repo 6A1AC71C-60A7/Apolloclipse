@@ -1,21 +1,18 @@
 
-#include <dev/d_portability.h>
-#include <dev/d_instruction.h>
-#include <dev/d_error.h>
-
-#include <user/AVL_types.h>
-
+#include <dev/d_portability.h> // printf format portability + __always_inline
+#include <dev/d_utils.h> // TESTRANGE
 #include <AVL_disassembler.h>
-
-#define KEYWORD_PTR
-#undef KEYWORD_PTR
-
-#define ADDRESING_GREATHER_THAN_QWORD
-#undef ADDRESING_GREATHER_THAN_QWORD
-
 #include <user/AVL_register.h>
 
-static const char* const regs_v2[] = {
+#include <stdio.h>
+
+#define PRINT_KEYWORD_PTR
+#undef PRINT_KEYWORD_PTR
+
+#define PRINT_ADDRESING_GREATHER_THAN_QWORD
+#undef PRINT_ADDRESING_GREATHER_THAN_QWORD
+
+static const char* const regs[] = {
 	"<[NONE]>",
     "[MEM8]",
 	"[MEM16]",
@@ -269,263 +266,6 @@ static const char* const regs_v2[] = {
 	"k6",
 	"k7",
 };
-
-// static const char* const regs[] = {
-//     "[ADDR]",
-//     "rax",
-//     "rcx",
-//     "rdx",
-//     "rbx",
-//     "rsp",
-//     "rbp",
-//     "rsi",
-//     "rdi",
-//     "r8",
-//     "r9",
-//     "r10",
-//     "r11",
-//     "r12",
-//     "r13",
-//     "r14",
-//     "r15",
-//     "st0",
-//     "st1",
-//     "st2",
-//     "st3",
-//     "st4",
-//     "st5",
-//     "st6",
-//     "st7",
-//     "mmx0",
-//     "mmx1",
-//     "mmx2",
-//     "mmx3",
-//     "mmx4",
-//     "mmx5",
-//     "mmx6",
-//     "mmx7",
-//     "mmx0b",
-//     "mmx1b",
-//     "mmx2b",
-//     "mmx3b",
-//     "mmx4b",
-//     "mmx5b",
-//     "mmx6b",
-//     "mmx7b",
-//     "xmm0",
-//     "xmm1",
-//     "xmm2",
-//     "xmm3",
-//     "xmm4",
-//     "xmm5",
-//     "xmm6",
-//     "xmm7",
-//     "xmm8",
-//     "xmm9",
-//     "xmm10",
-//     "xmm11",
-//     "xmm12",
-//     "xmm13",
-//     "xmm14",
-//     "xmm15",
-//     "ymm0",
-//     "ymm1",
-//     "ymm2",
-//     "ymm3",
-//     "ymm4",
-//     "ymm5",
-//     "ymm6",
-//     "ymm7",
-//     "ymm8",
-//     "ymm9",
-//     "ymm10",
-//     "ymm11",
-//     "ymm12",
-//     "ymm13",
-//     "ymm14",
-//     "ymm15",
-//     "es",
-//     "cs",
-//     "ss",
-//     "ds",
-//     "fs",
-//     "gs",
-//     "esb",
-//     "csb",
-//     "ssb",
-//     "dsb",
-//     "fsb",
-//     "gsb",
-//     "cr0",
-//     "cr1",
-//     "cr2",
-//     "cr3",
-//     "cr4",
-//     "cr5",
-//     "cr6",
-//     "cr7",
-//     "cr8",
-//     "cr9",
-//     "cr10",
-//     "cr11",
-//     "cr12",
-//     "cr13",
-//     "cr14",
-//     "cr15",
-//     "dr0",
-//     "dr1",
-//     "dr2",
-//     "dr3",
-//     "dr4",
-//     "dr5",
-//     "dr6",
-//     "dr7",
-//     "dr8",
-//     "dr9",
-//     "dr10",
-//     "dr11",
-//     "dr12",
-//     "dr13",
-//     "dr14",
-//     "dr15",
-//     "rflags",
-//     "ah",
-//     "ch",
-//     "dh",
-//     "bh",
-// 	"xmm16",
-// 	"xmm17",
-// 	"xmm18",
-// 	"xmm19",
-// 	"xmm20",
-// 	"xmm21",
-// 	"xmm22",
-// 	"xmm23",
-// 	"xmm24",
-// 	"xmm25",
-// 	"xmm26",
-// 	"xmm27",
-// 	"xmm28",
-// 	"xmm29",
-// 	"xmm30",
-// 	"xmm31",
-// 	"ymm16",
-// 	"ymm17",
-// 	"ymm18",
-// 	"ymm19",
-// 	"ymm20",
-// 	"ymm21",
-// 	"ymm22",
-// 	"ymm23",
-// 	"ymm24",
-// 	"ymm25",
-// 	"ymm26",
-// 	"ymm27",
-// 	"ymm28",
-// 	"ymm29",
-// 	"ymm30",
-// 	"ymm31",
-// 	"zmm0",
-//     "zmm1",
-//     "zmm2",
-//     "zmm3",
-//     "zmm4",
-//     "zmm5",
-//     "zmm6",
-//     "zmm7",
-//     "zmm8",
-//     "zmm9",
-//     "zmm10",
-//     "zmm11",
-//     "zmm12",
-//     "zmm13",
-//     "zmm14",
-//     "zmm15",
-// 	"zmm16",
-// 	"zmm17",
-// 	"zmm18",
-// 	"zmm19",
-// 	"zmm20",
-// 	"zmm21",
-// 	"zmm22",
-// 	"zmm23",
-// 	"zmm24",
-// 	"zmm25",
-// 	"zmm26",
-// 	"zmm27",
-// 	"zmm28",
-// 	"zmm29",
-// 	"zmm30",
-// 	"zmm31",
-// 	"k0",
-// 	"k1",
-// 	"k2",
-// 	"k3",
-// 	"k4",
-// 	"k5",
-// 	"k6",
-// 	"k7",
-// 	"ds:[rsi]",
-// 	"es:[rdi]",
-// };
-
-// static const char* const gp_regs_32[] = {
-// 	"eax",
-// 	"ecx",
-// 	"edx",
-// 	"ebx",
-// 	"esp",
-// 	"ebp",
-// 	"esi",
-// 	"edi",
-// 	"r8d",
-// 	"r9d",
-// 	"r10d",
-// 	"r11d",
-// 	"r12d",
-// 	"r13d",
-// 	"r14d",
-// 	"r15d"
-// };
-
-// static const char* const gp_regs_16[] = {
-// 	"ax",
-// 	"cx",
-// 	"dx",
-// 	"bx",
-// 	"sp",
-// 	"bp",
-// 	"si",
-// 	"di",
-// 	"r8w",
-// 	"r9w",
-// 	"r10w",
-// 	"r11w",
-// 	"r12w",
-// 	"r13w",
-// 	"r14w",
-// 	"r15w"
-// };
-
-// static const char* const gp_regs_8[] = {
-// 	"al",
-// 	"cl",
-// 	"dl",
-// 	"bl",
-// 	"spl",
-// 	"bpl",
-// 	"sil",
-// 	"dil",
-// 	"r8b",
-// 	"r9b",
-// 	"r10b",
-// 	"r11b",
-// 	"r12b",
-// 	"r13b",
-// 	"r14b",
-// 	"r15b"
-// };
-
 
 static const char* const mnemonics[] = {
     "mov",	// move data between general-purpose registers; move data between memory and general-purpose or segment registers; move immediates to general-purpose registers.
@@ -2388,7 +2128,7 @@ static const char* const mnemonics[] = {
 };
 
 #define IS_FMA_MNEMONIC(x) ( \
-	(x) >= VFMADD132PD && (x) <= VFNMSUB231SS \
+	TESTRANGE(x, VFMADD132PD, VFNMSUB231SS) \
 )
 
 __always_inline
@@ -2396,86 +2136,86 @@ static void handle_exceptional_mnemonics(FILE* where, AVL_instruction_t* const t
 {
 	const char*	addon = "";
 
-	// switch (target->mnemonic)
-	// {
-	// 	case CMPS:
-		if (target->i_mnemonic == CMPS || target->i_mnemonic == LODS || target->i_mnemonic == MOVS || target->i_mnemonic == SCAS || target->i_mnemonic == STOS)
-		{
-			if (AVL_OPSZ_IS_WORD(target->i_flags))
-				addon = "w";
-			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
-				addon = "d";
-			else if (AVL_OPSZ_IS_QWORD(target->i_flags))
-				addon = "q";
-		}
-		else if (target->i_mnemonic == INS || target->i_mnemonic == OUTS)
-		{
-			if (AVL_OPSZ_IS_WORD(target->i_flags))
-				addon = "w";
-			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
-				addon = "d";
-		}
-		else if (target->i_mnemonic == IRET)
-		{
-			if (AVL_OPSZ_IS_QWORD(target->i_flags))
-				addon = "q";
-		}
-		else if (target->i_mnemonic == XRSTOR || target->i_mnemonic == XRSTORS || target->i_mnemonic == XSAVE || target->i_mnemonic == XSAVEC || target->i_mnemonic == XSAVES || target->i_mnemonic == FXSAVE || target->i_mnemonic == FXRSTOR)
-		{
-			if (AVL_HAS_REXW_PFX(target->i_flags))
-				addon = "64";
-		}
-		else if (IS_FMA_MNEMONIC(target->i_mnemonic) || target->i_mnemonic == VGATHERDPS)
-		{
-			if (AVL_HAS_REXW_PFX(target->i_flags))
-				addon = "d";
-			else
-				addon = "s";
-		}
-		else if (target->i_mnemonic == VPSLLVD || target->i_mnemonic == VPSRLVD || target->i_mnemonic == VPANDD
-		|| target->i_mnemonic == VPANDND || target->i_mnemonic == VPORD || target->i_mnemonic == VPXORD
-		|| target->i_mnemonic == VPSRAVD)
-		{
-			if (AVL_HAS_REXW_PFX(target->i_flags))
-				addon = "q";
-			else
-				addon = "d";
-		}
-		else if (AVL_HAS_OP_EVEX_PFX(target->i_flags) && (target->i_mnemonic == VMOVDQA || target->i_mnemonic == VMOVDQU))
-		{
-			if (AVL_HAS_REXW_PFX(target->i_flags))
-				addon = "64";
-			else
-				addon = "32";
-		}
-		else if (target->i_mnemonic == KMOV || target->i_mnemonic == KADD || target->i_mnemonic == KAND || target->i_mnemonic == KANDN
-		|| target->i_mnemonic == KNOT || target->i_mnemonic == KOR || target->i_mnemonic == KORTEST || target->i_mnemonic == KSHIFTL
-		|| target->i_mnemonic == KSHIFTR || target->i_mnemonic == KTEST || target->i_mnemonic == KXNOR
-		|| target->i_mnemonic == KXOR)
-		{
-			if (AVL_OPSZ_IS_BYTE(target->i_flags))
-				addon = "b";
-			else if (AVL_OPSZ_IS_WORD(target->i_flags))
-				addon = "w";
-			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
-				addon = "d";
-			else if (AVL_OPSZ_IS_QWORD(target->i_flags))
-				addon = "q";
-		}
-		else if (target->i_mnemonic == KUNPCK)
-		{
-			if (AVL_OPSZ_IS_WORD(target->i_flags))
-				addon = "bw";
-			else if (AVL_OPSZ_IS_DWORD(target->i_flags))
-				addon = "wd";
-			else if (AVL_OPSZ_IS_QWORD(target->i_flags))
-				addon = "dq";
-		}
+	///TODO: Maybe remove this and handle it directely in the tokenizer
 
-		
-
-		// break ;
-	// }
+	if (target->i_mnemonic == CMPS || target->i_mnemonic == LODS
+	|| target->i_mnemonic == MOVS|| target->i_mnemonic == SCAS
+	|| target->i_mnemonic == STOS)
+	{
+		if (AVL_OPSZ_IS_WORD(target->i_flags))
+			addon = "w";
+		else if (AVL_OPSZ_IS_DWORD(target->i_flags))
+			addon = "d";
+		else if (AVL_OPSZ_IS_QWORD(target->i_flags))
+			addon = "q";
+	}
+	else if (target->i_mnemonic == INS || target->i_mnemonic == OUTS)
+	{
+		if (AVL_OPSZ_IS_WORD(target->i_flags))
+			addon = "w";
+		else if (AVL_OPSZ_IS_DWORD(target->i_flags))
+			addon = "d";
+	}
+	else if (target->i_mnemonic == IRET)
+	{
+		if (AVL_OPSZ_IS_QWORD(target->i_flags))
+			addon = "q";
+	}
+	else if (AVL_HAS_REXW_PFX(target->i_flags) && (target->i_mnemonic == XRSTOR
+	|| target->i_mnemonic == XRSTORS || target->i_mnemonic == XSAVE
+	|| target->i_mnemonic == XSAVEC || target->i_mnemonic == XSAVES
+	|| target->i_mnemonic == FXSAVE || target->i_mnemonic == FXRSTOR))
+		addon = "64";
+	else if (IS_FMA_MNEMONIC(target->i_mnemonic) || target->i_mnemonic == VGATHERDPS)
+	{
+		if (AVL_HAS_REXW_PFX(target->i_flags))
+			addon = "d";
+		else
+			addon = "s";
+	}
+	else if (target->i_mnemonic == VPSLLVD || target->i_mnemonic == VPSRLVD
+	|| target->i_mnemonic == VPANDD || target->i_mnemonic == VPANDND
+	|| target->i_mnemonic == VPORD || target->i_mnemonic == VPXORD
+	|| target->i_mnemonic == VPSRAVD)
+	{
+		if (AVL_HAS_REXW_PFX(target->i_flags))
+			addon = "q";
+		else
+			addon = "d";
+	}
+	else if (AVL_HAS_OP_EVEX_PFX(target->i_flags) && (target->i_mnemonic == VMOVDQA
+	|| target->i_mnemonic == VMOVDQU))
+	{
+		if (AVL_HAS_REXW_PFX(target->i_flags))
+			addon = "64";
+		else
+			addon = "32";
+	}
+	else if (target->i_mnemonic == KMOV || target->i_mnemonic == KADD
+	|| target->i_mnemonic == KAND || target->i_mnemonic == KANDN
+	|| target->i_mnemonic == KNOT || target->i_mnemonic == KOR
+	|| target->i_mnemonic == KORTEST || target->i_mnemonic == KSHIFTL
+	|| target->i_mnemonic == KSHIFTR || target->i_mnemonic == KTEST
+	|| target->i_mnemonic == KXNOR || target->i_mnemonic == KXOR)
+	{
+		if (AVL_OPSZ_IS_BYTE(target->i_flags))
+			addon = "b";
+		else if (AVL_OPSZ_IS_WORD(target->i_flags))
+			addon = "w";
+		else if (AVL_OPSZ_IS_DWORD(target->i_flags))
+			addon = "d";
+		else if (AVL_OPSZ_IS_QWORD(target->i_flags))
+			addon = "q";
+	}
+	else if (target->i_mnemonic == KUNPCK)
+	{
+		if (AVL_OPSZ_IS_WORD(target->i_flags))
+			addon = "bw";
+		else if (AVL_OPSZ_IS_DWORD(target->i_flags))
+			addon = "wd";
+		else if (AVL_OPSZ_IS_QWORD(target->i_flags))
+			addon = "dq";
+	}
 
 	fprintf(where, "%s ", addon);
 }
@@ -2571,7 +2311,8 @@ static mnemonic_t print_mnemonic(FILE* where, AVL_instruction_t* const target)
 	if (target->i_mnemonic == 0)
 		fprintf(where, "(bad) ");
 	///TODO: This can be handled 1 frame before in 'handle_conversions'
-	else if (target->i_mnemonic == FWAIT || target->i_mnemonic == FCLEX || target->i_mnemonic == FINIT || target->i_mnemonic == FSAVE)
+	else if (target->i_mnemonic == FWAIT || target->i_mnemonic == FCLEX
+	|| target->i_mnemonic == FINIT || target->i_mnemonic == FSAVE)
 		handle_x87_exceptions(where, target);
 	else
 	{
@@ -2590,44 +2331,13 @@ static mnemonic_t print_mnemonic(FILE* where, AVL_instruction_t* const target)
 }
 
 __always_inline
-static udword print_register_V2(FILE* where, reg_t reg)
+static udword print_register(FILE* where, reg_t reg)
 {
-	//DEBUG("-------------> %d %d #%d\n", reg, AVL_OP_K1, AVL_OP_ZMM1);
-
-	return fprintf(where, "%s", regs_v2[reg]);
+	return fprintf(where, "%s", regs[reg]);
 }
 
-static udword print_register(FILE* where, reg_t reg, udword prefix)
+static void print_sib(FILE* where, AVL_instruction_t* const inst, reg_t addr_reg_offset)
 {
-	(void)prefix;
-
-	return print_register_V2(where, reg);
-
-	//ubyte l = 0;
-
-	///TODO: Handle print 32-bit addressing
-
-	// if (!(prefix & (OS_QWORD_MASK | OS_DQWORD_MASK | OS_QQWORD_MASK | OS_DQQWORD_MASK)) && reg >= D_REG_RAX && reg <= D_REG_R15)
-	// {
-	// 	if (prefix & OS_BYTE_MASK)
-	// 		l = fprintf(where, "%s", gp_regs_8[reg - 2]);
-	// 	else if (prefix & OS_WORD_MASK)
-	// 		l = fprintf(where, "%s", gp_regs_16[reg - 2]);
-	// 	else if (prefix & OS_DWORD_MASK)
-	// 		l = fprintf(where, "%s", gp_regs_32[reg - 2]);
-	// }
-	// else
-	// 	l = fprintf(where, "%s", regs[reg - 1]);
-
-	//return l;
-}
-
-static void print_sib(FILE* where, AVL_instruction_t* const inst, ubyte hasdisp, reg_t addr_reg_offset)
-{
-	///TODO: WHAT I AM SUPOSED TO DO WITH hasdisp ?!?! (Add twice the displacement ?!?)
-	/// I don't think so, i've only parsed 1 displacement
-	(void)hasdisp;
-
 	const ubyte mod = AVL_GET_MODRM_MOD(inst->i_mod_rm);
 	const ubyte scale = 0x1 << AVL_GET_SIB_SCALE(inst->i_sib);
 	const ubyte index = AVL_GET_SIB_INDEX(inst);
@@ -2644,7 +2354,7 @@ static void print_sib(FILE* where, AVL_instruction_t* const inst, ubyte hasdisp,
 					/* [BASE] */
 
 					fprintf(where, "[");
-					print_register(where, base + addr_reg_offset, inst->i_flags);
+					print_register(where, base + addr_reg_offset);
 					fprintf(where, "]");
 				}
 				else
@@ -2652,10 +2362,10 @@ static void print_sib(FILE* where, AVL_instruction_t* const inst, ubyte hasdisp,
 					/* [BASE + (INDEX * SCALE)] */
 
 					fprintf(where, "[");
-					print_register(where, base + addr_reg_offset, inst->i_flags);
+					print_register(where, base + addr_reg_offset);
 					fprintf(where, " + (");
-					print_register(where, index + addr_reg_offset, inst->i_flags);
-					fprintf(where, " * %d)]", scale);
+					print_register(where, index + addr_reg_offset);
+					fprintf(where, " * %"PRIu8")]", scale);
 				}
 			}
 			else
@@ -2664,15 +2374,15 @@ static void print_sib(FILE* where, AVL_instruction_t* const inst, ubyte hasdisp,
 				{
 					/* [DISP32] */
 
-					fprintf(where, "[%d]", inst->i_disp);
+					fprintf(where, "[%"PRIu32"]", inst->i_disp);
 				}
 				else
 				{
 					/* [(INDEX * SCALE) + DISP32] */
 
 					fprintf(where, "[(");
-					print_register(where, index + addr_reg_offset , inst->i_flags);
-					fprintf(where, " * %d) + %d]", scale, inst->i_disp);
+					print_register(where, index + addr_reg_offset);
+					fprintf(where, " * %"PRIu8") + %"PRIu32"]", scale, inst->i_disp);
 				}
 			}
 			break ;
@@ -2685,18 +2395,18 @@ static void print_sib(FILE* where, AVL_instruction_t* const inst, ubyte hasdisp,
 				/* [BASE + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset , inst->i_flags);
-				fprintf(where, " + %"PRIdd"]", inst->i_disp);
+				print_register(where, base + addr_reg_offset);
+				fprintf(where, " + %"PRIu32"]", inst->i_disp);
 			}
 			else
 			{
 				/* [BASE + (INDEX * SCALE) + DISP8] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset , inst->i_flags);
+				print_register(where, base + addr_reg_offset);
 				fprintf(where, " + (");
-				print_register(where, index + addr_reg_offset , inst->i_flags);
-				fprintf(where, " * %d) + %"PRIdd"]", scale, inst->i_disp);
+				print_register(where, index + addr_reg_offset);
+				fprintf(where, " * %"PRIu8") + %"PRIu32"]", scale, inst->i_disp);
 			}
 			break ;
 		}
@@ -2708,18 +2418,18 @@ static void print_sib(FILE* where, AVL_instruction_t* const inst, ubyte hasdisp,
 				/* [BASE + DISP32 ] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset, inst->i_flags);
-				fprintf(where, " + %d]", inst->i_disp);
+				print_register(where, base + addr_reg_offset);
+				fprintf(where, " + %"PRIu32"]", inst->i_disp);
 			}
 			else
 			{
 				/* [BASE + (INDEX * SCALE) + DISP32] */
 
 				fprintf(where, "[");
-				print_register(where, base + addr_reg_offset, inst->i_flags);
+				print_register(where, base + addr_reg_offset);
 				fprintf(where, " + (");
-				print_register(where, index + addr_reg_offset, inst->i_flags);
-				fprintf(where, " * %d) + %d]", scale, inst->i_disp);
+				print_register(where, index + addr_reg_offset);
+				fprintf(where, " * %"PRIu8") + %"PRIu32"]", scale, inst->i_disp);
 			}
 			break ;
 		}
@@ -2776,7 +2486,6 @@ static reg_t get_addressing_reg_offset(AVL_instruction_t* const inst)
 		}
 	}
 
-
 	return offset;
 }
 
@@ -2785,15 +2494,8 @@ static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg,
 {
 	const ubyte mod = AVL_GET_MODRM_MOD(inst->i_mod_rm);
 	const ubyte rm = AVL_GET_MODRM_RM(inst);
-
-	//DEBUG("PRINT ADDRESS: MOD=%d, RM=%d\n", mod, rm);
-
 	const ubyte* direction = (dword)inst->i_disp < 0 ? (ubyte*)"-" : (ubyte*)"+";
-
 	const reg_t addr_reg_offset = get_addressing_reg_offset(inst);
-
-	///TODO: For the moment only 64-bits addressing is handled
-	///TODO: For the moment only general purpose registers addressing is handled
 
 	if (!isfirst)
 		fprintf(where, ", ");
@@ -2818,7 +2520,7 @@ static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg,
 			size = "QWORD ";
 			break ;
 
-#ifdef ADDRESING_GREATHER_THAN_QWORD
+#ifdef PRINT_ADDRESING_GREATHER_THAN_QWORD
 		case AVL_OP_MEM80:
 			size = "TBYTE ";
 			break ;
@@ -2839,7 +2541,7 @@ static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg,
 	}
 
 	fprintf(where, "%s"
-#ifdef KEYWORD_PTR
+#ifdef PRINT_KEYWORD_PTR
 			"PTR "
 #endif
 			, size);
@@ -2849,7 +2551,7 @@ static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg,
 		/* [R/M] */
 
 		fprintf(where, "[");
-		print_register(where, rm + addr_reg_offset, inst->i_flags);
+		print_register(where, rm + addr_reg_offset);
 		fprintf(where, "]");
 	}
 	else if (mod == 0b00)
@@ -2858,13 +2560,13 @@ static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg,
 		{
 			/* [SIB] */
 
-			print_sib(where, inst, 0, addr_reg_offset);
+			print_sib(where, inst, addr_reg_offset);
 		}
 		else if (rm == 0101 || rm == 0b1101)
 		{
 			/* [RIP + DISP32] */
 
-			fprintf(where, "[rip %s %d]", direction, inst->i_disp);
+			fprintf(where, "[rip %s %"PRIu32"]", direction, inst->i_disp);
 		}
 	}
 	else if (mod == 0b01)
@@ -2873,14 +2575,14 @@ static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg,
 		{
 			/* [SIB + DIPS8] */
 
-			print_sib(where, inst, 8, addr_reg_offset);
+			print_sib(where, inst, addr_reg_offset);
 		}
 		else
 		{
 			/* [R/M + DISP8] */
 
 			fprintf(where, "[");
-			print_register(where, rm + addr_reg_offset, inst->i_flags);
+			print_register(where, rm + addr_reg_offset);
 			fprintf(where, " %s %"PRIdd"]", direction, inst->i_disp);
 		}
 	}
@@ -2890,26 +2592,24 @@ static void print_address(FILE* where, AVL_instruction_t* const inst, reg_t reg,
 		{
 			/* [SIB + DISP32] */
 
-			print_sib(where, inst, 32, addr_reg_offset);
+			print_sib(where, inst, addr_reg_offset);
 		}
 		else
 		{
 			/* [R/M + DISP32] */
 
 			fprintf(where, "[");
-			print_register(where, rm + addr_reg_offset, inst->i_flags);
-			fprintf(where, " %s %d]", direction, inst->i_disp);
+			print_register(where, rm + addr_reg_offset);
+			fprintf(where, " %s %"PRIu32"]", direction, inst->i_disp);
 		}
 	}
 }
 
-static ubyte print_operand(FILE* where, AVL_instruction_t* const inst, reg_t reg, udword prefix, ubyte isfirst)
+static ubyte print_operand(FILE* where, AVL_instruction_t* const inst, reg_t reg, ubyte isfirst)
 {
 	ubyte l = 0x0;
 
-	///TODO: REDO THE ADDRESS PRINTING FOR THE NEW IMPLEMENTATION
-
-	if (reg >= AVL_OP_MEM8 && reg <= AVL_OP_MEM512)
+	if (TESTRANGE(reg, AVL_OP_MEM8, AVL_OP_MEM512))
 	{
 		print_address(where, inst, reg, isfirst);
 		l++;
@@ -2918,17 +2618,12 @@ static ubyte print_operand(FILE* where, AVL_instruction_t* const inst, reg_t reg
 	{
 		if (!isfirst)
 			fprintf(where, ", ");
-		l = print_register(where, reg, prefix);
+		l = print_register(where, reg);
 	}
 
 	return l;
 }
 
-//TODO: Maybe add a flag in the engine rather than handling this here
-// #define HAS_NO_KMASK_EXCEPTION(x) ( 
-// 	(x) = VPCMPEQB 
-// 	|| (x) == 
-// )
 __always_inline
 static ubyte print_merge_zero_avx512(FILE* where, AVL_instruction_t* const target)
 {
@@ -2938,8 +2633,8 @@ static ubyte print_merge_zero_avx512(FILE* where, AVL_instruction_t* const targe
 			"k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"
 		};
 
-		ubyte kindex = ((AVL_evex_t*)target->i_vp)->evx_mask;
-		if (kindex /* && HAS_NO_KMASK_EXCEPTION(target->mnemonic) */)
+		const ubyte kindex = ((AVL_evex_t*)target->i_vp)->evx_mask;
+		if (kindex)
 			fprintf(where, " {%s}", regs_k[kindex]);
 
 		
@@ -2954,12 +2649,11 @@ static ubyte print_merge_zero_avx512(FILE* where, AVL_instruction_t* const targe
 __always_inline
 static ubyte print_operands(FILE* where, AVL_instruction_t* const target)
 {
-	const udword prefix = target->i_flags;
-
-	return print_operand(where, target, target->i_reg1, prefix, 1)
+	return print_operand(where, target, target->i_reg1, 1)
 	+ print_merge_zero_avx512(where, target)
-	+ print_operand(where, target, target->i_reg2, prefix, !(target->i_reg1 != AVL_OP_PAIR_DS_RSI && target->i_reg1 != AVL_OP_PAIR_ES_RDI))
-	+ print_operand(where, target, target->i_reg3, prefix, 0);
+	+ print_operand(where, target, target->i_reg2, \
+		!(target->i_reg1 != AVL_OP_PAIR_DS_RSI && target->i_reg1 != AVL_OP_PAIR_ES_RDI))
+	+ print_operand(where, target, target->i_reg3, 0);
 }
 
 #define IMMEDIATE_JMP_ADDON 0x4
@@ -2971,26 +2665,23 @@ static void print_immediate(FILE* where, AVL_instruction_t* const target, ubyte 
 	if (AVL_HAS_OP_IMM_PFX(target->i_flags))
     {
 		///TODO: This 'addon' is the size of the instruction !!!
-		if ((target->i_mnemonic >= JMP && target->i_mnemonic < RET) || target->i_mnemonic == XBEGIN)
+		if ((target->i_mnemonic >= JMP && target->i_mnemonic < RET)
+		|| target->i_mnemonic == XBEGIN)
 			target->i_imm += IMMEDIATE_JMP_ADDON;
 		else if (target->i_mnemonic >= LOOP && target->i_mnemonic <= LOOPNE)
 			target->i_imm += IMMEDIATE_LOOP_ADDON;
 
-		if ((target->i_mnemonic == VBLENDVPS || target->i_mnemonic == VBLENDVPD) && target->i_opcode[2] >= 0x4A && target->i_opcode[2] <= 0x4B)
-		{
-			///TODO: Imm seems to be empty
-			print_operand(where, target, target->i_imm, target->i_flags, 0);
-		}
+		if ((target->i_mnemonic == VBLENDVPS || target->i_mnemonic == VBLENDVPD)
+		&& target->i_opcode[2] >= 0x4A && target->i_opcode[2] <= 0x4B)
+			print_operand(where, target, target->i_imm, 0);
 		else
 		{
 			if (has_operands)
 				fprintf(where, ", ");
 			fprintf(where, "0x%"PRIXq"", target->i_imm);
 		}
-
     }
 }
-
 
 __always_inline
 static void	handle_conversions(FILE* where, AVL_instruction_t* const target)
@@ -3024,7 +2715,7 @@ static void	handle_exceptional_formats(FILE* where, AVL_instruction_t* const tar
 	if (target->i_mnemonic == OUT)
 	{
 		print_immediate(where, target, 0);
-		print_operand(where, target, target->i_reg2, target->i_flags, 0);
+		print_operand(where, target, target->i_reg2, 0);
 	}
 	else if (target->i_mnemonic == ENTER)
 	{
@@ -3032,9 +2723,9 @@ static void	handle_exceptional_formats(FILE* where, AVL_instruction_t* const tar
 		fprintf(where, "0x%"PRIXq"", (target->i_imm & 0x00FF0000) >> 0x10);
 	}
 	else if (target->i_vp[0] == 0 && target->i_opcode[2] == 0xD9 && target->i_mod_rm >= 0xC0 && target->i_mod_rm <= 0xC7)
-		print_operand(where, target, target->i_reg2, target->i_flags, 1);
+		print_operand(where, target, target->i_reg2, 1);
 	else if (target->i_vp[0] == 0 && target->i_opcode[2] == 0xDD && target->i_mod_rm >= 0xE0 && target->i_mod_rm <= 0xE7)
-		print_operand(where, target, target->i_reg1, target->i_flags, 1);
+		print_operand(where, target, target->i_reg1, 1);
 }
 
 #define IS_CONVERSION_INST(x) ( \
@@ -3059,7 +2750,8 @@ static void	handle_exceptional_formats(FILE* where, AVL_instruction_t* const tar
 	|| ((x)->i_vp[0] == 0 && (x)->i_opcode[2] == 0xDD && (x)->i_mod_rm >= 0xE0 && (x)->i_mod_rm <= 0xE7) \
 )
 
-void	swap(reg_t *x, reg_t *y) 
+__always_inline
+static void	swap(reg_t *x, reg_t *y) 
 {
 	if (x != y)
 	{
@@ -3069,11 +2761,15 @@ void	swap(reg_t *x, reg_t *y)
 	}
 }
 
-#define IS_XGHG_INVERTED(x) (!(x)->i_opcode[0] && (x)->i_opcode[2] >= 0x86 && (x)->i_opcode[2] <= 0x87 && ((x)->i_mod_rm & 0b11000000) == 0b11000000)
+#define IS_XGHG_INVERTED(x) ( \
+	!(x)->i_opcode[0] \
+	&& TESTRANGE((x)->i_opcode[2], 0x86, 0x87) \
+	&& AVL_GET_MODRM_MOD((x)->i_mod_rm) == 0b11 \
+)
 
 void    fprint_instruction(FILE* where, AVL_instruction_t* const target)
 {
-	dword				has_operands = 0;
+	udword has_operands = 0;
 
 	if (IS_XGHG_INVERTED(target))
 		swap(&target->i_reg1, &target->i_reg2);
@@ -3098,19 +2794,4 @@ void    fprint_instruction(FILE* where, AVL_instruction_t* const target)
 	}
 
 	fprintf(where, "\n");
-
-	// if (prefix & OS_BYTE_MASK)
-	// 	fprintf(where, " (Operand Size: BYTE)\n");
-	// else if (prefix & OS_WORD_MASK)
-	// 	fprintf(where, " (Operand Size: WORD)\n");
-	// else if (prefix & OS_DWORD_MASK)
-	// 	fprintf(where, " (Operand Size: DWORD)\n");
-	// else if (prefix & OS_QWORD_MASK)
-	// 	fprintf(where, " (Operand Size: QWORD)\n");
-	// else if (prefix & OS_DQWORD_MASK)
-	// 	fprintf(where, " (Operand Size: DQWORD)\n");
-	// else if (prefix & OS_QQWORD_MASK)
-	// 	fprintf(where, " (Operand Size: QQWORD)\n");
-	// else
-	// 	fprintf(where, " (Operand Size: ERROR)\n");
 }
