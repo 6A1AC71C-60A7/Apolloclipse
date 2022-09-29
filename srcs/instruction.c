@@ -1170,6 +1170,18 @@ static const opfield_t* get_map(AVL_instruction_t* const inst)
 }
 
 __always_inline
+static void	get_modifiers(AVL_instruction_t* const inst, ubyte afected_flags, ubyte operand_modfiers)
+{
+	for (uqword i = 0 ; i < 8 ; i++)
+	{
+		if (afected_flags & (1U << i))
+			inst->i_flags |= (AVL_AF_CARRY << i);
+		if (operand_modfiers & (1U << i))
+			inst->i_flags |= (AVL_OM1_READ << i);
+	}
+}
+
+__always_inline
 static opfield_t get_opfield(AVL_instruction_t* const inst, const opfield_t* map, const ubyte** iraw, ubyte* const is_k_inst)
 {
 	const ubyte row = GET_ROW(inst->i_opcode[2]);
@@ -1183,7 +1195,13 @@ static opfield_t get_opfield(AVL_instruction_t* const inst, const opfield_t* map
 	else if (IS_OVERWRITING_EVEX_0F(map, inst))
 		handle_overwriting_evex_instructions_0F(&found, inst->i_opcode[2], inst->i_flags);
 	else if (found.mnemonic == 0)
-		found = map[GET_MAP_INDEX(inst->i_opcode[2])];
+	{
+		const uqword index = GET_MAP_INDEX(inst->i_opcode[2]);
+		found = map[index];
+
+		if (!INST_ISPREFIXED(inst))
+			get_modifiers(inst, lt_instruction_flags_unprefixed[index], lt_operand_modifiers_unprefixed[index]);
+	}
 
 	if (HAS_GROUP_EXTENTION(found.symbol))
 	{
