@@ -3,21 +3,23 @@ SRCDIR	=	srcs
 
 HDRS	=\
 $(addprefix includes/,\
-	d_error.h\
-	d_instruction.h\
-	d_lookup_tables.h\
-	d_mnemonic.h\
-	d_opcode.h\
-	d_portability.h\
-	d_types.h\
-	d_utils.h\
-	tests.h\
-	$(addprefix user/,\
-		prefix.h\
-		register.h\
-		types.h\
+	$(addprefix dev/,\
+		d_error.h\
+		d_instruction.h\
+		d_lookup_tables.h\
+		d_opcode.h\
+		d_portability.h\
+		d_types.h\
+		d_utils.h\
+		tests.h\
 	)\
-	user.h\
+	$(addprefix user/,\
+		AVL_mnemonic.h\
+		AVL_prefix.h\
+		AVL_register.h\
+		AVL_types.h\
+	)\
+	AVL_disassembler.h\
 )
 SRCS	=\
 $(addprefix srcs/,\
@@ -30,6 +32,5 @@ $(addprefix srcs/,\
 	prefix.c\
 	$(addprefix tests/,\
 		fprint_instruction.c\
-		test_instruction.c\
 	)\
 )
