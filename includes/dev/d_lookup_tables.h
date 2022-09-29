@@ -383,7 +383,6 @@ static const opfield_t lt_one_byte_opmap[] = {
 
 	{ .mnemonic = MODRM_EXT_GRP_1,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = MODRM_EXT_GRP_1,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_I,	.ot2 = OT_Z,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
-	///TODO: HAS ALSO SYMBOL S_I64
 	{ .mnemonic = MODRM_EXT_GRP_1,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = MODRM_EXT_GRP_1,		.am1 = AM_E,	.ot1 = OT_V,	.am2 = AM_I,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = S_1A },
 	{ .mnemonic = TEST,		.am1 = AM_E,	.ot1 = OT_B,	.am2 = AM_G,	.ot2 = OT_B,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -589,7 +588,7 @@ static const opfield_t lt_two_byte_opmap[] = {
 	{ .mnemonic = SYSENTER,	.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = SYSEXIT,	.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
-	/// TODO: IS JUST GETSEC
+	/// NOTE: FOLLOWING IS GETSEC
 	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 
 	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -1839,7 +1838,6 @@ static const opfield_t lt_three_byte_0x38_opmap[] = {
 	{ .mnemonic = VFNMSUB132PS, 	.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 	{ .mnemonic = VFNMSUB132SS,		.am1 = AM_V,	.ot1 = OT_X,	.am2 = AM_H,	.ot2 = OT_X,	.am3 = AM_W,	.ot3 = OT_X,	.am4 = 0,		.ot4 = 0,		.symbol = S_V },
 
-	///TODO: NEXT 4 ARE REFERENCES TO [x/ymm]
 	{ .mnemonic = VPSCATTERDD,		.am1 = AM_M,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VPSCATTERQD,		.am1 = AM_M,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
 	{ .mnemonic = VSCATTERDPD,		.am1 = AM_M,	.ot1 = OT_X,	.am2 = AM_V,	.ot2 = OT_X,	.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -2068,7 +2066,6 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 #define AMB_VAESKEYGEN_INDEX 0x28
 #define AMB_RORX_INDEX 0x29
 
-///TODO: SORT THESE ?!
 #define AMB_KSHIFTR_INDEX 0x2A
 #define AMB_KSHIFTR2_INDEX 0x2B
 #define AMB_KSHIFTL_INDEX 0x2C
@@ -2094,7 +2091,7 @@ static const opfield_t lt_tree_byte_0x3A_ambigious_opmap[] = {
 #define AMB_VSHUFI32X4_INDEX 0x3F
 #define AMB_VINSERT32X8_INDEX 0x40
 
-///TODO: This could be an array of bytes (chars)
+///NOTE: This could be an array of bytes (chars)
 
 static const opfield_t lt_three_byte_0x3A_opmap[] = {
 	{ .mnemonic = AMB_VPERMQ_INDEX,			.am1 = AMB,		.ot1 = 0,		.am2 = 0,		.ot2 = 0,		.am3 = 0,		.ot3 = 0,		.am4 = 0,		.ot4 = 0,		.symbol = 0 },
@@ -2663,9 +2660,9 @@ static const opfield_t lt_escape_0xDB_within_modrm_opmap[] = {
 	{ .mnemonic = FIST,		.am1 = AM_M,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = FISTP,	.am1 = AM_M,	.ot1 = OT_D,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FLD,		.am1 = AM_M,	.ot1 = OT_EXT,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+	{ .mnemonic = FLD,		.am1 = AM_M,	.ot1 = OT_P,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 	{ .mnemonic = 0,		.am1 = 0,		.ot1 = 0,		.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-	{ .mnemonic = FSTP,		.am1 = AM_M,	.ot1 = OT_EXT,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+	{ .mnemonic = FSTP,		.am1 = AM_M,	.ot1 = OT_P,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
 };
 
 static const opfield_t lt_escape_0xDB_outside_modrm_opmap[] = {

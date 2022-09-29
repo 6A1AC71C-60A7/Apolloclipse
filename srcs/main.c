@@ -30,46 +30,10 @@
 ///READ: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol2/o_b5573232dd8f1481-74.html
 /// And take more notes
 
-///TODO: Add flags resolution and R|W per operand
-
 ///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
 /// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
 
-///TODO: HANDLE JUMPS PARSING : JCC : Jb (SHORT), Jz (LONG), CALL : NEAR -> Ev, FAR -> Ep, JMP : NEAR -> EV, FAR -> Mp , RET : NEAR -> { Lw, NONE ATTR }, FAR -> {Lw, NONE ATTR}
-/// ALSO: JMP NEAR IS ALSO 0XE9, 0XEA, 0XB (MORE OPCODES)
-/// ALSO: CALL NEAR IS E8 (MORE OPCODES) 
-/// RET COMPARISON MUST BE DONE USING OPCOFES, JUMP & CALL MIGHT BE DONE WITH OPCODE TOO AND JCC MUST BE DONE WITH ATTR
-
-///TODO: AM_O is also an immediate ?
-
-///TODO: CALL INSTRUCTION ADDRESS RESOLUTION IS DIFERENT FROM OBJDUMP
-/// IS BECAUSE 0x5 IS ADDED TO THE IMMEDIATE NO MATER WHAT
-
-///TODO: UMONITOR takes a register which is used as an address (but type is reg), default operand type
-///         is currently dword but this is 32 bits addressing (0x67), need to make it qword by default.
-///         Test and see 
-
-///TODO: x87 let the possibility to add 3 newer kinds of operand size:
-/// 14/28 byte data (OT_DS)
-/// 98/108 byte data (OT_DSS)
-/// 80-bits byte data (OT_P)
-/// The operand size is not handle yet and i don't know yet if is imperative to do
-/// or just an addon (i don't know whether or not)
-/// After all the user can resolve the operand size looking at prefixes ...
-
-///TODO: EVEX HAS DIFERENT DISPLACEMENT TO PARSE
-/// SEEMS ONLY USEFUL FOR THE DISPLAY
-
-///TODO: TEST AVX-512 broadcast and supress exceptions features
-
-///TODO: EXTEND VIDX with EVEX.V2 (check in wikipedia EVEX)
-/// (FOR THE MOMENT ONLY GOOD TO KNOW FOR THE DISPLAY (fprint_instruction))
-/// WHICH EXTENDS SIB.BASE
-/// USEFUL FOR DEREFRENCE [x/y/zmm] registers (0-31)
-/// But this kind of addressing is very unique
-/// vgatherdps, ...
-
-///ERRORS: AVX512:
+///ERRORS: (OLD): AVX512:
 /// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic) [ FIXED AND TRUE ]
 /// - vpmulld == vpmullq [ FIXED AND TRUE ]
 /// - vpminud == vpminuq [ FIXED AND TRUE ]

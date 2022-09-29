@@ -30,12 +30,8 @@
 	|| (INST_ISPREF_0F3A(x) && IS_0x3A_NONVEX_SIMD((x)->i_opcode[2], x->i_flags)) \
 )
 
-///TODO: Upgrade using defines for CALL NEAR, JMP NEAR AND RET NEAR
-
 #define ISDFT64_CALL(x) ( \
-	!INST_ISPREFIXED(x) \
-	&& (x)->i_opcode[2] == 0xFF \
-	&& (x)->i_mnemonic == CALL \
+	AVL_IS_CALL_NEAR(x) \
 )
 #define ISDFT64_ENTER(x) ( \
 	INST_ISPREFIXED(x) \
@@ -48,9 +44,7 @@
 	TESTRANGE((x)->i_mnemonic, JCXZ, JECXZ) \
 )
 #define ISDFT64_JMP(x) ( \
-	!INST_ISPREFIXED(x) \
-	&& (x)->i_opcode[2] == 0xFF \
-	&& (x)->i_mnemonic == JMP \
+	AVL_IS_JMP_NEAR(x) \
 )
 #define ISDFT_LEAVE(x) ( \
 	(x)->i_mnemonic == LEAVE \
@@ -90,9 +84,7 @@
 	(x)->i_mnemonic == PUSHF \
 )
 #define ISDFT64_RET(x) ( \
-	INST_ISPREFIXED(x) \
-	&& TESTRANGE((x)->i_opcode[2], 0xC2, 0xC3) \
-	&& (x)->i_mnemonic == RET \
+	AVL_IS_RET_NEAR(x) \
 )
 #define ISDFT64_PREFETCHW(x) ( \
 	(x)->i_mnemonic == PREFETCHW \
@@ -102,7 +94,7 @@ __always_inline
 static ubyte	is_operand_size_default_64bits(AVL_instruction_t* const inst)
 {
 	return ISDFT64_CALL(inst) \
-/** TODO:	|| ISDFT64_ENTER(inst)*/  \
+/*	|| ISDFT64_ENTER(inst)*/  \
 	|| ISDFT64_JCC(inst) \
 	|| ISDFT64_JRCXZ(inst) \
 	|| ISDFT64_JMP(inst) \

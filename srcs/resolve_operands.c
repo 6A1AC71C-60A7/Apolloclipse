@@ -503,8 +503,6 @@ static reg_t	get_memory(ubyte ot, udword flags)
 		// fall through
 		case OT_DSS:
 		// fall through
-		case OT_EXT:
-		// fall through
 		case OT_BCD:
 		// fall through
 		case OT_S:
@@ -551,6 +549,7 @@ static reg_t	get_memory(ubyte ot, udword flags)
 	return found;
 }
 
+__always_inline
 static reg_t	get_mmx_register(uqword index)
 {
 	static const reg_t mmxr[] = {
@@ -563,6 +562,7 @@ static reg_t	get_mmx_register(uqword index)
 	return mmxr[index];
 }
 
+__always_inline
 static reg_t	get_xmm_register(uqword index)
 {
 	static const reg_t xmmr[] = {
@@ -579,6 +579,7 @@ static reg_t	get_xmm_register(uqword index)
 	return xmmr[index];
 }
 
+__always_inline
 static reg_t	get_ymm_register(uqword index)
 {
 	static const reg_t ymmr[] = {
@@ -595,6 +596,7 @@ static reg_t	get_ymm_register(uqword index)
 	return ymmr[index];
 }
 
+__always_inline
 static reg_t	get_zmm_register(uqword index)
 {
 	static const reg_t zmmr[] = {
@@ -611,6 +613,7 @@ static reg_t	get_zmm_register(uqword index)
 	return zmmr[index];
 }
 
+__always_inline
 static reg_t	get_segment_register(uqword index)
 {
 	static const reg_t sgmtr[] = {
@@ -623,6 +626,7 @@ static reg_t	get_segment_register(uqword index)
 	return sgmtr[index];
 }
 
+__always_inline
 static reg_t	get_control_register(uqword index)
 {
 	static const reg_t crtlr[] = {
@@ -635,6 +639,7 @@ static reg_t	get_control_register(uqword index)
 	return crtlr[index];
 }
 
+__always_inline
 static reg_t	get_debug_register(uqword index)
 {
 	static const reg_t dbgr[] = {
@@ -647,6 +652,7 @@ static reg_t	get_debug_register(uqword index)
 	return dbgr[index];
 }
 
+__always_inline
 static reg_t	get_k_register(uqword index)
 {
 	static const reg_t kr[] = {
@@ -696,7 +702,6 @@ static reg_t	get_vector(uqword index, ubyte ot, udword flags)
 
 	return get_vec_register ? get_vec_register(index) : AVL_OP_NONE;
 }
-
 
 __always_inline
 static void		handle_ame_exceptions(AVL_instruction_t* const inst, udword* const flags)
@@ -1005,7 +1010,6 @@ static void resolve_operand(AVL_instruction_t* const inst, reg_t* const dest, ub
 				break ;
 			}
 
-			///TODO: AM_U and AM_W are the same, there must be an error
 			case AM_W:
 			{
 				if (modrm_mod == 0b11)
@@ -1130,6 +1134,7 @@ static void resolve_operand(AVL_instruction_t* const inst, reg_t* const dest, ub
 	}
 }
 
+__always_inline
 void	resolve_operands(AVL_instruction_t* const dest, opfield_t instruction)
 {
 	ubyte skip;

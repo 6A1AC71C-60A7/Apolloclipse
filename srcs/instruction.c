@@ -351,7 +351,6 @@ static void handle_k_instructions_0x0F(opfield_t* const found, ubyte opcode)
 			break ;
 
 		case 0x4B:
-			///TODO: This operand size resolution is very UNIQUE
 			*found = (opfield_t){ .mnemonic = KUNPCK, .am1 = AM_KR, .ot1 = OT_ALL, .am2 = AM_KV, .ot2 = OT_ALL, .am3 = AM_KRM, .ot3 = OT_ALL, .am4 = 0, .ot4 = 0, .symbol = 0 };
 			break ;
 
@@ -646,14 +645,14 @@ static void handle_rio38evex_exception_post(AVL_instruction_t* const inst, opfie
 				found->mnemonic = VGATHERDPD;
 			// fall through
 		case VGATHERQPD:
-			///TODO: This is AM_H exception (can be handled diferently)
+			///NOTE: This is AM_H exception (could be handled diferently)
 			found->am3 = 0;
 			break ;
 
 		case VPGATHERDD:
 			if (inst->i_flags & AVL_RP_REXW_MASK)	
 				found->mnemonic = VPGATHERDQ;
-			///TODO: This is AM_H exception (can be handled diferently)
+			///NOTE: This is AM_H exception (could be handled diferently)
 			found->am3 = 0;
 			break ;
 
@@ -670,7 +669,7 @@ static void handle_rio38evex_exception_post(AVL_instruction_t* const inst, opfie
 					found->ot2 = OT_QQ;
 				}
 			}
-			///TODO: This is AM_H exception (can be handled diferently)
+			///NOTE: This is AM_H exception (could be handled diferently)
 			found->am3 = 0;
 			break ;
 	}
@@ -1062,7 +1061,7 @@ static void handle_rio0Fevex_exception(AVL_instruction_t* const inst, opfield_t*
 __always_inline
 static void redirect_indexing_opfield(AVL_instruction_t* const inst, const opfield_t* map, opfield_t* const found, ubyte* const is_k_inst)
 {
-	const mnemonic_t oldmn = found->mnemonic;
+	const AVL_mnemonic_t oldmn = found->mnemonic;
 	uqword scale = 0;
 
 	if (map == lt_three_byte_0x38_opmap)
@@ -1133,12 +1132,6 @@ static void get_prefix_data(AVL_instruction_t* const dest, const ubyte** iraw)
 	else
 	{
 		get_legacy_prefixes(&dest->i_flags, iraw);
-
-		///TODO: Useful error check but for instructions which have have 2 prefixes fails
-		/// They're always exceptions ... (0f 38 F0)
-		/// Opcode values isn't parsed yet so is difucult to know whether or not is an exception ...
-		if (0 && (/*st = */err_handle_legacy_prefixes(&dest->i_flags)) != SUCCESS)
-		{} // error
 
 		if (IS_REXBYTE(**iraw))
 		{

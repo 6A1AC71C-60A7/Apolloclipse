@@ -8,9 +8,6 @@
 
 typedef uint8_t		__AVL_SET_PREF(reg_t);
 
-///TODO: Replce by the good one
-typedef mnemonic_t __AVL_SET_PREF(TMP_MNEMONIC_t);
-
 /// Vector EXtension (VEX) 3-bytes prefix.
 typedef struct
 {
@@ -89,7 +86,7 @@ typedef struct
 													- Precence of Immediate
 													- Presence of EVEX prefix */
 
-	AVL_TMP_MNEMONIC_t	__AVL_SET_INST_PREF(mnemonic);	/* Represents the mnemonic of the instruction,
+	AVL_mnemonic_t __AVL_SET_INST_PREF(mnemonic);	/* Represents the mnemonic of the instruction,
 													the mnemomic values are sorted by procesor extension */
 
 	uint8_t	 __AVL_SET_INST_PREF(opcode[3]);	/* Represents the opcode (map + index), the first byte

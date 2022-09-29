@@ -1,10 +1,7 @@
 
 #pragma once
 
-///TODO: The idea is to make the prefixes macros so the user can customize the prefixes while compiling
-
 #ifndef __AVL_SET_PREF
-///TODO: Hange the prefix of __SET_PREFIX when i ll know which prefix use
 # define __AVL_SET_PREF(x) AVL_ ## x
 #else
 # error "Error: Colision with __AVL_SET_PREF."

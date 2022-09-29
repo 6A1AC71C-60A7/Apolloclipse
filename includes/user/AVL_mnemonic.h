@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <user/AVL_prefix.h>
+
 typedef enum
 {
 	/////////////////////
@@ -1408,6 +1410,7 @@ typedef enum
 	// SOFTWARE GUARDS EXTENSIONS //
 	////////////////////////////////
 
+	ENCLS,
 	ENCLS_EADD,		// Add a page.
 	ENCLS_EBLOCK,	// Block an EPC page.
 	ENCLS_ECREATE,	// Create an enclave.
@@ -1871,8 +1874,10 @@ typedef enum
 	VPABSQ,
 	VCVTTPD2QQ,
 	VMOVHLPS,
+	
+	ENCLU,
 
-} mnemonic_t;
+} __AVL_SET_PREF(mnemonic_t);
 
 #define NM_GENERAL_PURPOSE_MAX TZCNT
 #define NM_X87_FPU_MAX FNOP

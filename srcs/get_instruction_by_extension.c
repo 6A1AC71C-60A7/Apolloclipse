@@ -1,5 +1,6 @@
 
 #include <dev/d_instruction.h>
+#include <user/AVL_mnemonic.h>
 
 #define HAS_NOT_MANDATORY_PREFIX(x) (((x) & (AVL_MP_0x66_MASK | AVL_MP_0xF2_MASK | AVL_MP_0xF3_MASK)) == 0)
 
@@ -33,7 +34,6 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, opfield_
 		case 0x1A:
 
 			if (!reg)
-					///TODO: SEEMS TO ALSO HAVE S_D64 symbol
 				inst = (opfield_t){ .mnemonic = POP,	.am1 = AM_E,	.ot1 = OT_V,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = S_1A };
 			break ;
 
@@ -150,10 +150,9 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, opfield_
 						static const opfield_t arr[] = {
 							{ .mnemonic = MONITOR,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 							{ .mnemonic = MWAIT,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-							{ .mnemonic = CLAC,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-							{ .mnemonic = STAC,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-							///TODO: ENCLS (I'VE BUILT THE OPTION INSTEAD OF THE MNEMONIC)
-							{ .mnemonic = 0,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+							{ .mnemonic = CLAC,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+							{ .mnemonic = STAC,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
+							{ .mnemonic = ENCLS,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 						};
 						inst = arr[rm];
 						break ;
@@ -168,8 +167,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, opfield_
 							{ .mnemonic = VMFUNC,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 							{ .mnemonic = XEND,		.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
 							{ .mnemonic = XTEST,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 },
-							///TODO: MNEMONIC ENCLU NOT PRESENT
-							{ .mnemonic = 0,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
+							{ .mnemonic = ENCLU,	.am1 = 0,	.ot1 = 0,	.am2 = 0,	.ot2 = 0,	.am3 = 0,	.ot3 = 0,	.am4 = 0,	.ot4 = 0,	.symbol = 0 }
 						};
 						inst = arr[rm];
 						break ;
@@ -276,7 +274,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, opfield_
 			break ;
 
 		case 0x10:
-			/// TODO: UD1 ( HANDLE IT ? )
+			/// NOTE: UD1
 			break ;
 
 		case 0x11:
@@ -485,7 +483,7 @@ opfield_t	get_instruction_by_extension_one_and_two_b_opmap(ubyte group, opfield_
 
 	if (overwrite)
 	{
-		const mnemonic_t mn = inst.mnemonic;
+		const AVL_mnemonic_t mn = inst.mnemonic;
 		inst = found;
 		inst.mnemonic = mn;
 	}

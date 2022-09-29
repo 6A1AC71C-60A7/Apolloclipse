@@ -1661,6 +1661,7 @@ static const char* const mnemonics[] = {
 	// software guards extensions //
 	////////////////////////////////
 
+	"encls",
 	"encls_eadd",// add a page.
 	"encls_eblock",	// block an epc page.
 	"encls_ecreate",	// create an enclave.
@@ -2125,6 +2126,8 @@ static const char* const mnemonics[] = {
 	"vcvttpd2qq",
 	"vmovhlps",
 
+	"enclu",
+
 };
 
 #define IS_FMA_MNEMONIC(x) ( \
@@ -2306,11 +2309,11 @@ static void handle_x87_exceptions(FILE* where, AVL_instruction_t* const target)
 }
 
 __always_inline
-static mnemonic_t print_mnemonic(FILE* where, AVL_instruction_t* const target)
+static AVL_mnemonic_t print_mnemonic(FILE* where, AVL_instruction_t* const target)
 {
 	if (target->i_mnemonic == 0)
 		fprintf(where, "(bad) ");
-	///TODO: This can be handled 1 frame before in 'handle_conversions'
+	///NOTE: This could be handled 1 frame before in 'handle_conversions'
 	else if (target->i_mnemonic == FWAIT || target->i_mnemonic == FCLEX
 	|| target->i_mnemonic == FINIT || target->i_mnemonic == FSAVE)
 		handle_x87_exceptions(where, target);
@@ -2664,7 +2667,6 @@ static void print_immediate(FILE* where, AVL_instruction_t* const target, ubyte 
 {
 	if (AVL_HAS_OP_IMM_PFX(target->i_flags))
     {
-		///TODO: This 'addon' is the size of the instruction !!!
 		if ((target->i_mnemonic >= JMP && target->i_mnemonic < RET)
 		|| target->i_mnemonic == XBEGIN)
 			target->i_imm += IMMEDIATE_JMP_ADDON;

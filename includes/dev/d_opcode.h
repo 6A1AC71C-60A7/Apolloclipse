@@ -79,8 +79,6 @@ typedef enum
 	OT_DQQ,		// Double-Quad-Quadword (512-bits), regardless of operand-size attribute.
 	OT_DS,		// 14/28 bytes pointer, depending on operand-size attribute.
 	OT_DSS,		// 98/108 bytes pointer, depending on operand-size-attribute.
-	OT_EXT,		// Reference to a 80-bit Double-Extented floating point data.
-	///TODO: 'EXT' CAN ALSO BE 'P'
 	OT_BCD,		// Reference to a 4-bit packed-BCD data.
 
 	OT_ALL,		// Byte, word, doubleword or quadword, depending on operand size.

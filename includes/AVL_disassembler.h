@@ -2,6 +2,7 @@
 #pragma once
 
 #include <user/AVL_types.h>
+#include <user/AVL_mnemonic.h>
 
 /*
 ** Legacy prefixes
@@ -129,7 +130,7 @@
 #define AVL_OPSZ_DQWORD 0x4
 #define AVL_OPSZ_QQWORD 0x5
 #define AVL_OPSZ_DQQWORD 0x6
-///TODO: I have 1 valaue left to indicate 'other' type (e.g 80-bits pointer)
+#define AVL_OPSZ_OTHER 0x7 // unused
 
 #define __AVL_OPERAND_SZ_SHIFT_AMOUNT 0x1D
 #define AVL_GET_OPERAND_SZ(x) (((x) >> __AVL_OPERAND_SZ_SHIFT_AMOUNT) & 0x7)
@@ -146,7 +147,7 @@
 #define AVL_SET_OPSZ(flags, opsz) ((flags) |= (((opsz) & 0x7) << __AVL_OPERAND_SZ_SHIFT_AMOUNT))
 
 /*
-** TODO: NAME OF SECTION
+** Miscellaneous
 */
 
 #define AVL_CONST_VEX2_PREFIX 0xC5
@@ -177,8 +178,6 @@
     | __AVL_GET_MODRM_REG_BASE((inst)->__AVL_SET_INST_PREF(mod_rm)) \
 )
 
-///TODO: Maybe EVEX extends also SIB
-
 #define AVL_GET_SIB_SCALE(sib) (uint8_t)(((sib) >> 0x6) & 0x3)
 
 #define __AVL_GET_SIB_BASE_BASE(modrm) (uint8_t)((modrm) & 0xF)
@@ -194,11 +193,71 @@
     | __AVL_GET_SIB_INDEX_BASE((inst)->__AVL_SET_INST_PREF(sib)) \
 )
 
+#define AVL_IS_JCC_SHORT(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) >= JE \
+    && (inst)->__AVL_SET_INST_PREF(mnemonic) <= JP \
+    && ((inst)->__AVL_SET_INST_PREF(opcode[2]) & 0xF0) == 0x70 \
+)
+#define AVL_IS_JCC_LONG(inst)( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) >= JE \
+    && (inst)->__AVL_SET_INST_PREF(mnemonic) <= JP \
+    && ((inst)->__AVL_SET_INST_PREF(opcode[2]) & 0xF0) == 0x80 \
+)
+
+#define AVL_IS_JMP_SHORT(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) == JMP \
+    && (inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xEB \
+)
+#define AVL_IS_JMP_NEAR(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) == JMP \
+    && ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xE9 \
+        || ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xFF \
+        && AVL_GET_MODRM_REG(inst) == 0b100) \
+    ) \
+)
+#define AVL_IS_JMP_FAR(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) == JMP \
+    && ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xEA \
+        || ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xFF \
+        && AVL_GET_MODRM_REG(inst) == 0b101) \
+    ) \
+)
+
+#define AVL_IS_CALL_NEAR(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) == CALL \
+    && ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xE8 \
+        || ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xFF \
+        && AVL_GET_MODRM_REG(inst) == 0b010) \
+    ) \
+)
+#define AVL_IS_CALL_FAR(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) == CALL \
+    && ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0x9A \
+        || ((inst)->__AVL_SET_INST_PREF(opcode[2]) == 0xFF \
+        && AVL_GET_MODRM_REG(inst) == 0b011) \
+    ) \
+)
+
+#define AVL_IS_RET_NEAR(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) == RET \
+    && (inst)->__AVL_SET_INST_PREF(opcode[2]) >= 0xC2 \
+    && (inst)->__AVL_SET_INST_PREF(opcode[2]) <= 0xC3 \
+)
+#define AVL_IS_RET_FAR(inst) ( \
+    (inst)->__AVL_SET_INST_PREF(mnemonic) == RET \
+    && (inst)->__AVL_SET_INST_PREF(opcode[2]) >= 0xCA \
+    && (inst)->__AVL_SET_INST_PREF(opcode[2]) <= 0xCB \
+)
+
+/*
+** Tokenizer library
+*/
+
 /**
  * @brief Fetch and disassemble @p destlen instructions from @p *text to @p dest .
  * 
  * @param dest Array of 32-byte elements.
- * (PREFIX_AVL_instruction_t)
+ * (AVL_instruction_t)
  * @param destlen Amount of fetched instructions.
  * @param text Address where the instructions are fetched from.
  * Each call the address is increased to the begin of the next instruction.
@@ -210,19 +269,3 @@ void AVL_assemble_instructions(uint8_t* dest, const __AVL_SET_PREF(instruction_t
 
 ///TODO: Copy on dest the instruction and make *text point to the found instruction
 void AVL_find_instruction(__AVL_SET_PREF(instruction_t)* dest, const uint8_t** text);
-
-///TODO: 
-#define AVL_IS_JCC_SHORT
-#define AVL_IS_JCC_LONG
-
-#define AVL_IS_JMP_NEAR
-#define AVL_IS_JMP_FAR
-
-#define AVL_IS_CALL_NEAR
-#define AVL_IS_CALL_FAR
-
-#define AVL_IS_RET_NEAR
-#define AVL_IS_RET_FAR
-
-#define AVL_IS_VEX_INST(inst) (!!*((inst).__AVL_SET_INST_PREF(vp)))
-#define AVL_IS_EVEX_INST(inst) (AVL_HAS_OP_EVEX_PFX((inst).__AVL_SET_INST_PREF(flags)))
