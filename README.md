@@ -1,3 +1,7 @@
+# Welcome to Apolloclipse Virologic Library (AVL)
+
+Apolloclipse derivates from [Apollo](https://en.wikipedia.org/wiki/Apollo), [eclipse](https://openstax.org/books/microbiology/pages/6-2-the-viral-life-cycle) (CTRL^F "eclipse") and [apocalypse](https://en.wikipedia.org/wiki/Apocalypse).
+
 # AVL Tokenizer/Disassembler/Assembler
 
 X86-64 bilateral instruction tokenizer implemented in C. Supports the following processor extensions: `AES`, `AVX`, `AVX2`, `AVX512`, `FMA`, `MMX`, `SSE`, `SSE2`, `SSE3`, `SSE4`, `x87(FPU)`, `VMX`. In order to ease testing, a diassembler which transforms tokens into compilable assembly (for NASM compiler) has been implemented. 
