@@ -26,13 +26,6 @@
 #define TEST_FILE
 //#undef TEST_FILE
 
-///TODO: In some documentation i found that these are the 'SIMD prefixes'
-///READ: https://xem.github.io/minix86/manual/intel-x86-and-64-manual-vol2/o_b5573232dd8f1481-74.html
-/// And take more notes
-
-///TODO: WHILE CONVERTING BACK TO ASM, 2 BYTES VEX OPCODES MAY ALWAYS ALSO BE ENCODED AS 3 BYTES
-/// IS USEFUL FOR CODE ALIGNEMENT (JUST NEED TO FOLLOW THE RULE FOR 2 BYTE VEX PREFIX)
-
 ///ERRORS: (OLD): AVX512:
 /// - vpmaxsd == vpmaxsq (there is not vpmaxsq mnemonic) [ FIXED AND TRUE ]
 /// - vpmulld == vpmullq [ FIXED AND TRUE ]

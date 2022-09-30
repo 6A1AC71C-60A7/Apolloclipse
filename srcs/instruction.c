@@ -1208,6 +1208,21 @@ static opfield_t get_opfield(AVL_instruction_t* const inst, const opfield_t* map
 	return found;
 }
 
+opfield_t* resolve_opfield(AVL_instruction_t* const inst, opfield_t* const found, const ubyte** iraw, ubyte* const is_k_inst)
+{
+	opfield_t* map; 
+
+	if (IS_ESCAPE_FX87(inst))
+		*found = handle_x87_instructions(inst, iraw);
+	else
+	{
+		map = (opfield_t*)get_map(inst);
+		*found = get_opfield(inst, map, iraw, is_k_inst);
+	}
+
+	return map;
+}
+
 __always_inline
 static void	get_suffix_data(AVL_instruction_t* const dest, opfield_t found, const ubyte** iraw)
 {
@@ -1233,13 +1248,7 @@ static err_t	get_instruction(AVL_instruction_t* const dest, const ubyte** iraw)
 
 	dest->i_opcode[2] = *((*iraw)++);
 
-	if (IS_ESCAPE_FX87(dest))
-		found = handle_x87_instructions(dest, iraw);
-	else
-	{
-		map = get_map(dest);
-		found = get_opfield(dest, map, iraw, &is_k_inst);
-	}
+	map = resolve_opfield(dest, &found, iraw, &is_k_inst);
 
 	dest->i_mnemonic = found.mnemonic;
 

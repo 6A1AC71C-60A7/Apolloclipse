@@ -13,6 +13,8 @@
 __always_inline
 ubyte	get_modrm(AVL_instruction_t* const inst, const ubyte** iraw)
 {
+	inst->i_flags |= AVL_OP_MODRM_MASK;
+
 	if (AVL_HAS_OP_VEX_PFX(inst) || INST_ISPREFIXED(inst) || !IS_ESCAPE_FX87(inst))
 		inst->i_mod_rm = *((*iraw)++);
 
@@ -51,7 +53,7 @@ void	get_displacement(udword* const dest, const ubyte** iraw, uqword nbits)
 }
 
 __always_inline
-static ubyte	get_immediate_operand_type(opfield_t opfield)
+ubyte	get_immediate_operand_type(opfield_t opfield)
 {
 	ubyte ot = 0;
 

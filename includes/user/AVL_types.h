@@ -127,3 +127,5 @@ typedef struct
 													immediate value is defined by the flags. Its size is defined
 													by the instruction (can be known with instruction size) */
 } __AVL_SET_PREF(instruction_t);
+
+typedef uint64_t (*const __AVL_SET_PREF(condition_t))(__AVL_SET_PREF(instruction_t)* const);

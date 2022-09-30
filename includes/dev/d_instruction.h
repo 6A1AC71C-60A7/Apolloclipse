@@ -3,6 +3,7 @@
 
 #include <dev/d_error.h>
 #include <dev/d_lookup_tables.h>
+#include <dev/d_utils.h>
 #include <AVL_disassembler.h>
 
 #define OPERAND_HAS_IMMEDIATE(am) ( \
@@ -58,6 +59,7 @@
 
 opfield_t		get_instruction_by_extension_one_and_two_b_opmap(ubyte group, opfield_t found, ubyte modrm, udword prefix);
 extern void		resolve_operands(AVL_instruction_t* const dest, opfield_t instruction);
+opfield_t*		resolve_opfield(AVL_instruction_t* const inst, opfield_t* const found, const ubyte** iraw, ubyte* const is_k_inst);
 
 /*
 ** Prefix parse
@@ -76,5 +78,6 @@ extern void		get_evex_prefixes(AVL_instruction_t* const inst, const ubyte** iraw
 extern ubyte	get_modrm(AVL_instruction_t* const inst, const ubyte** iraw);
 extern ubyte	get_sib(AVL_instruction_t* const inst, const ubyte** iraw);
 extern void		get_displacement(udword* const dest, const ubyte** iraw, uqword nbits);
+extern ubyte	get_immediate_operand_type(opfield_t opfield);
 extern void		get_immediate(AVL_instruction_t* const dest, opfield_t opfield, const ubyte** iraw);
 extern void		get_operand_size(AVL_instruction_t* const dest, opfield_t* const found, ubyte is_k_inst);

@@ -30,7 +30,7 @@
 #define AVL_LP_ADDRSZ_MASK (uint32_t)(AVL_LP_OPSZ_MASK << 0x1)
 
 #define AVL_HAS_LP_LOCK_PFX(x) !!((x) & AVL_LP_LOCK_MASK)
-#define AVL_HAS_LP_REPNX_PFX(X) !!((x) & AVL_LP_REPNX_MASK)
+#define AVL_HAS_LP_REPNX_PFX(x) !!((x) & AVL_LP_REPNX_MASK)
 #define AVL_HAS_LP_REPX_PFX(x) !!((x) & AVL_LP_REPX_MASK)
 #define AVL_HAS_LP_FS_PFX(x) !!((x) & AVL_LP_FS_MASK)
 #define AVL_HAS_LP_GS_PFX(x) !!((x) & AVL_LP_GS_MASK)
@@ -77,15 +77,17 @@
 
 #define AVL_OP_IMM_MASK (uint32_t)(AVL_RP_REXW_MASK << 0x1)
 #define AVL_OP_EVEX_MASK (uint32_t)(AVL_OP_IMM_MASK << 0x1)
+#define AVL_OP_MODRM_MASK (uint32_t)(AVL_OP_EVEX_MASK << 0x01)
 
 #define AVL_HAS_OP_IMM_PFX(x) !!((x) & AVL_OP_IMM_MASK)
 #define AVL_HAS_OP_EVEX_PFX(x) !!((x) & AVL_OP_EVEX_MASK)
+#define AVL_HAS_OP_MODRM_MASK(x) !!((x) & AVL_OP_MODRM_MASK)
 
 /*
 ** Operands modifier hints
 */
 
-#define AVL_OM1_READ (uint32_t)(AVL_OP_EVEX_MASK << 0x1)
+#define AVL_OM1_READ (uint32_t)(AVL_OP_MODRM_MASK << 0x1)
 #define AVL_OM1_WRITE (uint32_t)(AVL_OM1_READ << 0x1)
 #define AVL_OM2_READ (uint32_t)(AVL_OM1_WRITE << 0x1)
 #define AVL_OM2_WRITE (uint32_t)(AVL_OM2_READ << 0x1)
@@ -254,18 +256,30 @@
 */
 
 /**
- * @brief Fetch and disassemble @p destlen instructions from @p *text to @p dest .
+ * @brief Fetch and disassemble @p destlen instructions from @p *text to @p dest tokens.
  * 
- * @param dest Array of 32-byte elements.
- * (AVL_instruction_t)
- * @param destlen Amount of fetched instructions.
- * @param text Address where the instructions are fetched from.
- * Each call the address is increased to the begin of the next instruction.
+ * @param dest An array of 32-byte tokens elements (AVL_instruction_t).
+ * @param destlen The amount instructions to fetch.
+ * @param text A pointer to bytecode data.
+ * Each call the address pointed by is increased to the begin of the next instruction.
  */
-void AVL_disassemble_instructions(__AVL_SET_PREF(instruction_t)* dest, uint64_t destlen, const uint8_t** text);
+void				AVL_disassemble_instructions(__AVL_SET_PREF(instruction_t)* dest, uint64_t destlen, const uint8_t** text);
 
-///TODO: Assemble back N instructions
-void AVL_assemble_instructions(uint8_t* dest, const __AVL_SET_PREF(instruction_t)* src, uint64_t amount);
+/**
+ * @brief Assemble tokens to x86-64 machine code.
+ * 
+ * @param dest Where the machine code will be written.
+ * @param src The array of tokens that will be assembled.
+ * @param amount The amout of tokens to assemble.
+ */
+void				AVL_assemble_instructions(uint8_t* dest, __AVL_SET_PREF(instruction_t) src[], uint64_t amount);
 
-///TODO: Copy on dest the instruction and make *text point to the found instruction
-void AVL_find_instruction(__AVL_SET_PREF(instruction_t)* dest, const uint8_t** text);
+uint64_t			AVL_inst_iszeroed(__AVL_SET_PREF(instruction_t)* const target);
+uint64_t			AVL_inst_getlen(__AVL_SET_PREF(instruction_t) insts[], uint64_t limit);
+__AVL_SET_PREF(instruction_t)*
+					AVL_inst_find(__AVL_SET_PREF(instruction_t) insts[], __AVL_SET_PREF(mnemonic_t) key, uint64_t insts_len);
+__AVL_SET_PREF(instruction_t)*
+					AVL_inst_findif(__AVL_SET_PREF(instruction_t) insts[], uint64_t insts_len, __AVL_SET_PREF(condition_t) cond);
+void				AVL_inst_insert(__AVL_SET_PREF(instruction_t)* const dest, uint64_t destlen, __AVL_SET_PREF(instruction_t)* const src, uint64_t srclen);
+void				AVL_inst_erase(__AVL_SET_PREF(instruction_t)* const target, uint64_t amount, uint64_t targetlen);
+void				AVL_inst_swap(__AVL_SET_PREF(instruction_t)* const l, __AVL_SET_PREF(instruction_t)* const r);
