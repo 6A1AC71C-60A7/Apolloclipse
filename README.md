@@ -194,7 +194,7 @@ typedef struct
 			uint8_t vx_rexb:1;		// VEX REX.B bit.
 			uint8_t vx_rexx:1;		// VEX REX.X bit.
 			uint8_t vx_rexr:1;		// VEX REX.R bit.
-			uint8_t vx_prefix:2;    // Instruction prefix.
+			uint8_t vx_prefix:2;   		// Instruction prefix.
 			uint8_t vx_vlen:1;		// Vector Operand Size, either 128-bits or 256-bits.
 			uint8_t vx_vvvv:4;		// Addtional Instruction Argument.
 			uint8_t vx_rexw:1;		// VEX REX.W bit.
@@ -211,7 +211,7 @@ typedef struct
 		struct
 		{
 			uint8_t	vx2_header;		// Mandatory VEX 2-bytes prefix, always 0xC5.
-			uint8_t	vx2_prefix:2;   // Instruction prefix.
+			uint8_t	vx2_prefix:2;   	// Instruction prefix.
 			uint8_t	vx2_vlen:1;		// Vector Operand Size, either 128-bits or 256-bits.
 			uint8_t	vx2_vvvv:4;		// Addtional Instruction Argument.
 			uint8_t	vx2_rexr:1;		// VEX REX.R bit.
