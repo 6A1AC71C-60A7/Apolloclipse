@@ -25,6 +25,7 @@ SRCS	=\
 $(addprefix srcs/,\
 	get_instruction_by_extension.c\
 	instruction.c\
+	lib.c\
 	main.c\
 	resolve_operands.c\
 	suffix.c\
