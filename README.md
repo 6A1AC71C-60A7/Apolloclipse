@@ -282,17 +282,17 @@ Tokenizes into `dest` an amount of `destlen` instructions from a pointer to x86-
 
 
 ```c
-void				AVL_assemble_instructions(uint8_t* dest, AVL_instruction_t src[], uint64_t amount);
+void AVL_assemble_instructions(uint8_t* dest, AVL_instruction_t src[], uint64_t amount);
 ```
 Convert `amount` of tokens (`src`) into x86-64 machine code, the result is written into `dest` address.
 
 ```c
-uint64_t			AVL_inst_iszeroed(AVL_instruction_t* const target);
+uint64_t AVL_inst_iszeroed(AVL_instruction_t* const target);
 ```
 Performs a zeroed check to the token pointed by `target`. If all the pointed data is equal to 0, return non zero.
 
 ```c
-uint64_t			AVL_inst_getlen(AVL_instruction_t insts[], uint64_t limit);
+uint64_t AVL_inst_getlen(AVL_instruction_t insts[], uint64_t limit);
 ```
 Return the lenght of the firts sequence of non zeroed tokens in `insts` with an upper bound of `limit` iterations.
 
@@ -309,17 +309,17 @@ AVL_instruction_t* AVL_inst_findif(AVL_instruction_t insts[], uint64_t insts_len
 Search for a matching condition `cond` within the `insts` with an upper bound of `insts_len` tokens.
 
 ```c
-void				AVL_inst_insert(AVL_instruction_t* const dest, uint64_t destlen, AVL_instruction_t* const src, uint64_t srclen);
+void AVL_inst_insert(AVL_instruction_t* const dest, uint64_t destlen, AVL_instruction_t* const src, uint64_t srclen);
 ```
 Insert `srclen` tokens `src` after `dest` address which is followed by at least `destlen` tokens.
 
 ```c
-void				AVL_inst_erase(AVL_instruction_t* const target, uint64_t amount, uint64_t targetlen);
+void AVL_inst_erase(AVL_instruction_t* const target, uint64_t amount, uint64_t targetlen);
 ```
 Erase `amount` of tokens at `target` address which is followed by at least `targetlen` tokens.
 
 ```c
-void				AVL_inst_swap(AVL_instruction_t* const l, AVL_instruction_t* const r);
+void AVL_inst_swap(AVL_instruction_t* const l, AVL_instruction_t* const r);
 ```
 Swap the data between `l` and `r`.
 
