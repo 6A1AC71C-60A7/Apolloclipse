@@ -193,15 +193,15 @@ typedef struct
 	{
 		struct
 		{
-			uint8_t	vx_header;		// Mandatory VEX 3-bytes prefix, always 0xC4.
-			uint8_t	vx_opmap:5;		// Opcode Map Prefix(es).
-			uint8_t vx_rexb:1;		// VEX REX.B bit.
-			uint8_t vx_rexx:1;		// VEX REX.X bit.
-			uint8_t vx_rexr:1;		// VEX REX.R bit.
-			uint8_t vx_prefix:2;   		// Instruction prefix.
-			uint8_t vx_vlen:1;		// Vector Operand Size, either 128-bits or 256-bits.
-			uint8_t vx_vvvv:4;		// Addtional Instruction Argument.
-			uint8_t vx_rexw:1;		// VEX REX.W bit.
+			uint8_t	vx_header;	// Mandatory VEX 3-bytes prefix, always 0xC4.
+			uint8_t	vx_opmap:5;	// Opcode Map Prefix(es).
+			uint8_t vx_rexb:1;	// VEX REX.B bit.
+			uint8_t vx_rexx:1;	// VEX REX.X bit.
+			uint8_t vx_rexr:1;	// VEX REX.R bit.
+			uint8_t vx_prefix:2;   	// Instruction prefix.
+			uint8_t vx_vlen:1;	// Vector Operand Size, either 128-bits or 256-bits.
+			uint8_t vx_vvvv:4;	// Addtional Instruction Argument.
+			uint8_t vx_rexw:1;	// VEX REX.W bit.
 		};
 		uint8_t v_rawdat[3];
 	};
@@ -214,11 +214,11 @@ typedef struct
 	{
 		struct
 		{
-			uint8_t	vx2_header;		// Mandatory VEX 2-bytes prefix, always 0xC5.
-			uint8_t	vx2_prefix:2;   	// Instruction prefix.
-			uint8_t	vx2_vlen:1;		// Vector Operand Size, either 128-bits or 256-bits.
-			uint8_t	vx2_vvvv:4;		// Addtional Instruction Argument.
-			uint8_t	vx2_rexr:1;		// VEX REX.R bit.
+			uint8_t	vx2_header;	// Mandatory VEX 2-bytes prefix, always 0xC5.
+			uint8_t	vx2_prefix:2;   // Instruction prefix.
+			uint8_t	vx2_vlen:1;	// Vector Operand Size, either 128-bits or 256-bits.
+			uint8_t	vx2_vvvv:4;	// Addtional Instruction Argument.
+			uint8_t	vx2_rexr:1;	// VEX REX.R bit.
 		};
 		uint8_t vx2_rawdat[3];
 	};
@@ -265,7 +265,7 @@ This is a brief of the avalaible operands, the full list can be found on `includ
 - Control Registers: `AVL_OP_CR0` to `AVL_OP_CR15`.
 - Debug Registers: `AVL_OP_DR0` to `AVL_OP_DR15`.
 - Stack (FPU) "Registers": `AVL_OP_STO` to `AVL_OP_ST7`.
-- MMX Registers: `AVL_OP_MMX0` to `AVL_OP_MMX0`.
+- MMX Registers: `AVL_OP_MMX0` to `AVL_OP_MMX7`.
 - XMM Registers: `AVL_OP_XMM0` to `AVL_OP_XMM31`.
 - YMM Registers: `AVL_OP_YMM0` to `AVL_OP_YMM31`.
 - ZMM Registers: `AVL_OP_ZMM0` to `AVL_OP_ZMM31`.
